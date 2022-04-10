@@ -1,0 +1,38 @@
+\usepackage[german]{babel} % deutsch, deutsche Rechtschreibung
+\usepackage[utf8]{inputenc} % Unicode-Zeichensatz als Text-Quelle
+\usepackage[T1]{fontenc} % Umlaute und deutsches Trennen
+\usepackage{mathptmx} % Times New Roman, gewohnter Font
+\usepackage{courier} % einen schickeren Schreibmaschinenfont
+\usepackage[scaled=.95]{helvet} % was serifenloses, wenn gebraucht
+\usepackage{graphicx} % wir wollen Bilder einfügen
+\usepackage{xfrac} % schöne Brüche im Fließtext mit sfrac
+  
+\usepackage{listings} % Schöne Quellcode-Listings [minted wäre besser]
+\lstset{basicstyle=\sffamily, columns=[l]flexible, mathescape=true, 
+  showstringspaces=false, numbers=left, numberstyle=\tiny}
+\lstset{language=python} % und nur schöne Programmiersprachen ;-)
+% und eine eigene Umgebung für Listings
+\usepackage{float} % eigene Fließobjekte, kommen an beliebigen Stellen vor
+\newfloat{listing}{htbp}{scl}[section] % Nummeriere je Abschnitt
+\floatname{listing}{Listing} % listing ist ein Fließobjekt
+
+% Auch wenn es anrüchig ist, man kann den Platz etwas mehr ausnützen
+\usepackage[paper=a4paper,width=14cm,left=35mm,height=22cm]{geometry}
+\usepackage{setspace}
+\linespread{1.15} % nicht ganz anderthalbzeilig, nur ein bisschen mehr Platz
+\setlength{\parskip}{0.5em} % kleiner Paragraphen(Absatz)-abstand
+\setlength{\parindent}{0em} % im Deutschen Einrückung nicht üblich
+
+% Seitenmarkierungen 
+\usepackage{fancyhdr} % Schickere Header und Footer
+\pagestyle{fancy}
+% Zeichensatz für Header/Footer
+\newcommand{\phv}{\fontfamily{phv}\fontseries{m}\fontsize{9}{11}\selectfont}
+\fancyhead[L]{\phv HSMA Infos und Meinungen} % Kurztitel links oben
+\fancyhead[R]{\phv \thepage} % rechts oben die Seitenzahl
+\fancyfoot[L]{\phv Hochschule Mannheim} % Institution links unten
+\fancyfoot[C]{\ } % keine Seitenzahl unten Mitte
+\fancyfoot[R]{\phv Angewandte Prokrastination} % Studiengang rechts unten
+
+\usepackage{url} % wir wollen eine URL anzeigen
+

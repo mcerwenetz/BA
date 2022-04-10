@@ -1,0 +1,55 @@
+\begin{titlepage}
+  % Kopf der Seite
+  \hsmalogo[1] \hfill
+  \parbox[b]{60mm}{
+    % \textsf würde das Aussehen der ersten Seite ruinieren, 
+    % wer will, soll das selbst außen rum machen...
+    Fakultät Informationstechnik\\
+    Studiengang \studiengang}
+  \begin{center}
+    % rumfiddeln, damit es für 4 Zeilen gerade noch so geht...
+    \rule{1\textwidth}{1pt}\\[-3mm]
+    \parbox[t][64mm]{110mm}{% 11 cm für Breite 13, ca. 7 für Höhe 6
+      \begin{center}
+        \Large{\welchethesis arbeit}\\[2mm]
+        {\begin{spacing}{1.13} \huge \bfseries \titel \end{spacing}}
+        \vfill
+        \Large{\autor} \\[1mm] % keep space to window
+        \ 
+      \end{center}
+    }
+    \rule{\textwidth}{1pt}    
+    \vfill    
+    {\Large Abschlussarbeit} \\[5mm]
+    {\large zur Erlangung des akademischen Grades} \\[5mm]
+    {\large \welchethesis\ \thesisofwas} \\[5mm]
+    \vfill    
+    \begin{tabular}{ll} % Mitte der Seite
+      Vorgelegt von & \autor \\
+      am & \datum \\
+      Referent & \referent \\
+      Korreferent & \korreferent
+    \end{tabular}    
+    \vfill
+  \end{center}
+\end{titlepage}
+\cleardoublepage
+
+
+% Erklärung gemäß der Prüfungsordnung
+\thispagestyle{empty}
+\subsection*{Schriftliche Versicherung laut Studien- und Prüfungsordnung}
+
+Hiermit erkläre ich, dass ich die vorliegende Arbeit selbstständig verfasst
+und keine anderen als die angegebenen Quellen und Hilfsmittel benutzt habe.
+
+\vspace{6em}
+\noindent\begin{tabular}{p{0.37\textwidth}p{0.56\textwidth}}
+\ort, \datum  & \rule{0.56\textwidth}{0.5pt}\\
+              & \makebox[1cm]{\ } \autor
+\end{tabular}
+
+\vfill
+
+\cleardoublepage
+

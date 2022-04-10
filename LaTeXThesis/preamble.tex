@@ -1,0 +1,91 @@
+% Deutsch
+\usepackage[german]{babel} % deutsch und deutsche Rechtschreibung
+\usepackage[utf8]{inputenc} % Unicode Text 
+\usepackage[T1]{fontenc} % Umlaute und deutsches Trennen
+\usepackage{textcomp} % Euro
+\usepackage[hyphens]{url}
+\input{hyphenations} % eigene Hyphenations, die für das Dokument gelten
+\usepackage{amssymb} % Symbole
+\usepackage{emptypage} % Wirklich leer bei leeren Seiten
+
+%% Fonts, je ein kompletter Satz an Optionen
+
+% Times New Roman, gewohnter Font, ok tt und serifenlos
+%\usepackage{mathptmx} 
+%\usepackage[scaled=.95]{helvet}
+%\usepackage{courier}
+
+% Palatino mit guten Fonts für tt und serifenlos
+\usepackage{mathpazo} % Palatino, mal was anderes
+\usepackage[scaled=.95]{helvet}
+\usepackage{courier}
+
+% New Century Schoolbook sieht auch nett aus (macht auch tt und serifenlos)
+%\usepackage{newcent}
+
+% Oder default serifenlos mit Helvetica 
+% ich kann es nicht mehr sehen ...
+%\renewcommand{\familydefault}{\sfdefault}
+
+% ein bisschen eine bessere Verteilung der Buchstaben...
+\usepackage{microtype}
+
+% Bilder und Listings
+\usepackage{graphicx} % wir wollen Bilder einfügen
+\usepackage{subfig} % Teilbilder
+\usepackage{wrapfig} % vielleicht doch besser vermeiden
+\usepackage{listings} % schöne Quellcode-Listings
+% ein paar Einstellungen für akzeptable Listings
+\lstset{basicstyle=\ttfamily, columns=[l]flexible, mathescape=true, showstringspaces=false, numbers=left, numberstyle=\tiny}
+\lstset{language=python} % und nur schöne Programmiersprachen ;-)
+% und eine eigene Umgebung für Listings
+\usepackage{float}
+\newfloat{listing}{htbp}{scl}[chapter]
+\floatname{listing}{Listing}
+
+% Seitenlayout
+\usepackage[paper=a4paper,width=14.2cm,left=36mm,height=22cm]{geometry}
+\usepackage{setspace}
+\linespread{1.15}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0em} % im Deutschen Einrückung nicht üblich, leider
+
+% Seitenmarkierungen 
+\newcommand{\phv}{\fontfamily{phv}\fontseries{m}\fontsize{9}{11}\selectfont}
+\usepackage{fancyhdr} % Schickere Header und Footer
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+%\fancyhead[L]{\phv \leftmark}
+\fancyhead[RE,LO]{\phv \nouppercase{\leftmark}}
+\fancyhead[LE,RO]{\phv \thepage}
+% Unten besser auf alles Verzichten
+%\fancyfoot[L]{\textsf{\small \kurztitel}}
+\fancyfoot[C]{\ } % keine Seitenzahl unten
+%\fancyfoot[R]{\textsf{\small Technische Informatik}}
+
+% Theorem-Umgebungen
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{satz}{Satz}[chapter]
+\newtheorem{lemma}[satz]{Lemma} % gleicher Zähler wie Satz
+\newtheorem{theorem}{Theorem}[chapter]
+\newenvironment{beweis}[1][Beweis]{\begin{trivlist}
+\item[\hskip \labelsep {\textit{#1 }}]}{\end{trivlist}}
+\newcommand{\qed}{\hfill \ensuremath{\square}}
+
+% Quellen teilen
+\usepackage{bibtopic} 
+
+% Hochschule Logo, noch nicht perfekt
+\usepackage{hsmalogo}
+
+% Spezialpakete
+\usepackage{epigraph}
+\setlength{\epigraphrule}{0pt} % kein Trennstrich
+
+% damit wir nicht so viel tippen müssen, nur für Demo 
+\usepackage{blindtext} 
+
+% Zum Zeigen von Fehlern
+\usepackage{soul}
+\newcommand*\falsch{\st}
+
