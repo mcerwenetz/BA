@@ -57,7 +57,10 @@ Moderne Smartphones bieten hier Abhilfe da Sie meistens mit verschiedenen Sensor
 Viele Kinder besitzen bereits mit 10 Jahren \cite{bitkom_smartphones} ein Smartphone. 
 \\
 Im Rahmen dieser Arbeit soll ein Framework entwickelt werden, dass das Smartphone von Anwendern einbindet um Sie beim Programmierenlernen zu unterstützen.
-Dies soll in Form von Aktivitäten möglich sein. Aktivitäten starten entweder UIs auf dem Smartphone um eine Eingabe entgegenzunehmen oder senden konstant Sensordaten.
+
+Benötigt werden dafür eine Library zum Einbinden, eine Python-Anwendung und eine mobile Anwendung für Android Smartphones.
+
+
 
 \chapter{Experimente/Aufgaben} \label{chap:Experimente}
 
@@ -68,7 +71,7 @@ Die Benutzung der API dazu wird später geschildert.
 
 \textbf{Disco}\\
 Die LED muss ganz schnell blinken.
-Ablauf: \verb|led_on, sleep, led_off ...|
+% Ablauf: \verb|led_on, sleep, led_off ...|
 \\
 
 \textbf{Diebstahl-Alarm}\\
@@ -80,25 +83,27 @@ Wenn man sich davon entfernt soll sie wieder aus sein.
 Das Smartphone wird geschüttelt.
 Ein random Zahlenwert wird zurückgegeben.
 Je nachdem welches Ergebnis zurückkommt soll ein Wert auf dem Display angezeigt werden.
-
-Ablauf: \verb|get_random(), displayText|
+\\
+% Ablauf: \verb|get_random(), displayText|
 
 \textbf{Klatsch-Zähler}\\
 Der Anwender möchte wissen wie oft in einem bestimmten Zeitraum geklatscht wurde.
 Ein Methodenaufruf startet in der Androidanwendung eine Activity, die innerhalb des im Argument genannten Zeitraums die Anzahl der maximalen Lautstärkeamplituden des Mikrophons misst und die Anzahl zurückgibt.
+Diese soll im Textfeld angezeigt werden.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.9\textwidth]{images/count_claps.png}
   \caption{Klatsch-Zähler}
   \label{fig:clap_count}
 \end{figure}
+% Vorgehen: \verb|num_of_spikes|
+\\
 
 \textbf{Dreh-Zähler}\\
 Ein Nutzer möchte in einem bestimmten Zeitraum zählen wie oft das Smartphone gedreht wurde.
 
 
-
-\section*{API}
+\section*{API}\label{sec:API}
 Gelöst werden sollen die Aufgaben durch das Aufrufen der API.
 Diese bietet die benötigten Funktionen an.
 Die Aufrufe sind frei miteinander kombinierbar, so dass Aufgaben erweitert werden können.
@@ -120,7 +125,19 @@ Ein User möchte wissen, ob ein Objekt unmittelbar vor den Annäherungssensor st
 Der Aufruf erfolgt folgendermaßen.
 \lstinputlisting{listings/api/proxy.c}
 
-\subsection*{Ausgaben}
+\textbf{Amplituden-Spike-Messung mit Zeitraum}\\
+Ein User möchte wissen, wie oft die Lautstärke innerhalb eines angegebenen Zeitraums t ein gewisses Limit überstiegen hat.
+Der Aufruf könnte dabei folgendermaßen laufen.
+\lstinputlisting{listings/api/numofspikes.c}
+
+
+\textbf{Umdrehungsmessung mit Zeitraum}\\
+Ein User möchte wissen, wie oft das Smartphone innerhalb eines angegebenen Zeitraums t gedreht wurde.
+Der Aufruf sieht folgendermaßen aus.
+\lstinputlisting{listings/api/numofspikes.c}
+
+
+\subsection*{Ausgaben}\label{subsec:Ausgaben}
 
 \textbf{Display-Ausgabe}\\
 Um auf dem Smartphone einen beliebigen Text anzuzeigen.
@@ -144,62 +161,7 @@ Ein Nutzer möchte den Pfad zu einer Audio-Datei angeben und
 
 
 
-\chapter{Einführung} \label{chap:einfuehrung}
-% Das Smartphone soll für das Austauschen von Daten verwendet werden.
-% Hier wird klar unterschieden in Anfragen die eine Benutzerinteraktion verlangen und welche, die passiv Daten auslesen.
-% Die Übertragung wird nach dem Request-Response-Prizip realisiert.
-% Das Framework besteht aus drei großen Teilen:
-% \begin{enumerate}
-%   \item Einer Anwendung auf einem Android-Smartphone
-%   \item Einer Middleware auf dem PC oder Laptop des Anwenders
-%   \item Einer Bibliothek in Java, C++ und Python ebenfalls auf PC oder Laptops des Anwenders
-% \end{enumerate}
-% \begin{figure}[htbp]
-%   \centering
-%   \includegraphics[width=.9\textwidth]{images/design.png}
-%   \caption{Framework-Ablauf}
-%   \label{fig:Ablauf}
-% \end{figure}
-% Auf die Funktionsweise und den Ablauf wird im folgenden genauer eingegangen.
-
-% \section*{Bibliothek und API}
-% Zur Ansteuerung des Smartphones werden vier Softwarebibliotheken jeweils in den Programmiersprachen Python, C++, C und Java zur Anbindung realisiert.
-% Die Bibliotheken in den den Programmiersprachen C++, Java und Python dienen zur Erstellung von Smartphone-Objekten über die Methodenaufrufe realisiert werden können.
-% Die Bibliothek in C ist prozedural realisiert und bietet den Aufruf von globalen Methoden ohne Objektbindung.
-% \\
-% Die Afrufe sind logisch in zwei Kategorien geordnet: Dem Aufruf zur Übermittlung von Sensordaten und dem Aufruf zum Starten von Activites zwecks einer Nutzerbedienung mit anschließendem Rückübermitteln der Nutzerauswahl.
-% \\
-% Die Anfragen werden in der jeweiligen Programmiersprache angestoßen und werden im weiteren Verlauf von der Middleware über das UDP-Protokoll auf dem gleichen PC entgegengenommen.
-% \section*{Middleware}
-% Die Middleware dient als Vermittlungsschicht zweichen Bibliothek und Smartphone.
-% Sie nimmt per UDP Methodenaufrufe entgegen und sendet diese als Nachricht für das Smartphone weiter.
-% Die Nachricht wird dabei über einen MQTT-Server übertragen.
-
-% \subsection*{MQTT}
-% Die Nachrichten werden von der Middleware per MQTT übertragen.
-% MQTT beziehungsweise Message Queuing Telemetry Transport, ist ein Netzwerkprotokoll.
-% Es dient der Übertragung von Messdaten.
-% Sensor-Geräte senden dabei Nachrichten an einen Broker in ein Topic.
-% Ein Broker ist eine MQTT-Serverkomponente die Nachrichten annimt.
-% Broker verwalten die gesendeten Daten hierarchisch in Themenberereichen, den Topics.
-% Andere Geräte können am Broker Topics abbonieren (subscribe).
-% Publiziert nun der Sensor-Client einen neuen Messwert auf einem Topic das ein Empfänger abboniert hat wird ihm die Nachricht zugestellt.
-% \\
-% Die Nachrichten werden dabei mit einem Quality of Service-Flag übertragen.
-% Dies beschreibt die Sicherungsgarantie mit der eine Nachricht übermittelt wird.
-% Sie ist aufgeteilt in drei Stufen
-% \begin{enumerate}
-%   \item at most once
-%   \item at least once
-%   \item exactly once
-% \end{enumerate}
-% In der ersten Stufe werden Nachrichten zwar übermittelt, jedoch kann es vorkommen, dass bei Verbindungsabbrüchen Nachrichten nicht weitergeleitet werden.
-% \\
-% In der zweiten Stufe werden Nachrichten so lange versendet, bis Clienten die das jeweilige Topic abboniert haben eine Empfangsbestätigung senden.
-% Es wird jedoch nicht sichergestellt, ob die Nachricht nicht mehrmals versand wurde.
-% \\
-% Dies wird in der dritten Stufe, exactly once, sichergestellt. 
-% Nachrichten werden nur so lange gesendet bis die Übertragung einmal bestätigt wurde.
+\chapter{Architektur} \label{chap:einfuehrung}
 
 \subsection*{Nachrichtenformate}
 Die Nachrichten werden im JSON-Format übertragen.
@@ -224,17 +186,19 @@ Je nach Request-Art werden entweder Sensor-Responses oder Activity-Responses zur
 
 \section*{Android Anwendung}
 Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
-Sie hat ein sehr schlichtes äußeres Erscheinungsbild und reagiert nur auf Anfragen der Middleware.
-Sie besteht aus einer Haupt-Activity und mehreren Unter-Activites die gegebenenfalls aufgerufen werden.
+Sie besteht aus einer Haupt-Activity deren außerlicher Aufbau in \ref{chap:intro} beschrieben ist. 
 \\
 In der Haupt-Activity wird ein Service gestartet und gebunden.
-Der Service baut eine Verbindung zu einem MQTT Topic auf einem MQTT-Server auf, reagiert auf Nachrichten und versendet gegebenenfalls selbst Nachrichten.
-Geht eine Nachricht ein die eine User-Interaktion verlangt wird die jeweilige Activity gestartet.
-Der User interargiert mit der Activity und bestätigt seine Eingabe.
-Die Activity bindet daraufhin den MQTT-Service und versendet die Antwort an die Middleware, wo Sie an die Bibliothek und somit an die Endanwendung auf dem PC des Users gesendet wird.
-\\
-Geht eine Nachricht ein, die die Übermittlung von Sensordaten verlangt wird keine eigene Aktivität gestartet.
-Der Service startet in diesem Fall selbst den Ausleseprozess und übermittelt dann, je nach Anfrage, einen oder mehrere Werte.
+Der Service baut eine Verbindung zu einem MQTT Server auf.
+Dort verbindet er sich auf zwei Topics: Einem Sensortopic auf dem mit einer einem QOS-Level 0 alle Sensordaten dauerhauft ausgetauscht werden, die vom Smartphone aus unterstützt werden.
+Das andere Topic dient zum Aufruf von Steuerbefehlen wie den in \ref{subsec:Ausgaben} erwähnten Funktionsaufrufen, welche mit einem QOS-Level von 2 versendet werden müssen, damit sie unter Garantie ausgeführt werden.
+% Todo: admin channel? Erster Aufbau auf admin channel mit anschließender negotiation auf welchen channeln gesendet werden soll. Wie hart aufziehen?
+Die Activity bindet beim Start den MQTT-Service ein.
+Stellt ein Client über die Bibliothek eine Anfrage wird dieser Aufruf wie z.B. eine Ausgabe auf einem Textfeld an das Smartphone wird diese Anfrage zuerst zur Middleware geleitet.
+Diese leitet die Anfrage weiter an das Smartphone, dass dann den jeweiligen Befehl ausführt.
+Dies beeinhaltet vor allem Ausgaben, sowie Eingaben die eine Nutzerinteraktion mit reduziertem Ergebnis.
+Zum Beispiel alle Eingaben die etwas in einem angegebenen Zeitraum messen.
+Alle anderen Sensordaten werden dauerhaft an die Middleware übertragen.
 Die Verfügbarkeit der jeweiligen Sensoren wird beim Start der Anwendung ermittelt.
 Falls ein Sensor angefragt wird der auf dem Smartphone nicht existiert wird eine Nachricht mit einer Fehlermeldung zurückgegeben.
 \begin{figure}[htbp]
@@ -244,12 +208,6 @@ Falls ein Sensor angefragt wird der auf dem Smartphone nicht existiert wird eine
   \label{fig:android_app}
 \end{figure}
 
-
-
-
-
-\chapter{Diskussion und Fazit} \label{chap:fazit}
-\chapter{Ausblick} \label{chap:fazit}
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
 % Meist ist das aber unnötig.
