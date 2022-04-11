@@ -34,7 +34,7 @@ für die didaktische Unterstützung von Programmiervorlesungen}
 
 \chapter{Einführung} \label{chap:intro}
 MINT-Berufe leiden hierzulande unter einem akuten Fachkräftemangel.
-Das Institut der deutschen Wirtschaft ermittelte für April 2021 ein Unterangebot von 145.100 Personen in 36 MINT-Berufskategorien. \cite{mint_jahresreport}
+Das Institut der deutschen Wirtschaft ermittelte für April 2021 ein Unterangebot von 145.100 Personen \cite{mint_jahresreport} in 36 MINT-Berufskategorien. 
 Digitalisierungs-Projekte geraten dadurch ins Stocken.
 \\
 Nicht zuletzt er auch ein Kräftemangel in der Softwareentwicklung.
@@ -47,72 +47,155 @@ So können schon früh in Schulen Kinder an die Programmierung herangerführt we
 Sie lernen spielerisch kleine Programme zu entwickleln und verstehen die ihnen beigebrachten Abläufe durch schnelle Anwendung.
 Microcontroller sind jedoch auch mit Anschaffungskosten verbunden und für kleine Anwendungen, welche Sensoren verwenden, wird viel zusätzliches Material wie zum Beispiel Breadboards, Verbindungskabel und Erweiterungsboards benötigt.
 Moderne Smartphones bieten hier Abhilfe da Sie meistens mit verschiedenen Sensoren bespickt sind, wie zum Beispiel: Kompass, GPS, Microphon oder Kamera.
-Viele Kinder besitzen bereits mit 10 Jahren ein Smartphone. 
-\cite{bitkom_smartphones}
+Viele Kinder besitzen bereits mit 10 Jahren \cite{bitkom_smartphones} ein Smartphone. 
 \\
 Im Rahmen dieser Arbeit soll ein Framework entwickelt werden, dass das Smartphone von Anwendern einbindet um Sie beim Programmierenlernen zu unterstützen.
+Dies soll in Form von Aktivitäten möglich sein. Aktivitäten starten entweder UIs auf dem Smartphone um eine Eingabe entgegenzunehmen oder senden konstant Sensordaten.
 
-\chapter{Grundlagen} \label{chap:grundlagen}
-Das Smartphone soll für das Austauschen von Daten verwendet werden.
-Hier wird klar unterschieden in Anfragen die eine Benutzerinteraktion verlangen und welche, die passiv Daten auslesen.
-Die Übertragung wird nach dem Request-Response-Prizip realisiert.
-Das Framework besteht aus drei großen Teilen:
-\begin{enumerate}
-  \item Einer Anwendung auf einem Android-Smartphone
-  \item Einer Middleware auf dem PC oder Laptop des Anwenders
-  \item Einer Bibliothek in Java, C++ und Python ebenfalls auf PC oder Laptops des Anwenders
-\end{enumerate}
+\chapter{Experimente/Aufgaben} \label{chap:Experimente}
+
+\section*{Aufgaben}
+Dieses Kapitel enthält verschiedene Beispielaufgaben die mit dem Framework gelöst werden sollen.
+Die Benutzung der API dazu wird später geschildert.
+
+
+\textbf{Disco}\\
+Die LED muss ganz schnell blinken.
+Ablauf: \verb|led_on, sleep, led_off ...|
+\\
+
+\textbf{Diebstahl-Alarm}\\
+Wenn nach dem Telefon gegriffen wird soll die LED blinken.
+Wenn man sich davon entfernt soll sie wieder aus sein.
+\\
+
+\textbf{Würfeln}\\
+Das Smartphone wird geschüttelt.
+Ein random Zahlenwert wird zurückgegeben.
+Je nachdem welches Ergebnis zurückkommt soll ein Wert auf dem Display angezeigt werden.
+
+Ablauf: \verb|get_random(), displayText|
+
+\textbf{Klatsch-Zähler}\\
+Der Anwender möchte wissen wie oft in einem bestimmten Zeitraum geklatscht wurde.
+Ein Methodenaufruf startet in der Androidanwendung eine Activity, die innerhalb des im Argument genannten Zeitraums die Anzahl der maximalen Lautstärkeamplituden des Mikrophons misst und die Anzahl zurückgibt.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.9\textwidth]{images/design.png}
-  \caption{Framework-Ablauf}
-  \label{fig:Ablauf}
+  \includegraphics[width=.9\textwidth]{images/count_claps.png}
+  \caption{Klatsch-Zähler}
+  \label{fig:clap_count}
 \end{figure}
-Auf die Funktionsweise und den Ablauf wird im folgenden genauer eingegangen.
 
-\section*{Bibliothek und API}
-Zur Ansteuerung des Smartphones werden vier Softwarebibliotheken jeweils in den Programmiersprachen Python, C++, C und Java zur Anbindung realisiert.
-Die Bibliotheken in den den Programmiersprachen C++, Java und Python dienen zur Erstellung von Smartphone-Objekten über die Methodenaufrufe realisiert werden können.
-Die Bibliothek in C ist prozedural realisiert und bietet den Aufruf von globalen Methoden ohne Objektbindung.
-\\
-Die Afrufe sind logisch in zwei Kategorien geordnet: Dem Aufruf zur Übermittlung von Sensordaten und dem Aufruf zum Starten von Activites zwecks einer Nutzerbedienung mit anschließendem Rückübermitteln der Nutzerauswahl.
-\\
-Die Anfragen werden in der jeweiligen Programmiersprache angestoßen und werden im weiteren Verlauf von der Middleware über das UDP-Protokoll auf dem gleichen PC entgegengenommen.
-\section*{Middleware}
-Die Middleware dient als Vermittlungsschicht zweichen Bibliothek und Smartphone.
-Sie nimmt per UDP Methodenaufrufe entgegen und sendet diese als Nachricht für das Smartphone weiter.
-Die Nachricht wird dabei über einen MQTT-Server übertragen.
+\textbf{Dreh-Zähler}\\
+Ein Nutzer möchte in einem bestimmten Zeitraum zählen wie oft das Smartphone gedreht wurde.
 
-\subsection*{MQTT}
-Die Nachrichten werden von der Middleware per MQTT übertragen.
-MQTT beziehungsweise Message Queuing Telemetry Transport, ist ein Netzwerkprotokoll.
-Es dient der Übertragung von Messdaten.
-Sensor-Geräte senden dabei Nachrichten an einen Broker in ein Topic.
-Ein Broker ist eine MQTT-Serverkomponente die Nachrichten annimt.
-Broker verwalten die gesendeten Daten hierarchisch in Themenberereichen, den Topics.
-Andere Geräte können am Broker Topics abbonieren (subscribe).
-Publiziert nun der Sensor-Client einen neuen Messwert auf einem Topic das ein Empfänger abboniert hat wird ihm die Nachricht zugestellt.
-\\
-Die Nachrichten werden dabei mit einem Quality of Service-Flag übertragen.
-Dies beschreibt die Sicherungsgarantie mit der eine Nachricht übermittelt wird.
-Sie ist aufgeteilt in drei Stufen
-\begin{enumerate}
-  \item at most once
-  \item at least once
-  \item exactly once
-\end{enumerate}
-In der ersten Stufe werden Nachrichten zwar übermittelt, jedoch kann es vorkommen, dass bei Verbindungsabbrüchen Nachrichten nicht weitergeleitet werden.
-\\
-In der zweiten Stufe werden Nachrichten so lange versendet, bis Clienten die das jeweilige Topic abboniert haben eine Empfangsbestätigung senden.
-Es wird jedoch nicht sichergestellt, ob die Nachricht nicht mehrmals versand wurde.
-\\
-Dies wird in der dritten Stufe, exactly once, sichergestellt. 
-Nachrichten werden nur so lange gesendet bis die Übertragung einmal bestätigt wurde.
+
+
+\section*{API}
+Gelöst werden sollen die Aufgaben durch das Aufrufen der API.
+Diese bietet die benötigten Funktionen an.
+Die Aufrufe sind frei miteinander kombinierbar, so dass Aufgaben erweitert werden können.
+
+\subsection*{Eingaben}
+
+\textbf{Auslesen der accelerometer-Daten}\\
+Ein User will den Wert der X, Y und Z Koordinaten des Smartphones wissen.
+So kann er bspw. feststellen, ob das Smartphone gerade nach unten, oben oder horizontal bewegt wurde.
+Kippbewegungen werden nicht detektiert.
+\lstinputlisting[]{listings/api/acc.c}
+
+\textbf{Lautstärkepegelmessung}\\
+Ein User möchte den aktuellen Lautstärkepegel messen.
+\lstinputlisting{listings/api/vol.c}
+
+\textbf{Annäherungssensor-Messung}\\
+Ein User möchte wissen, ob ein Objekt unmittelbar vor den Annäherungssensor steht.
+Der Aufruf erfolgt folgendermaßen.
+\lstinputlisting{listings/api/proxy.c}
+
+\subsection*{Ausgaben}
+
+\textbf{Display-Ausgabe}\\
+Um auf dem Smartphone einen beliebigen Text anzuzeigen.
+Dies kann er zum Beispiel wie im folgenden Beispielcode machen.
+\lstinputlisting[]{listings/api/display.c}
+
+\textbf{LED leuchten lassen}\\
+Ein User möchte eine "LED" auf dem Display ansteuern.
+Dies kann er so machen.
+\lstinputlisting[]{listings/api/led.c}
+
+\textbf{Vibrationsauslöser}\\
+Ein Nutzer möchte das Smartphone auf Anfrage virbrieren lassen.
+Der Aufruf einer Methode lässt das Smartphone einmal vibrieren.
+\lstinputlisting[]{listings/api/vib.c}
+
+\textbf{Audio-Ausgabe}\\
+Ein Nutzer möchte den Pfad zu einer Audio-Datei angeben und
+\lstinputlisting[]{listings/api/vib.c}
+
+
+
+
+\chapter{Einführung} \label{chap:einfuehrung}
+% Das Smartphone soll für das Austauschen von Daten verwendet werden.
+% Hier wird klar unterschieden in Anfragen die eine Benutzerinteraktion verlangen und welche, die passiv Daten auslesen.
+% Die Übertragung wird nach dem Request-Response-Prizip realisiert.
+% Das Framework besteht aus drei großen Teilen:
+% \begin{enumerate}
+%   \item Einer Anwendung auf einem Android-Smartphone
+%   \item Einer Middleware auf dem PC oder Laptop des Anwenders
+%   \item Einer Bibliothek in Java, C++ und Python ebenfalls auf PC oder Laptops des Anwenders
+% \end{enumerate}
+% \begin{figure}[htbp]
+%   \centering
+%   \includegraphics[width=.9\textwidth]{images/design.png}
+%   \caption{Framework-Ablauf}
+%   \label{fig:Ablauf}
+% \end{figure}
+% Auf die Funktionsweise und den Ablauf wird im folgenden genauer eingegangen.
+
+% \section*{Bibliothek und API}
+% Zur Ansteuerung des Smartphones werden vier Softwarebibliotheken jeweils in den Programmiersprachen Python, C++, C und Java zur Anbindung realisiert.
+% Die Bibliotheken in den den Programmiersprachen C++, Java und Python dienen zur Erstellung von Smartphone-Objekten über die Methodenaufrufe realisiert werden können.
+% Die Bibliothek in C ist prozedural realisiert und bietet den Aufruf von globalen Methoden ohne Objektbindung.
+% \\
+% Die Afrufe sind logisch in zwei Kategorien geordnet: Dem Aufruf zur Übermittlung von Sensordaten und dem Aufruf zum Starten von Activites zwecks einer Nutzerbedienung mit anschließendem Rückübermitteln der Nutzerauswahl.
+% \\
+% Die Anfragen werden in der jeweiligen Programmiersprache angestoßen und werden im weiteren Verlauf von der Middleware über das UDP-Protokoll auf dem gleichen PC entgegengenommen.
+% \section*{Middleware}
+% Die Middleware dient als Vermittlungsschicht zweichen Bibliothek und Smartphone.
+% Sie nimmt per UDP Methodenaufrufe entgegen und sendet diese als Nachricht für das Smartphone weiter.
+% Die Nachricht wird dabei über einen MQTT-Server übertragen.
+
+% \subsection*{MQTT}
+% Die Nachrichten werden von der Middleware per MQTT übertragen.
+% MQTT beziehungsweise Message Queuing Telemetry Transport, ist ein Netzwerkprotokoll.
+% Es dient der Übertragung von Messdaten.
+% Sensor-Geräte senden dabei Nachrichten an einen Broker in ein Topic.
+% Ein Broker ist eine MQTT-Serverkomponente die Nachrichten annimt.
+% Broker verwalten die gesendeten Daten hierarchisch in Themenberereichen, den Topics.
+% Andere Geräte können am Broker Topics abbonieren (subscribe).
+% Publiziert nun der Sensor-Client einen neuen Messwert auf einem Topic das ein Empfänger abboniert hat wird ihm die Nachricht zugestellt.
+% \\
+% Die Nachrichten werden dabei mit einem Quality of Service-Flag übertragen.
+% Dies beschreibt die Sicherungsgarantie mit der eine Nachricht übermittelt wird.
+% Sie ist aufgeteilt in drei Stufen
+% \begin{enumerate}
+%   \item at most once
+%   \item at least once
+%   \item exactly once
+% \end{enumerate}
+% In der ersten Stufe werden Nachrichten zwar übermittelt, jedoch kann es vorkommen, dass bei Verbindungsabbrüchen Nachrichten nicht weitergeleitet werden.
+% \\
+% In der zweiten Stufe werden Nachrichten so lange versendet, bis Clienten die das jeweilige Topic abboniert haben eine Empfangsbestätigung senden.
+% Es wird jedoch nicht sichergestellt, ob die Nachricht nicht mehrmals versand wurde.
+% \\
+% Dies wird in der dritten Stufe, exactly once, sichergestellt. 
+% Nachrichten werden nur so lange gesendet bis die Übertragung einmal bestätigt wurde.
 
 \subsection*{Nachrichtenformate}
 Die Nachrichten werden im JSON-Format übertragen.
-JSON (JavaScript Object Notation) ist ein Datenformat mit dem Daten in Textform kommuniziert werden können.
-Die Notation besteht aus Schlüssel-Werte-Paaren denen ein Semantik zugerordnet ist.
 Für die Anwendung steht folgender Ausschnitt beispielsweise für das Starten einer bestimmten Activity.
 \begin{lstlisting}
   {
@@ -122,25 +205,14 @@ Für die Anwendung steht folgender Ausschnitt beispielsweise für das Starten ei
     "arguments" : []
   }
 \end{lstlisting}
-Das Feld issue\_id bennent eine aktuelles Thema, eine aktuelle Session.
-Eine Session besteht aus Anfragen (requests) und Antworten (responses).
-Sessions haben eine eindeutige Nummerierung zur Identifizierung, die issue\_id.
-\\
 Das Type-Feld beschreibt, ob es sich bei der Nachricht um ein request oder um eine response handelt.
 Dieses Feld kann die folgenden Werte annehmen:
 \begin{itemize}
-  \item sensor\_request
-  \item sensor\_request\_burst
   \item activity\_request
-  \item sensor\_response
   \item activity\_response
 \end{itemize}
-Bei einem sensor\_request handelt es sich um die Eien Abfrage einer Übermittlung eines einzelnen Sensorwertes.
-Ähnlich dazu verhält sich das Burst-Request, dass für einen angegebenen Zeitraum Werte übermittelt.
-\\
 Ein Activity-Request fordert das Starten einer Activity mit der der Nutzer interargieren muss.
 Je nach Request-Art werden entweder Sensor-Responses oder Activity-Responses zurückgesendet.
-Die Antwort auf Burst-Anfragen erfolgt mit einzelnen sensor\_responses.
 
 
 \section*{Android Anwendung}
@@ -165,56 +237,7 @@ Falls ein Sensor angefragt wird der auf dem Smartphone nicht existiert wird eine
   \label{fig:android_app}
 \end{figure}
 
-\chapter{Entwicklung} \label{chap:Entwicklung}
-\section*{Anwendungsfälle}
-In diesem Kapitel werden die konkreten Anwendungsfälle der Software beschrieben.
-\subsection*{Sensorauslesung}
-Diese Anwendungsfälle betreffen das Übertragen von Sensor-Rohdaten.
 
-\subsection*{Benutzereingaben}
-Diese Anwendungsfälle starten eine Activity in der Androidanwendung die eine Nutzerinteraktion zum Fortfahren fordert.
-\subsubsection*{Boolean-Switcher}
-Ein Nutzer möchte ein Objekt vom Datentyp boolean auf sein Smartphone übertragen, dort negieren und anschließend wieder zurücksenden.
-In der Anwendung wird dafür ein Schalter dargestellt den er von an auf aus und umgekehrt stellen kann.
-Mit einem Klick auf einen ok-button wird der Zustand übertragen.
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.9\textwidth]{images/bool_switch.png}
-  \caption{Zeichnung-Boolean-Switcher}
-  \label{fig:bool_switch}
-\end{figure}
-
-\subsubsection*{String-Manipulation}
-Ein Nutzer möchte einen String an das Smartphone übertragen.
-Dort soll dieser String verändert und zurückgeschickt werden können.
-Dafür erscheint ein Eingabefeld und ein OK-Button zur Übertragung.
-Im Eingabefeld steht der alte Wert des Strings.
-Die Änderung soll unmittelbar nach der Übertragung sichtbar werden.
-
-\subsubsection*{Vibrationsalarm}
-Ein Nutzer möchte das Smartphone auf Anfrage virbrieren lassen.
-Der Aufruf einer Methode lässt das Smartphone einmal vibrieren.
-
-\subsubsection*{Annäherungssperre}
-Ein Nutzer möchte dass ein Programm so lange wartet bis sich etwas seinem Smartphone annähert.
-Erst danach soll es weiterlaufen.
-
-
-\subsection*{Sonstige}
-\subsubsection*{Klatsch-Zähler}
-Der Anwender möchte wissen wie oft in einem bestimmten Zeitraum geklatscht wurde.
-Ein Methodenaufruf startet in der Androidanwendung eine Activity, die innerhalb des im Argument genannten Zeitraums die Anzahl der maximalen Lautstärkeamplituden des Mikrophons misst und die Anzahl zurückgibt.
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.9\textwidth]{images/count_claps.png}
-  \caption{Klatsch-Zähler}
-  \label{fig:clap_count}
-\end{figure}
-
-\subsubsection*{Dreh-Zähler}
-Ein Nutzer möchte in einem bestimmten Zeitraum zählen wie oft das Smartphone gedreht wurde.
-
-\section*{Softwarelösungen}
 
 
 
