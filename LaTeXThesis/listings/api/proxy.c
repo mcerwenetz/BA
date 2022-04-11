@@ -1,2 +1,2 @@
 Phone p;
-boolean res = p.proximity_triggered();
+bool triggered = p.primity_triggerd();
