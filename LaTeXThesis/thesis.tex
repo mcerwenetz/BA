@@ -57,10 +57,20 @@ Moderne Smartphones bieten hier Abhilfe da Sie meistens mit verschiedenen Sensor
 Viele Kinder besitzen bereits mit 10 Jahren \cite{bitkom_smartphones} ein Smartphone. 
 \\
 Im Rahmen dieser Arbeit soll ein Framework entwickelt werden, dass das Smartphone von Anwendern einbindet um Sie beim Programmierenlernen zu unterstützen.
+Dieses orientiert sich ganz an bereits bestehenden System wie Arduino und Microbit.
+Kleine Interaktionsmöglichkeiten werden geschaffen.
 
 Benötigt werden dafür eine Library zum Einbinden, eine Python-Anwendung und eine mobile Anwendung für Android Smartphones.
 
-
+\subsection*{Anwendung}
+Die Anwendung besteht aus einem Textfeld, einer Ausgabe-LED, einer Signal LED für Nutzereingaben und zwei Buttons.
+Auf dem Textfeld können verschiedene Ausgaben präsentiert werden.
+Die Ausgbale LED kann vom Computer aus an und ausgeschaltet werden.
+Die Signal-LED dient dazu dem Nutzer zu signalisieren, ob sich das Smartphone gerade in einem Aufnahmeprozess befindet.
+Die Buttons werden verwendet um auf dem PC Steuerbefehle auszuführen.
+\\
+Neben den Ein- und Ausgabemöglichkeiten im UI-Screen kann zur Eingabe auch noch das Microphon und das accelerometer genutzt werden, sofern vorhanden.
+Als Ausgabemöglichkeiten kommen der Vibrationsmotor sowie der Lautsprecher des Smartphones zum Einsatz.
 
 \chapter{Experimente/Aufgaben} \label{chap:Experimente}
 
@@ -161,7 +171,24 @@ Ein Nutzer möchte den Pfad zu einer Audio-Datei angeben und
 
 
 
-\chapter{Architektur} \label{chap:einfuehrung}
+\chapter{Architektur} \label{chap:architektur}
+Der Aufbau des Frameworks besteht aus einer mobilen Anwendung für Android-Smartphones, Bibliothek in der Programmiersprache C und einer Middleware die den Austausch Koordiniert.
+\\
+Clientseitig erfolgen sämtliche Aufrufe die Sensordaten abgreifen oder Steueranfragen senden immer erst per UDP über die Middleware.
+\\
+Die Middleware sammelt, sobald sich eine Android-Anwendung bei ihr anmeldet, gewisse Sensordaten und speichert Sie intern zwischen, damit Sie schnell vorrätig vorliegen.
+Die Speicherung erfolgt in einem seperaten Thread, der die letzten Zustände der Sensordaten hält.
+Werden Sensordaten abgerufen werden Sie aus der Liste entfernt.
+Sollten mehr als 5 Sensorwerte vorliegen werden die ältesten entfernt um die Ergebnisse aktuell zu halten.
+\\
+Steueraufrufe werden beim Aufruf über ein seperates Topic versand.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.9\textwidth]{images/design.png}
+  \caption{Android-App-Aufbau}
+  \label{fig:design}
+\end{figure}
+
 
 \section*{Android Anwendung}
 Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
