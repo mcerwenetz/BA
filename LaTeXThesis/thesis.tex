@@ -180,8 +180,13 @@ Die Middleware sammelt, sobald sich eine Android-Anwendung bei ihr anmeldet, gew
 Die Speicherung erfolgt in einem seperaten Thread, der die letzten Zustände der Sensordaten hält.
 Werden Sensordaten abgerufen werden Sie aus der Liste entfernt.
 Sollten mehr als 5 Sensorwerte vorliegen werden die ältesten entfernt um die Ergebnisse aktuell zu halten.
+Sind noch keine Daten vorhanden, oder wird ein Sensor angefragt der im Smartphone nicht existent ist, wird ein Fehlercode zwischengespeichert.
+Die Verfügbarkeit der jeweiligen Sensoren wird beim Start der Anwendung ermittelt.
 \\
-Steueraufrufe werden beim Aufruf über ein seperates Topic versand.
+Steueraufrufe werden beim Aufruf über ein seperates Topic versandt.
+Der Austausch erfolgt auf mehreren Topics, da manche Nachrichten, wie Steuerbefehle wie in \ref{subsec:Ausgaben} erwähnt, mit einem höheren QOS-Level versendet werden müssen als im Moment existente Sensordaten die nur eine kurzzeitige Relevanz besitzen und deren Zustellung nicht obligatorisch ist.
+Auf diesem Topic werden Nachrichten mit der QOS von 2 versandt auf dem für reguläre Sensordaten mit einer QOS von 0.
+% Todo: admin channel? Erster Aufbau auf admin channel mit anschließender negotiation auf welchen channeln gesendet werden soll. Wie hart aufziehen?
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.9\textwidth]{images/design.png}
@@ -196,16 +201,12 @@ Sie besteht aus einer Haupt-Activity deren außerlicher Aufbau in \ref{chap:intr
 \\
 In der Haupt-Activity wird ein Service gestartet und gebunden.
 Der Service baut eine Verbindung zu einem MQTT Server auf.
-Dort verbindet er sich auf zwei Topics: Einem Sensortopic auf dem mit einer einem QOS-Level 0 alle Sensordaten dauerhauft ausgetauscht werden, die vom Smartphone aus unterstützt werden.
-Das andere Topic dient zum Aufruf von Steuerbefehlen wie den in \ref{subsec:Ausgaben} erwähnten Funktionsaufrufen, welche mit einem QOS-Level von 2 versendet werden müssen, damit sie unter Garantie ausgeführt werden.
-% Todo: admin channel? Erster Aufbau auf admin channel mit anschließender negotiation auf welchen channeln gesendet werden soll. Wie hart aufziehen?
+Dort verbindet er sich den beiden Topics. 
 Die Activity bindet beim Start den MQTT-Service ein.
-Stellt ein Client über die Bibliothek eine Anfrage wird dieser Aufruf wie z.B. eine Ausgabe auf einem Textfeld an das Smartphone wird diese Anfrage zuerst zur Middleware geleitet.
+Stellt ein Client über die Bibliothek auf einem Computer eine Anfrage wird dieser Aufruf, wie z.B. eine Ausgabe auf einem Textfeld an das Smartphones,  zuerst zur Middleware geleitet.
 Diese leitet die Anfrage weiter an das Smartphone, dass dann den jeweiligen Befehl ausführt.
 Dies beeinhaltet vor allem Ausgaben, sowie Eingaben die eine Nutzerinteraktion mit reduziertem Ergebnis.
 Zum Beispiel alle Eingaben die etwas in einem angegebenen Zeitraum messen.
-Alle anderen Sensordaten werden dauerhaft an die Middleware übertragen.
-Die Verfügbarkeit der jeweiligen Sensoren wird beim Start der Anwendung ermittelt.
 Falls ein Sensor angefragt wird der auf dem Smartphone nicht existiert wird eine Nachricht mit einer Fehlermeldung zurückgegeben.
 \begin{figure}[htbp]
   \centering
