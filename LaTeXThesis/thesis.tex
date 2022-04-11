@@ -163,27 +163,6 @@ Ein Nutzer möchte den Pfad zu einer Audio-Datei angeben und
 
 \chapter{Architektur} \label{chap:einfuehrung}
 
-\subsection*{Nachrichtenformate}
-Die Nachrichten werden im JSON-Format übertragen.
-Für die Anwendung steht folgender Ausschnitt beispielsweise für das Starten einer bestimmten Activity.
-\begin{lstlisting}
-  {
-    "issue_id" : 0,
-    "type" : activity_request,
-    "value" : "boolean_activity",
-    "arguments" : []
-  }
-\end{lstlisting}
-Das Type-Feld beschreibt, ob es sich bei der Nachricht um ein request oder um eine response handelt.
-Dieses Feld kann die folgenden Werte annehmen:
-\begin{itemize}
-  \item activity\_request
-  \item activity\_response
-\end{itemize}
-Ein Activity-Request fordert das Starten einer Activity mit der der Nutzer interargieren muss.
-Je nach Request-Art werden entweder Sensor-Responses oder Activity-Responses zurückgesendet.
-
-
 \section*{Android Anwendung}
 Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
 Sie besteht aus einer Haupt-Activity deren außerlicher Aufbau in \ref{chap:intro} beschrieben ist. 
@@ -208,6 +187,13 @@ Falls ein Sensor angefragt wird der auf dem Smartphone nicht existiert wird eine
   \label{fig:android_app}
 \end{figure}
 
+
+\section*{Nachrichtenformate}
+Die Nachrichten werden im JSON-Format übertragen.
+Nachfolgendes Listing zeigt beispielsweise den Aufruf die LED einzusschalten.
+\lstinputlisting[]{listings/messages/led.json}
+Folgende Nachricht beschreibt beispielsweise den übermittelten Sensorwert des accelerometers.
+\lstinputlisting{listings/messages/accell.json}
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
 % Meist ist das aber unnötig.
