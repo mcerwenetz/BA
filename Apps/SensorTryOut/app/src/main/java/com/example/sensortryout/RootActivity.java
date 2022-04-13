@@ -19,23 +19,21 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RootActivity extends Activity implements SensorEventListener {
 
+    final static String TAG = RootActivity.class.getCanonicalName();
     private TriggerEventListener tel;
     private MQTTService mqttService;
     private boolean mqttServiceBound;
     private Button btn;
-    final static String TAG = RootActivity.class.getCanonicalName();
     private SensorManager sm;
     private Sensor acc;
-
-
-
-
-
+    private AtomicBoolean keepSending = new AtomicBoolean(false);
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -44,13 +42,14 @@ public class RootActivity extends Activity implements SensorEventListener {
             tel = new TriggerEventListener() {
                 @Override
                 public void onTrigger(TriggerEvent triggerEvent) {
-                    Log.v("TEL","Motion detected");
+                    Log.v("TEL", "Motion detected");
                 }
             };
             sm.requestTriggerSensor(tel, acc);
 
             mqttService.setKeepSending(keepSending);
         }
+
         @Override
         public void onServiceDisconnected(ComponentName name) {
             // unintentionally disconnected
@@ -58,7 +57,6 @@ public class RootActivity extends Activity implements SensorEventListener {
             unbindMQTTService(); // cleanup
         }
     };
-    private AtomicBoolean keepSending = new AtomicBoolean(false);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,7 +69,7 @@ public class RootActivity extends Activity implements SensorEventListener {
         sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        List<Sensor> sensorList = sm.getSensorList(Sensor.TYPE_ALL);
         acc = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sm.registerListener(this, acc, SensorManager.SENSOR_DELAY_NORMAL);
+        sm.registerListener(this, acc, SensorManager.SENSOR_DELAY_GAME);
 
     }
 
@@ -81,6 +79,7 @@ public class RootActivity extends Activity implements SensorEventListener {
         onStartService();
         bindMQTTService();
     }
+
     protected void onPause() {
         Log.v(TAG, "onPause");
         super.onPause();
@@ -115,10 +114,11 @@ public class RootActivity extends Activity implements SensorEventListener {
         startService(intent); // to stop
     }
 
+    ;
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Runnable r = () ->{
+        Runnable r = () -> {
             float[] linear_acceleration = {0.0F, 0.0F, 0.0F};
             float[] gravity = {0.0F, 0.0F, 0.0F};
 
@@ -133,14 +133,27 @@ public class RootActivity extends Activity implements SensorEventListener {
             linear_acceleration[0] = event.values[0] - gravity[0];
             linear_acceleration[1] = event.values[1] - gravity[1];
             linear_acceleration[2] = event.values[2] - gravity[2];
-            if(mqttService!=null && keepSending.get()){
-                String log =
-                        String.valueOf(linear_acceleration[0]) + " " +
-                                String.valueOf(linear_acceleration[1]) + " " +
-                                String.valueOf(linear_acceleration[2]);
-                mqttService.send(log);
-                Log.v(TAG,log);
+
+            JSONObject[] jos = new JSONObject[3];
+            try {
+                jos[0]=RequestJsonAdapter.get_update_request("accell_x", String.valueOf(linear_acceleration[0]));
+                jos[1]=RequestJsonAdapter.get_update_request("accell_y", String.valueOf(linear_acceleration[0]));
+                jos[2]=RequestJsonAdapter.get_update_request("accell_z", String.valueOf(linear_acceleration[0]));
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+            for(JSONObject jo : jos){
+                mqttService.send(jo);
+            }
+            //            for (float la : linear_acceleration) {
+//                JSONObject jo = null;
+//                try {
+//                    jo = RequestJsonAdapter.get_update_request("accell_x", String.valueOf(la));
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                mqttService.send(jo);
+//            }
         };
         Thread t = new Thread(r);
         t.start();
