@@ -2,15 +2,16 @@ import queue
 import socket
 import threading
 import json
+from time import sleep
 import paho.mqtt.client as mqtt
 
 
 class SensorDB():
     def __init__(self) -> None:
         self.sensor_vals = {
-            "accel_x":0,
-            "accell_y":0,
-            "accell_z":0
+            "accell_x":"0",
+            "accell_y":"0",
+            "accell_z":"0"
         }
 
         self.lock = threading.Lock()
@@ -38,7 +39,7 @@ class DataHandler():
         self.UDP_IP="127.0.0.1"
         self.UDP_LISTENER_PORT = 5006
         self.UDP_SENDER_PORT = 5005
-        self.stop_handler = threading.Event()
+        self.stop_handler_event = threading.Event()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 
         threading.Thread(target=self.requests_queue_worker).start()
@@ -46,26 +47,39 @@ class DataHandler():
         threading.Thread(target=self.request_handler).start()
 
 
+    def stop_handler(self):
+        self.stop_handler_event.set()
+
+
     def requests_queue_worker(self):
         "handles mqtt and udp requests and puts it in a general request queue"
-        self.sock.bind(self.UDP_IP, self.UDP_LISTENER_PORT)
-        while not self.stop_handler.is_set():
-            data = self.sock.recvfrom(1024)
-            data_str = str(data.decode("UTF-8"))
+        # self.sock.bind(self.UDP_IP, self.UDP_LISTENER_PORT)
+        self.sock.bind((self.UDP_IP, self.UDP_LISTENER_PORT))
+
+        while not self.stop_handler_event.is_set():
+            try:
+                data = self.sock.recvfrom(1024)
+            except KeyboardInterrupt:
+                exit()
+            data_str = str(data[0].decode("UTF-8"))
             self.request_queue.put(data_str)
 
     def answer_queue_worker(self):
         "sends back answers from the answer queue if there are any"
-        while not self.stop_handler.is_set():
-            res = str(self.answer_queue.get())
+        while not self.stop_handler_event.is_set():
+            try:
+                res = str(self.answer_queue.get())
+            except KeyboardInterrupt:
+                exit()
             self.sock.sendto(bytes(res, 'UTF-8'),
                 (self.UDP_IP, self.UDP_SENDER_PORT))
 
     def request_handler(self):
         """decides weather to get answer for request from database and put it in answer queue
         or to put request in mqtt message answer queue"""
-        while not self.stop_handler.is_set():
-            request = json.loads(self.request_queue.get())
+        while not self.stop_handler_event.is_set():
+            request = self.request_queue.get()
+            request = json.loads(request)
             if request["type"] == "rpc":
                 self.mqtt_sender_queue.put(request)
             elif request["type"] == "update_request":
@@ -79,6 +93,14 @@ class DataHandler():
                 self.answer_queue.put(result)
             elif request["type"] == "rpc_response":
                 self.answer_queue.put(request["value"])
+
+    # def request_handler(self):
+    #     while not self.stop_handler_event.is_set():
+    #         try:
+    #             message = self.request_queue.get()
+    #         except KeyboardInterrupt:
+    #             exit()
+    #         self.answer_queue.put(message)
 
 
 class MqttHandlerThread(threading.Thread):
@@ -113,8 +135,11 @@ class MqttHandlerThread(threading.Thread):
 
 
 def main():
-    pass
+    answer_queue = queue.Queue()
+    request_queue = queue.Queue()
+    mqtt_queue = queue.Queue()
 
+    DataHandler(request_queue, answer_queue, mqtt_queue)
 
 if __name__ == '__main__':
     main()
