@@ -1,12 +1,14 @@
+"Middleware holding DataStructure, reacting to Requests via udp or mqtt"
+
 import queue
 import socket
 import threading
 import json
-from time import sleep
 import paho.mqtt.client as mqtt
 
 
 class SensorDB():
+    "data structure to hold sensor_data"
     def __init__(self) -> None:
         self.sensor_vals = {
             "accell_x":"0",
@@ -28,7 +30,7 @@ class SensorDB():
 
 
 class DataHandler():
-   
+    "holds worker and handler threads"
     def __init__(self, req_queue, answer_queue, mqtt_sender_queue):
         #request queue get's shared between mqqt handler thread and Request_queue_worker
         self.request_queue = req_queue
@@ -36,9 +38,9 @@ class DataHandler():
         self.mqtt_sender_queue=mqtt_sender_queue
         # Todo: Create Data Structure with all relevant sensor-data. Can be class too.
         self.data_structure = SensorDB()
-        self.UDP_IP="127.0.0.1"
-        self.UDP_LISTENER_PORT = 5006
-        self.UDP_SENDER_PORT = 5005
+        self.udp_ip="127.0.0.1"
+        self.udp_listener_port = 5006
+        self.udp_sender_port = 5005
         self.stop_handler_event = threading.Event()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 
@@ -48,13 +50,14 @@ class DataHandler():
 
 
     def stop_handler(self):
+        "stop all handler and worker threads"
         self.stop_handler_event.set()
 
 
     def requests_queue_worker(self):
         "handles mqtt and udp requests and puts it in a general request queue"
         # self.sock.bind(self.UDP_IP, self.UDP_LISTENER_PORT)
-        self.sock.bind((self.UDP_IP, self.UDP_LISTENER_PORT))
+        self.sock.bind((self.udp_ip, self.udp_listener_port))
 
         while not self.stop_handler_event.is_set():
             try:
@@ -72,7 +75,7 @@ class DataHandler():
             except KeyboardInterrupt:
                 exit()
             self.sock.sendto(bytes(res, 'UTF-8'),
-                (self.UDP_IP, self.UDP_SENDER_PORT))
+                (self.udp_ip, self.udp_sender_port))
 
     def request_handler(self):
         """decides weather to get answer for request from database and put it in answer queue
@@ -104,6 +107,7 @@ class DataHandler():
 
 
 class MqttHandlerThread(threading.Thread):
+    "Reacts on mqtt messages, puts them in request queue which isshared with handler thread"
 
     def __init__(self, topic, sender_queue : queue.Queue, receiver_queue):
         super().__init__()
@@ -120,6 +124,7 @@ class MqttHandlerThread(threading.Thread):
             self.receiver_queue.put(message.payload.decode("utf-8"))
 
     def stop(self):
+        "stop mqtt listener"
         self.stop_mqtt.set()
 
     def run(self):
@@ -135,6 +140,7 @@ class MqttHandlerThread(threading.Thread):
 
 
 def main():
+    "main"
     answer_queue = queue.Queue()
     request_queue = queue.Queue()
     mqtt_queue = queue.Queue()
