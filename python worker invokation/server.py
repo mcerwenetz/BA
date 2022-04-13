@@ -1,7 +1,10 @@
 "Middleware holding DataStructure, reacting to Requests via udp or mqtt"
 
+import logging
+from pydoc_data.topics import topics
 import queue
 import socket
+from sys import stdout
 import threading
 import json
 import paho.mqtt.client as mqtt
@@ -43,6 +46,11 @@ class DataHandler():
         self.udp_sender_port = 5005
         self.stop_handler_event = threading.Event()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+        self.sock.settimeout(1)
+        self.logger = logging.getLogger("DataHandler")
+        self.logger.setLevel(logging.INFO)
+        stdout_handler = logging.StreamHandler(stdout)
+        self.logger.addHandler(stdout_handler)
 
         threading.Thread(target=self.requests_queue_worker).start()
         threading.Thread(target=self.answer_queue_worker).start()
@@ -62,8 +70,8 @@ class DataHandler():
         while not self.stop_handler_event.is_set():
             try:
                 data = self.sock.recvfrom(1024)
-            except KeyboardInterrupt:
-                exit()
+            except socket.timeout:
+                continue
             data_str = str(data[0].decode("UTF-8"))
             self.request_queue.put(data_str)
 
@@ -71,9 +79,10 @@ class DataHandler():
         "sends back answers from the answer queue if there are any"
         while not self.stop_handler_event.is_set():
             try:
-                res = str(self.answer_queue.get())
-            except KeyboardInterrupt:
-                exit()
+                res = self.answer_queue.get(timeout=1)
+                res = str(res)
+            except queue.Empty:
+                continue
             self.sock.sendto(bytes(res, 'UTF-8'),
                 (self.udp_ip, self.udp_sender_port))
 
@@ -81,7 +90,11 @@ class DataHandler():
         """decides weather to get answer for request from database and put it in answer queue
         or to put request in mqtt message answer queue"""
         while not self.stop_handler_event.is_set():
-            request = self.request_queue.get()
+            try:
+                request = self.request_queue.get(timeout=1)
+            except queue.Empty:
+                continue
+            self.logger.info("Handler_thread: got request %s" % request)
             request = json.loads(request)
             if request["type"] == "rpc":
                 self.mqtt_sender_queue.put(request)
@@ -116,11 +129,17 @@ class MqttHandlerThread(threading.Thread):
         #queue get's shared with handler
         self.receiver_queue=receiver_queue
         self.stop_mqtt = threading.Event()
+        self.logger = logging.getLogger(self.name)
+        self.logger.setLevel(logging.INFO)
+        stdout_handler = logging.StreamHandler(stdout)
+        self.logger.addHandler(stdout_handler)
 
-    def on_message(self, message):
+
+    def on_message(self, client, userdata, message):
         "is called on every new mqtt message"
         msg = json.loads(message.payload.decode("utf-8"))
         if msg["type"] == "update_request" or msg["type"] == "rpc_response" :
+            self.logger.info("putting up request %s" % str(msg))
             self.receiver_queue.put(message.payload.decode("utf-8"))
 
     def stop(self):
@@ -131,11 +150,17 @@ class MqttHandlerThread(threading.Thread):
         client = mqtt.Client("c1")
         client.on_message = self.on_message
         client.connect("test.mosquitto.org")
+        self.logger.info("connected to server")
         client.subscribe(self.topic)
+        self.logger.info("subscribed to topic %s" % self.topic)
         client.loop_start()
-        while not self.stop_mqtt.is_set() and self.sender_queue.qsize() > 0:
-            client.publish(self.sender_queue.get())
-        client.loop_stop()
+        while not self.stop_mqtt.is_set():
+            try:
+                request = self.sender_queue.get(timeout=1)
+            except queue.Empty:
+                continue
+            client.publish(request)
+        # client.loop_stop()
 
 
 
@@ -143,9 +168,12 @@ def main():
     "main"
     answer_queue = queue.Queue()
     request_queue = queue.Queue()
-    mqtt_queue = queue.Queue()
+    mqtt_sender_queue = queue.Queue()
 
-    DataHandler(request_queue, answer_queue, mqtt_queue)
+    MqttHandlerThread("mariuscerwenetz", mqtt_sender_queue, request_queue).start()
+
+    DataHandler(request_queue, answer_queue, mqtt_sender_queue)
+
 
 if __name__ == '__main__':
     main()
