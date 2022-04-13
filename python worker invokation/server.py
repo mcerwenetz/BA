@@ -1,13 +1,13 @@
 "Middleware holding DataStructure, reacting to Requests via udp or mqtt"
 
 import logging
-from pydoc_data.topics import topics
 import queue
 import socket
 from sys import stdout
 import threading
 import json
 import paho.mqtt.client as mqtt
+import request_json_adapter as ra
 
 
 class SensorDB():
@@ -106,7 +106,8 @@ class DataHandler():
             elif request["type"] == "sensor_request":
                 sensor_key = request["sensor_type"]
                 result = self.data_structure.get(sensor_key)
-                self.answer_queue.put(result)
+                response = ra.RequestJsonAdapter.get_sensor_response(sensor_key, result)
+                self.answer_queue.put(response)
             elif request["type"] == "rpc_response":
                 self.answer_queue.put(request["value"])
 

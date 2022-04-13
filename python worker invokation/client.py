@@ -1,38 +1,13 @@
 "Client Test simulates C-Library"
 
-from msvcrt import locking
 import threading
 import socket
 import queue
-import json
 import logging
 from time import sleep
-# import random
+import request_json_adapter as ra
 
 
-class RequestJsonAdapter():
-    """This Class provides static methods to convert function calls to json"""
-    def __init__(self) -> None:
-        pass
-
-    @staticmethod
-    def get_update_request(sensor_type,value):
-        "update a sensor value"
-        res ={
-            "type":"update_request",
-            "sensor_type":str(sensor_type),
-            "sensor_value":str(value)
-        }
-        return json.dumps(res)
-
-    @staticmethod
-    def get_sensor_request(sensor_type):
-        "get the value of a sensor"
-        res = {
-            "type":"sensor_request",
-            "sensor_type": str(sensor_type)
-        }
-        return json.dumps(res)
 
 
 class Client():
@@ -64,10 +39,12 @@ class Client():
             # elif(command.startswith("accell_get")):
             #     request = RequestJsonAdapter.get_sensor_request("accell_x")
             # self.sender_queue.put(request_1)
-            request_2 = RequestJsonAdapter.get_sensor_request(sensor_type="accell_x")
-            self.logger.info("sensor_request is %s}" % request_2)
-            self.sender_queue.put(request_2)
-            sleep(1)
+            # sensorlist = ["accell_x", "accell_y", "accell_z"]
+            sensorlist = ["accell_x"]
+            for sensor in sensorlist:
+                request = ra.RequestJsonAdapter.get_sensor_request(sensor_type=sensor)
+                self.sender_queue.put(request)
+            # sleep(0.1)
 
 
     def stop(self):
