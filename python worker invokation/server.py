@@ -111,7 +111,10 @@ class MqttHandlerThread(threading.Thread):
 
     def __init__(self, topic, sender_queue : queue.Queue, receiver_queue):
         super().__init__()
-        self.topic=topic
+        self.HOSTNAME = "pma.inftech.hs-mannheim.de"
+        self.TOPIC=topic
+        self.USERNAME = "22thesis01"
+        self.PASSWORD = "n4xdnp36"
         self.sender_queue=sender_queue
         #queue get's shared with handler
         self.receiver_queue=receiver_queue
@@ -130,8 +133,9 @@ class MqttHandlerThread(threading.Thread):
     def run(self):
         client = mqtt.Client("c1")
         client.on_message = self.on_message
-        client.connect("test.mosquitto.org")
-        client.subscribe(self.topic)
+        client.username_pw_set(self.USERNAME, self.PASSWORD)
+        client.connect(self.HOSTNAME)
+        client.subscribe(self.TOPIC)
         client.loop_start()
         while not self.stop_mqtt.is_set() and self.sender_queue.qsize() > 0:
             client.publish(self.sender_queue.get())
