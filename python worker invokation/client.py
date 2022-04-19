@@ -36,7 +36,7 @@ class Client():
     "client class holding workerthreads"
 
     def __init__(self) -> None:
-        self.keep_running = threading.Event()
+        self.stop_client = threading.Event()
         self.udp_ip="127.0.0.1"
         self.udp_sender_port = 5006
         self.udp_listener_port = 5005
@@ -48,25 +48,24 @@ class Client():
 
     def start(self):
         "start client"
-        self.keep_running.set()
         self.listener_thread.start()
         self.sender_thread.start()
         while True:
-            val = random.randint(1, 10)
-            request_1 = RequestJsonAdapter.get_update_request(sensor_type="accell_x",
-                 value=str(val))
+            # val = random.randint(1, 10)
+            # request_1 = RequestJsonAdapter.get_update_request(sensor_type="accell_x",
+            #      value=str(val))
             # if(command.startswith("accel_set")):
             #     request = RequestJsonAdapter.get_update_request("accell_x", "10")
             # elif(command.startswith("accell_get")):
             #     request = RequestJsonAdapter.get_sensor_request("accell_x")
-            self.sender_queue.put(request_1)
+            # self.sender_queue.put(request_1)
             request_2 = RequestJsonAdapter.get_sensor_request(sensor_type="accell_x")
             self.sender_queue.put(request_2)
 
 
     def stop(self):
         "stop client"
-        self.keep_running.clear()
+        self.stop_client.set()
         self.listener_thread.join()
         self.sender_thread.join()
 
@@ -74,17 +73,25 @@ class Client():
         "sends all request from queue via udp"
         sock = socket.socket(socket.AF_INET, # Internet
                                 socket.SOCK_DGRAM) # UDP
-        while True:
-            message = sender_queue.get()
+        sock.settimeout(1)
+        while not self.stop_client.is_set():
+            try:
+                message = sender_queue.get(timeout=1)
+            except queue.Empty:
+                continue
             sock.sendto(bytes(message, 'UTF-8'), (self.udp_ip, self.udp_sender_port))
 
     def client_listener_thread(self):
         "get answers via udp, prints answer"
         sock = socket.socket(socket.AF_INET, # Internet
                                 socket.SOCK_DGRAM) # UDP
+        sock.settimeout(1)
         sock.bind((self.udp_ip, self.udp_listener_port))
-        while self.keep_running.is_set():
-            data = sock.recvfrom(1024)
+        while not self.stop_client.is_set():
+            try:
+                data = sock.recvfrom(1024)[0]
+            except socket.timeout:
+                continue
             data_str = str(data.decode("UTF-8"))
             # if data_str.startswith("server"):
                 #data_str = data_str.split(":")[1]
@@ -93,7 +100,10 @@ class Client():
 def main():
     "main"
     client = Client()
-    client.start()
+    try:
+        client.start()
+    except KeyboardInterrupt:
+        client.stop()
 
 if __name__ == '__main__':
     main()
