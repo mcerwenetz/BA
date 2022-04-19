@@ -37,9 +37,7 @@ public class MQTTService extends Service {
             "%s://%s:%d", PROTOCOL, URL, PORT);
     final public static String USER = "20moagm";
     final public static String PASSWORT = "1a748f9e";
-    private static final String TOPIC = "testblabla";
-    public static final String SERVER_STOP = "server:stop";
-    public static final String SERVER_START = "server:start";
+    private static final String TOPIC = "mariuscerwenetz";
 
     private MqttMessaging mqttMessaging;
     private final ArrayList<String> topicList = new ArrayList<>();
@@ -78,8 +76,8 @@ public class MQTTService extends Service {
     };
     private AtomicBoolean keepSending;
 
-    public void send(String shit){
-        mqttMessaging.send(TOPIC, shit);
+    public void send(JSONObject jo){
+        mqttMessaging.send(TOPIC, jo.toString());
     }
 
     @Override
@@ -159,11 +157,11 @@ public class MQTTService extends Service {
 
     //Send and Receive
     final private MqttMessaging.MessageListener messageListener = (topic, stringMsg) -> {
-        if (stringMsg.contains(SERVER_STOP)) {
-            keepSending.set(false);
-        } else if (stringMsg.contains(SERVER_START)) {
-            keepSending.set(true);
-        }
+//        if (stringMsg.contains(SERVER_STOP)) {
+//            keepSending.set(false);
+//        } else if (stringMsg.contains(SERVER_START)) {
+//            keepSending.set(true);
+//        }
     };
 
     //Connect and Disconnect
