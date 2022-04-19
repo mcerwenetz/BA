@@ -4,6 +4,8 @@ import queue
 import socket
 import threading
 import json
+from time import sleep
+from matplotlib.pyplot import contour
 import paho.mqtt.client as mqtt
 
 
@@ -30,20 +32,39 @@ class SensorDB():
 
 
 class DataHandler():
-    "holds worker and handler threads"
-    def __init__(self, req_queue, answer_queue, mqtt_sender_queue):
+    "Container for worker and handler threads"
+    def __init__(self, request_queue : queue.Queue,
+        answer_queue: queue.Queue,
+        mqtt_sender_queue : queue.Queue):
+        """
+        Parameters:
+        -----------
+        request_queue : queue:Queue
+        Stores general requests for data_structure or mqtt_requests.
+        Filled by the requestss_queue_worker thread which listens to
+        udp requests, or by the MqttHandlerThread which listens to
+        mqtt_requests.
+
+        receiver_queue : queue.Queue
+        Stores answers like sensor_requests or rpc_answers.
+        Shared with MqttHandlerThread so answers can travel via MQTT.
+
+        mqtt_sender_queue : queue.Queue
+        Stores requests that should be sent via mqtt to invoke commands on smartphone.
+        """
         #request queue get's shared between mqqt handler thread and Request_queue_worker
-        self.request_queue = req_queue
+        self.request_queue = request_queue
         self.answer_queue = answer_queue
         self.mqtt_sender_queue=mqtt_sender_queue
-        # Todo: Create Data Structure with all relevant sensor-data. Can be class too.
         self.data_structure = SensorDB()
         self.udp_ip="127.0.0.1"
         self.udp_listener_port = 5006
         self.udp_sender_port = 5005
         self.stop_handler_event = threading.Event()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+        self.sock.settimeout(1)
 
+    def start_handler(self):
         threading.Thread(target=self.requests_queue_worker).start()
         threading.Thread(target=self.answer_queue_worker).start()
         threading.Thread(target=self.request_handler).start()
@@ -62,8 +83,8 @@ class DataHandler():
         while not self.stop_handler_event.is_set():
             try:
                 data = self.sock.recvfrom(1024)
-            except KeyboardInterrupt:
-                exit()
+            except socket.timeout:
+                continue
             data_str = str(data[0].decode("UTF-8"))
             self.request_queue.put(data_str)
 
@@ -71,51 +92,63 @@ class DataHandler():
         "sends back answers from the answer queue if there are any"
         while not self.stop_handler_event.is_set():
             try:
-                res = str(self.answer_queue.get())
-            except KeyboardInterrupt:
-                exit()
+                res = str(self.answer_queue.get(timeout=1))
+            except queue.Empty:
+                continue
             self.sock.sendto(bytes(res, 'UTF-8'),
-                (self.udp_ip, self.udp_sender_port))
+            (self.udp_ip, self.udp_sender_port))
 
     def request_handler(self):
         """decides weather to get answer for request from database and put it in answer queue
         or to put request in mqtt message answer queue"""
         while not self.stop_handler_event.is_set():
-            request = self.request_queue.get()
-            request = json.loads(request)
-            if request["type"] == "rpc":
-                self.mqtt_sender_queue.put(request)
-            elif request["type"] == "update_request":
-                sensor_key = request["sensor_type"]
-                value = request["sensor_value"]
-                self.data_structure.update(sensor_key, value)
-            #todo: responses auch als json. json adapter einführen?
-            elif request["type"] == "sensor_request":
-                sensor_key = request["sensor_type"]
-                result = self.data_structure.get(sensor_key)
-                self.answer_queue.put(result)
-            elif request["type"] == "rpc_response":
-                self.answer_queue.put(request["value"])
-
-    # def request_handler(self):
-    #     while not self.stop_handler_event.is_set():
-    #         try:
-    #             message = self.request_queue.get()
-    #         except KeyboardInterrupt:
-    #             exit()
-    #         self.answer_queue.put(message)
+            try:
+                request = self.request_queue.get(timeout=1)
+            except queue.Empty:
+                continue
+            if not request is None:
+                request = json.loads(request)
+                if request["type"] == "rpc":
+                    self.mqtt_sender_queue.put(request)
+                elif request["type"] == "update_request":
+                    sensor_key = request["sensor_type"]
+                    value = request["sensor_value"]
+                    self.data_structure.update(sensor_key, value)
+                #todo: responses auch als json. json adapter einführen?
+                elif request["type"] == "sensor_request":
+                    sensor_key = request["sensor_type"]
+                    result = self.data_structure.get(sensor_key)
+                    self.answer_queue.put(result)
+                elif request["type"] == "rpc_response":
+                    self.answer_queue.put(request["value"])
+            else:
+                continue
 
 
 class MqttHandlerThread(threading.Thread):
-    "Reacts on mqtt messages, puts them in request queue which isshared with handler thread"
+    """Reacts on mqtt messages, puts them in request queue which isshared with handler thread
+    """
 
-    def __init__(self, topic, sender_queue : queue.Queue, receiver_queue):
+    def __init__(self, mqqt_sender_queue : queue.Queue, receiver_queue):
+        """
+
+        Parameters:
+        -----------
+        mqqt_sender_queue : queue.Queue
+            Queue in which requests are put that shall be executed on the smartphone.
+            Shared with DataHandler so Client can make rpcs to smartphone.
+
+        receiver_queue : queue.Queue
+            Queue in which update and rpc_responses are put.
+            Has to be the same queue as DataHandlers RequestQueue.
+            Shared with DataHandler so client can receive answers via mqtt.
+        """
         super().__init__()
         self.HOSTNAME = "pma.inftech.hs-mannheim.de"
-        self.TOPIC=topic
+        self.TOPIC= "testing"
         self.USERNAME = "22thesis01"
         self.PASSWORD = "n4xdnp36"
-        self.sender_queue=sender_queue
+        self.sender_queue=mqqt_sender_queue
         #queue get's shared with handler
         self.receiver_queue=receiver_queue
         self.stop_mqtt = threading.Event()
@@ -134,7 +167,11 @@ class MqttHandlerThread(threading.Thread):
         client = mqtt.Client("c1")
         client.on_message = self.on_message
         client.username_pw_set(self.USERNAME, self.PASSWORD)
-        client.connect(self.HOSTNAME)
+        try:
+            client.connect(self.HOSTNAME)
+        except socket.timeout:
+            print("no connection could be established")
+            exit()
         client.subscribe(self.TOPIC)
         client.loop_start()
         while not self.stop_mqtt.is_set() and self.sender_queue.qsize() > 0:
@@ -145,11 +182,23 @@ class MqttHandlerThread(threading.Thread):
 
 def main():
     "main"
-    answer_queue = queue.Queue()
+    receiver_queue = queue.Queue()
     request_queue = queue.Queue()
-    mqtt_queue = queue.Queue()
+    mqtt_sender_queue = queue.Queue()
 
-    DataHandler(request_queue, answer_queue, mqtt_queue)
+    data_handler = DataHandler(request_queue, receiver_queue,
+    mqtt_sender_queue)
+    mqtt_handler_thread = MqttHandlerThread(mqqt_sender_queue=mqtt_sender_queue,
+     receiver_queue=receiver_queue)
+
+    try:
+        mqtt_handler_thread.start()
+        data_handler.start_handler()
+    except KeyboardInterrupt:
+        data_handler.stop_handler()
+        mqtt_handler_thread.stop()
+
 
 if __name__ == '__main__':
     main()
+        
