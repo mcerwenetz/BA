@@ -33,7 +33,6 @@ class SensorDB():
 class DataHandler():
     "Container for worker and handler threads"
     def __init__(self, request_queue : queue.Queue,
-        receiver_queue: queue.Queue,
         mqtt_sender_queue : queue.Queue):
         """
         Parameters:
@@ -44,16 +43,12 @@ class DataHandler():
         udp requests, or by the MqttHandlerThread which listens to
         mqtt_requests.
 
-        receiver_queue : queue.Queue
-        Stores answers like sensor_requests or rpc_answers.
-        Shared with MqttHandlerThread so answers can travel via MQTT.
-
         mqtt_sender_queue : queue.Queue
         Stores requests that should be sent via mqtt to invoke commands on smartphone.
         """
         #request queue get's shared between mqqt handler thread and Request_queue_worker
         self.request_queue = request_queue
-        self.answer_queue = receiver_queue
+        self.answer_queue = queue.Queue()
         self.mqtt_sender_queue=mqtt_sender_queue
         self.data_structure = SensorDB()
         self.udp_ip="127.0.0.1"
@@ -112,17 +107,14 @@ class DataHandler():
                 if request["type"] == "rpc":
                     self.mqtt_sender_queue.put(request)
                 elif request["type"] == "update_request":
-                    self.logger.info("got update-request: %s" % request)
                     sensor_key = request["sensor_type"]
                     value = request["sensor_value"]
                     self.data_structure.update(sensor_key, value)
                 #todo: responses auch als json. json adapter einführen?
                 elif request["type"] == "sensor_request":
-                    self.logger.info("got sensor request via udp: %s " % request)
                     sensor_key = request["sensor_type"]
                     result = self.data_structure.get(sensor_key)
                     self.answer_queue.put(result)
-                    self.logger.info("answer is: %s " % result )
                 elif request["type"] == "rpc_response":
                     self.answer_queue.put(request["value"])
             else:
@@ -133,7 +125,7 @@ class MqttHandlerThread(threading.Thread):
     """Reacts on mqtt messages, puts them in request queue which isshared with handler thread
     """
 
-    def __init__(self, mqqt_sender_queue : queue.Queue, receiver_queue):
+    def __init__(self, mqqt_sender_queue : queue.Queue, request_queue):
         """
 
         Parameters:
@@ -157,7 +149,7 @@ class MqttHandlerThread(threading.Thread):
         self.PASSWORD = "n4xdnp36"
         self.sender_queue=mqqt_sender_queue
         #queue get's shared with handler
-        self.receiver_queue=receiver_queue
+        self.request_queue=request_queue
         self.stop_mqtt = threading.Event()
         self.logger = logging.getLogger(str(type(self).__name__))
 
@@ -172,7 +164,7 @@ class MqttHandlerThread(threading.Thread):
         self.logger.info("Got mqtt message: %s" % msg)
 
         if msg["type"] == "update_request" or msg["type"] == "rpc_response" :
-            self.receiver_queue.put(message.payload.decode("utf-8"))
+            self.request_queue.put(message.payload.decode("utf-8"))
 
     def stop(self):
         "stop mqtt listener"
@@ -183,10 +175,11 @@ class MqttHandlerThread(threading.Thread):
         client.on_message = self.on_message
         # client.username_pw_set(self.USERNAME, self.PASSWORD)
         try:
+            self.logger.info("trying to connect to mqtt server")
             client.connect(self.HOSTNAME, port=1883)
             self.logger.info("connected to server %s" % self.HOSTNAME)
         except socket.timeout:
-            self.logger.warn("mqtt: no connection could be established")
+            self.logger.warn("no connection could be established")
         client.subscribe(self.TOPIC)
         self.logger.info("mqtt subscribed to topic: %s" % self.TOPIC)
         client.subscribe(self.QOSTOPIC, qos=2)
@@ -199,7 +192,6 @@ class MqttHandlerThread(threading.Thread):
             except queue.Empty:
                 continue
         client.loop_stop()
-        self.logger.info("mqtt: loop stopped")
 
 
 
@@ -210,9 +202,9 @@ def main():
     request_queue = queue.Queue()
     mqtt_sender_queue = queue.Queue()
 
-    data_handler = DataHandler(request_queue=request_queue, mqtt_sender_queue=mqtt_sender_queue, receiver_queue=receiver_queue )
+    data_handler = DataHandler(request_queue=request_queue, mqtt_sender_queue=mqtt_sender_queue)
     mqtt_handler_thread = MqttHandlerThread(mqqt_sender_queue=mqtt_sender_queue,
-     receiver_queue=request_queue)
+     request_queue=request_queue)
 
     try:
         mqtt_handler_thread.start()
