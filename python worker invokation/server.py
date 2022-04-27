@@ -62,6 +62,8 @@ class DataHandler():
         self.stop_handler_event = threading.Event()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
         self.sock.settimeout(1)
+        self.logger = logging.getLogger(str(type(self).__name__))
+
 
     def start_handler(self):
         threading.Thread(target=self.requests_queue_worker).start()
@@ -110,17 +112,17 @@ class DataHandler():
                 if request["type"] == "rpc":
                     self.mqtt_sender_queue.put(request)
                 elif request["type"] == "update_request":
-                    logging.info("got update-request: %s" % request)
+                    self.logger.info("got update-request: %s" % request)
                     sensor_key = request["sensor_type"]
                     value = request["sensor_value"]
                     self.data_structure.update(sensor_key, value)
                 #todo: responses auch als json. json adapter einführen?
                 elif request["type"] == "sensor_request":
-                    logging.info("got sensor request via udp: %s " % request)
+                    self.logger.info("got sensor request via udp: %s " % request)
                     sensor_key = request["sensor_type"]
                     result = self.data_structure.get(sensor_key)
                     self.answer_queue.put(result)
-                    logging.info("answer is: %s " % result )
+                    self.logger.info("answer is: %s " % result )
                 elif request["type"] == "rpc_response":
                     self.answer_queue.put(request["value"])
             else:
@@ -150,17 +152,24 @@ class MqttHandlerThread(threading.Thread):
         # self.HOSTNAME = "pma.inftech.hs-mannheim.de"
         self.HOSTNAME = "localhost"
         self.TOPIC= "test"
+        self.QOSTOPIC = "test_qos"
         self.USERNAME = "22thesis01"
         self.PASSWORD = "n4xdnp36"
         self.sender_queue=mqqt_sender_queue
         #queue get's shared with handler
         self.receiver_queue=receiver_queue
         self.stop_mqtt = threading.Event()
+        self.logger = logging.getLogger(str(type(self).__name__))
+
+
 
     def on_message(self, client, userdata, message):
         "is called on every new mqtt message"
-        msg = json.loads(message.payload.decode("utf-8"))
-        logging.info("Got mqtt message: %s" % msg)
+        try:
+            msg = json.loads(message.payload.decode("utf-8"))
+        except json.JSONDecodeError as json_exception:
+            self.logger.warn(str(json_exception))
+        self.logger.info("Got mqtt message: %s" % msg)
 
         if msg["type"] == "update_request" or msg["type"] == "rpc_response" :
             self.receiver_queue.put(message.payload.decode("utf-8"))
@@ -175,19 +184,22 @@ class MqttHandlerThread(threading.Thread):
         # client.username_pw_set(self.USERNAME, self.PASSWORD)
         try:
             client.connect(self.HOSTNAME, port=1883)
-            logging.info("connected to server %s" % self.HOSTNAME)
+            self.logger.info("connected to server %s" % self.HOSTNAME)
         except socket.timeout:
-            logging.warn("mqtt: no connection could be established")
+            self.logger.warn("mqtt: no connection could be established")
         client.subscribe(self.TOPIC)
-        logging.info("mqtt subscribed to topic: %s" % self.TOPIC)
+        self.logger.info("mqtt subscribed to topic: %s" % self.TOPIC)
+        client.subscribe(self.QOSTOPIC, qos=2)
+        self.logger.info("mqtt subscribed to QOS-topic: %s" % self.QOSTOPIC)
         client.loop_start()
         while not self.stop_mqtt.is_set() or self.sender_queue.qsize() > 0:
             try:
-                client.publish(self.sender_queue.get(timeout=1))
+                # nur auf dem topic mit hoher qos senden
+                client.publish(self.QOSTOPIC, self.sender_queue.get(timeout=1), qos=2)
             except queue.Empty:
                 continue
         client.loop_stop()
-        logging.info("mqtt: loop stopped")
+        self.logger.info("mqtt: loop stopped")
 
 
 
