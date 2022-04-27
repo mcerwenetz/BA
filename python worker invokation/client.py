@@ -1,10 +1,11 @@
 "Client Test simulates C-Library"
 
+import logging
 import threading
 import socket
 import queue
 import json
-import random
+from time import sleep
 
 
 class RequestJsonAdapter():
@@ -61,6 +62,7 @@ class Client():
             # self.sender_queue.put(request_1)
             request_2 = RequestJsonAdapter.get_sensor_request(sensor_type="accell_x")
             self.sender_queue.put(request_2)
+            sleep(2)
 
 
     def stop(self):
@@ -95,10 +97,11 @@ class Client():
             data_str = str(data.decode("UTF-8"))
             # if data_str.startswith("server"):
                 #data_str = data_str.split(":")[1]
-            print(f"got from server: {data_str}")
+            logging.info("Got answer from server %s" % data_str)
 
 def main():
     "main"
+    logging.basicConfig(level=logging.INFO)
     client = Client()
     try:
         client.start()

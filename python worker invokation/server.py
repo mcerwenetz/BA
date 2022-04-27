@@ -1,11 +1,10 @@
 "Middleware holding DataStructure, reacting to Requests via udp or mqtt"
 
+import logging
 import queue
 import socket
 import threading
 import json
-from time import sleep
-from matplotlib.pyplot import contour
 import paho.mqtt.client as mqtt
 
 
@@ -34,7 +33,7 @@ class SensorDB():
 class DataHandler():
     "Container for worker and handler threads"
     def __init__(self, request_queue : queue.Queue,
-        answer_queue: queue.Queue,
+        receiver_queue: queue.Queue,
         mqtt_sender_queue : queue.Queue):
         """
         Parameters:
@@ -54,7 +53,7 @@ class DataHandler():
         """
         #request queue get's shared between mqqt handler thread and Request_queue_worker
         self.request_queue = request_queue
-        self.answer_queue = answer_queue
+        self.answer_queue = receiver_queue
         self.mqtt_sender_queue=mqtt_sender_queue
         self.data_structure = SensorDB()
         self.udp_ip="127.0.0.1"
@@ -111,14 +110,17 @@ class DataHandler():
                 if request["type"] == "rpc":
                     self.mqtt_sender_queue.put(request)
                 elif request["type"] == "update_request":
+                    logging.info("got update-request: %s" % request)
                     sensor_key = request["sensor_type"]
                     value = request["sensor_value"]
                     self.data_structure.update(sensor_key, value)
                 #todo: responses auch als json. json adapter einführen?
                 elif request["type"] == "sensor_request":
+                    logging.info("got sensor request via udp: %s " % request)
                     sensor_key = request["sensor_type"]
                     result = self.data_structure.get(sensor_key)
                     self.answer_queue.put(result)
+                    logging.info("answer is: %s " % result )
                 elif request["type"] == "rpc_response":
                     self.answer_queue.put(request["value"])
             else:
@@ -143,9 +145,11 @@ class MqttHandlerThread(threading.Thread):
             Has to be the same queue as DataHandlers RequestQueue.
             Shared with DataHandler so client can receive answers via mqtt.
         """
+
         super().__init__()
-        self.HOSTNAME = "pma.inftech.hs-mannheim.de"
-        self.TOPIC= "testing"
+        # self.HOSTNAME = "pma.inftech.hs-mannheim.de"
+        self.HOSTNAME = "localhost"
+        self.TOPIC= "test"
         self.USERNAME = "22thesis01"
         self.PASSWORD = "n4xdnp36"
         self.sender_queue=mqqt_sender_queue
@@ -153,9 +157,11 @@ class MqttHandlerThread(threading.Thread):
         self.receiver_queue=receiver_queue
         self.stop_mqtt = threading.Event()
 
-    def on_message(self, message):
+    def on_message(self, client, userdata, message):
         "is called on every new mqtt message"
         msg = json.loads(message.payload.decode("utf-8"))
+        logging.info("Got mqtt message: %s" % msg)
+
         if msg["type"] == "update_request" or msg["type"] == "rpc_response" :
             self.receiver_queue.put(message.payload.decode("utf-8"))
 
@@ -166,30 +172,35 @@ class MqttHandlerThread(threading.Thread):
     def run(self):
         client = mqtt.Client("c1")
         client.on_message = self.on_message
-        client.username_pw_set(self.USERNAME, self.PASSWORD)
+        # client.username_pw_set(self.USERNAME, self.PASSWORD)
         try:
-            client.connect(self.HOSTNAME)
+            client.connect(self.HOSTNAME, port=1883)
+            logging.info("connected to server %s" % self.HOSTNAME)
         except socket.timeout:
-            print("no connection could be established")
-            exit()
+            logging.warn("mqtt: no connection could be established")
         client.subscribe(self.TOPIC)
+        logging.info("mqtt subscribed to topic: %s" % self.TOPIC)
         client.loop_start()
-        while not self.stop_mqtt.is_set() and self.sender_queue.qsize() > 0:
-            client.publish(self.sender_queue.get())
+        while not self.stop_mqtt.is_set() or self.sender_queue.qsize() > 0:
+            try:
+                client.publish(self.sender_queue.get(timeout=1))
+            except queue.Empty:
+                continue
         client.loop_stop()
+        logging.info("mqtt: loop stopped")
 
 
 
 def main():
     "main"
+    logging.basicConfig(level=logging.INFO)
     receiver_queue = queue.Queue()
     request_queue = queue.Queue()
     mqtt_sender_queue = queue.Queue()
 
-    data_handler = DataHandler(request_queue, receiver_queue,
-    mqtt_sender_queue)
+    data_handler = DataHandler(request_queue=request_queue, mqtt_sender_queue=mqtt_sender_queue, receiver_queue=receiver_queue )
     mqtt_handler_thread = MqttHandlerThread(mqqt_sender_queue=mqtt_sender_queue,
-     receiver_queue=receiver_queue)
+     receiver_queue=request_queue)
 
     try:
         mqtt_handler_thread.start()
