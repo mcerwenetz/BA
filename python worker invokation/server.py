@@ -32,7 +32,7 @@ class SensorDB():
 
 class DataHandler():
     "Container for worker and handler threads"
-    def __init__(self, request_queue : queue.Queue,
+    def __init__(self, request_queue : queue.PriorityQueue,
         mqtt_sender_queue : queue.Queue):
         """
         Parameters:
@@ -82,7 +82,8 @@ class DataHandler():
             except socket.timeout:
                 continue
             data_str = str(data[0].decode("UTF-8"))
-            self.request_queue.put(data_str)
+            # self.logger.info("got udp request %s" % data_str)
+            self.request_queue.put((1, data_str))
 
     def answer_queue_worker(self):
         "sends back answers from the answer queue if there are any"
@@ -94,24 +95,54 @@ class DataHandler():
             self.sock.sendto(bytes(res, 'UTF-8'),
             (self.udp_ip, self.udp_sender_port))
 
+#   @staticmethod
+#     def count_cat(category : str, it : list) -> int:
+#         ret = 0
+#         for ele in it:
+#             request = json.loads(ele)
+#             if request["type"] == category:
+#                 ret+=1
+#         return ret
+
+#     def result_stats(self):
+#         categories = ["rpc", "update_request", "rpc_response", "sensor_request"]
+#         erg = []
+#         req_lis=[]
+
+#         while self.request_queue.qsize() > 0:
+#             req_lis.append(self.request_queue.get())
+
+#         for ele in req_lis:
+#             self.request_queue.put(ele)
+
+#         for category in categories:
+#             ergs = DataHandler.count_cat(category, req_lis)
+#             erg.append(ergs)
+
+#         if any([ele > 1 for ele in erg]):
+#             self.logger.info(str(list(zip(categories, erg))))  
+
     def request_handler(self):
         """decides weather to get answer for request from database and put it in answer queue
         or to put request in mqtt message answer queue"""
         while not self.stop_handler_event.is_set():
             try:
-                request = self.request_queue.get(timeout=1)
+                request = self.request_queue.get(timeout=1)[1]
             except queue.Empty:
                 continue
+            # self.result_stats()
             if not request is None:
                 request = json.loads(request)
                 if request["type"] == "rpc":
                     self.mqtt_sender_queue.put(request)
                 elif request["type"] == "update_request":
+                    # self.logger.info("update_request: %s" % request )
                     sensor_key = request["sensor_type"]
                     value = request["sensor_value"]
                     self.data_structure.update(sensor_key, value)
                 #todo: responses auch als json. json adapter einführen?
                 elif request["type"] == "sensor_request":
+                    # self.logger.info("sensor request: %s" % request)
                     sensor_key = request["sensor_type"]
                     result = self.data_structure.get(sensor_key)
                     self.answer_queue.put(result)
@@ -142,7 +173,7 @@ class MqttHandlerThread(threading.Thread):
 
         super().__init__()
         # self.HOSTNAME = "pma.inftech.hs-mannheim.de"
-        self.HOSTNAME = "localhost"
+        self.HOSTNAME = "DESKTOP-LBOMDJH"
         self.TOPIC= "test"
         self.QOSTOPIC = "test_qos"
         self.USERNAME = "22thesis01"
@@ -161,10 +192,10 @@ class MqttHandlerThread(threading.Thread):
             msg = json.loads(message.payload.decode("utf-8"))
         except json.JSONDecodeError as json_exception:
             self.logger.warn(str(json_exception))
-        self.logger.info("Got mqtt message: %s" % msg)
+        # self.logger.info("Got mqtt message: %s" % msg)
 
         if msg["type"] == "update_request" or msg["type"] == "rpc_response" :
-            self.request_queue.put(message.payload.decode("utf-8"))
+            self.request_queue.put((2, message.payload.decode("utf-8")))
 
     def stop(self):
         "stop mqtt listener"
@@ -198,9 +229,11 @@ class MqttHandlerThread(threading.Thread):
 def main():
     "main"
     logging.basicConfig(level=logging.INFO)
-    receiver_queue = queue.Queue()
-    request_queue = queue.Queue()
-    mqtt_sender_queue = queue.Queue()
+    # receiver_queue = queue.Queue(maxsize=100)
+    # request_queue = queue.Queue(maxsize=100)
+
+    request_queue = queue.PriorityQueue(maxsize=10)
+    mqtt_sender_queue = queue.Queue(maxsize=100)
 
     data_handler = DataHandler(request_queue=request_queue, mqtt_sender_queue=mqtt_sender_queue)
     mqtt_handler_thread = MqttHandlerThread(mqqt_sender_queue=mqtt_sender_queue,

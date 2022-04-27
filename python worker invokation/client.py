@@ -61,8 +61,8 @@ class Client():
             #     request = RequestJsonAdapter.get_sensor_request("accell_x")
             # self.sender_queue.put(request_1)
             request_2 = RequestJsonAdapter.get_sensor_request(sensor_type="accell_x")
+            # logging.info("putting request in queue: %s" % request_2)
             self.sender_queue.put(request_2)
-            sleep(2)
 
 
     def stop(self):
@@ -82,6 +82,8 @@ class Client():
             except queue.Empty:
                 continue
             sock.sendto(bytes(message, 'UTF-8'), (self.udp_ip, self.udp_sender_port))
+            # logging.info("sending request")
+
 
     def client_listener_thread(self):
         "get answers via udp, prints answer"
@@ -97,7 +99,9 @@ class Client():
             data_str = str(data.decode("UTF-8"))
             # if data_str.startswith("server"):
                 #data_str = data_str.split(":")[1]
-            logging.info("Got answer from server %s" % data_str)
+            # logging.info("Got answer from server %s" % data_str)
+            if(abs(float(data_str)) > 3.0):
+                logging.info("device was shaken")
 
 def main():
     "main"
