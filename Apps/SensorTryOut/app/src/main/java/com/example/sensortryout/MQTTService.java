@@ -28,16 +28,18 @@ public class MQTTService extends Service {
     final public static String ACTION_STOP = "stop"; // disconnect
     // for LocalService Messaging
     final public static String ACTION_PRESS = "press";
-//    final public static String PROTOCOL = "mqtt";
+    final public static String PROTOCOL = "tcp";
 //    final public static String PROTOCOL = "ssl";
-        final public static String PROTOCOL = "tcp";
-    final public static String URL = "test.mosquitto.org";
+//        final public static String PROTOCOL = "mqtts";
+    final public static String URL = "192.168.178.89";
     final public static int PORT = 1883;
     final public static String CONNECTION_URL = String.format(Locale.GERMAN,
             "%s://%s:%d", PROTOCOL, URL, PORT);
-    final public static String USER = "20moagm";
-    final public static String PASSWORT = "1a748f9e";
-    private static final String TOPIC = "mariuscerwenetz";
+    final public static String USER = "";
+//    final public static String USER = "22thesis01";
+    final public static String PASSWORT = "";
+//    final public static String PASSWORT = "n4xdnp36";
+    private static final String TOPIC = "test";
 
     private MqttMessaging mqttMessaging;
     private final ArrayList<String> topicList = new ArrayList<>();
@@ -78,6 +80,7 @@ public class MQTTService extends Service {
 
     public void send(JSONObject jo){
         mqttMessaging.send(TOPIC, jo.toString());
+        Log.v(TAG, jo.toString());
     }
 
     @Override
@@ -130,18 +133,6 @@ public class MQTTService extends Service {
 
 
 
-    private String getRoomTagFromTopic(String topic) {
-        String[] ele = topic.split("/");
-        return ele[1] + "/" + ele[2] + "/" + ele[3];
-    }
-
-//    private String getTopic(String RoomTag, boolean isPublic) {
-//        final String PUBLIC_TOPIC = "public";
-//        if (isPublic)
-//            return USER + "/" + RoomTag + "/" + PUBLIC_TOPIC;
-//        return USER + "/" + RoomTag;
-//    }
-
     private void addTopic(String topic) {
         if (this.topicList.contains(topic))
             return;
@@ -157,11 +148,6 @@ public class MQTTService extends Service {
 
     //Send and Receive
     final private MqttMessaging.MessageListener messageListener = (topic, stringMsg) -> {
-//        if (stringMsg.contains(SERVER_STOP)) {
-//            keepSending.set(false);
-//        } else if (stringMsg.contains(SERVER_START)) {
-//            keepSending.set(true);
-//        }
     };
 
     //Connect and Disconnect
@@ -174,8 +160,8 @@ public class MQTTService extends Service {
         mqttMessaging = new MqttMessaging(failureListener, messageListener, connectionListener);
         Log.v(TAG, "connectionURL=" + CONNECTION_URL);
         MqttConnectOptions options = MqttMessaging.getMqttConnectOptions();
-        options.setUserName(USER);
-        options.setPassword(PASSWORT.toCharArray());
+//        options.setUserName(USER);
+//        options.setPassword(PASSWORT.toCharArray());
         Log.v(TAG, String.format("username=%s, password=%s, ", USER, PASSWORT));
 
         mqttMessaging.connect(CONNECTION_URL, options); // secure via URL

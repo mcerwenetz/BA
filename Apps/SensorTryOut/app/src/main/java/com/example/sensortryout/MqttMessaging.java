@@ -149,9 +149,9 @@ public class MqttMessaging {
                 if (connectOptions == null) { // default
                     connectOptions = MqttMessaging.getMqttConnectOptions();
                 }
-                String passwd = new String(connectOptions.getPassword());
-                Log.v(TAG, String.format("mqttExecutor: username=%s, password=%s, ",
-                        connectOptions.getUserName(), passwd));
+//                String passwd = new String(connectOptions.getPassword());
+//                Log.v(TAG, String.format("mqttExecutor: username=%s, password=%s, ",
+//                        connectOptions.getUserName(), passwd));
                 client.connect(connectOptions); // blocking
                 connectPending.set(false);
                 ready.set(true);

@@ -69,7 +69,7 @@ public class RootActivity extends Activity implements SensorEventListener {
         sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        List<Sensor> sensorList = sm.getSensorList(Sensor.TYPE_ALL);
         acc = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sm.registerListener(this, acc, SensorManager.SENSOR_DELAY_GAME);
+        sm.registerListener(this, acc, SensorManager.SENSOR_DELAY_NORMAL);
 
     }
 
@@ -118,7 +118,7 @@ public class RootActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Runnable r = () -> {
+//        Runnable r = () -> {
             float[] linear_acceleration = {0.0F, 0.0F, 0.0F};
             float[] gravity = {0.0F, 0.0F, 0.0F};
 
@@ -143,7 +143,9 @@ public class RootActivity extends Activity implements SensorEventListener {
                 e.printStackTrace();
             }
             for(JSONObject jo : jos){
-                mqttService.send(jo);
+                if(mqttService != null){
+                    mqttService.send(jo);
+                }
             }
             //            for (float la : linear_acceleration) {
 //                JSONObject jo = null;
@@ -154,9 +156,9 @@ public class RootActivity extends Activity implements SensorEventListener {
 //                }
 //                mqttService.send(jo);
 //            }
-        };
-        Thread t = new Thread(r);
-        t.start();
+//        };
+//        Thread t = new Thread(r);
+//        t.start();
     }
 
     @Override
