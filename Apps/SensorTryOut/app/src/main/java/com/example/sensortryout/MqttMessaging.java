@@ -257,7 +257,7 @@ public class MqttMessaging {
         mqttExecutor.execute(() -> {
             try {
                 pendingMessages.remove(id); // we are processing it
-                Log.v(TAG, String.format("send: topic=%s, msg=%s",topic, msg));
+//                Log.v(TAG, String.format("send: topic=%s, msg=%s",topic, msg));
                 MqttMessage message = new MqttMessage();
                 message.setPayload(msg.getBytes());
                 message.setQos(1); // we always do 1

@@ -16,11 +16,13 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -33,6 +35,7 @@ public class RootActivity extends Activity implements SensorEventListener {
     private Button btn;
     private SensorManager sm;
     private Sensor acc;
+    private TextView tv;
     private AtomicBoolean keepSending = new AtomicBoolean(false);
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -48,6 +51,7 @@ public class RootActivity extends Activity implements SensorEventListener {
             sm.requestTriggerSensor(tel, acc);
 
             mqttService.setKeepSending(keepSending);
+            mqttService.setRootActivity(RootActivity.this);
         }
 
         @Override
@@ -58,14 +62,27 @@ public class RootActivity extends Activity implements SensorEventListener {
         }
     };
 
+    public void setTextView(String toSet){
+        if(this.tv != null){
+            this.tv.setText(toSet);
+        }
+    }
+
+    public void setBtn(String activated){
+        runOnUiThread(()->
+            this.btn.setPressed(Boolean.valueOf(activated))
+        );
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout);
         btn = findViewById(R.id.button);
-        btn.setOnClickListener((View v) -> {
-            keepSending.set(!keepSending.get());
-        });
+        tv = findViewById(R.id.tv);
+        btn.setOnClickListener((View v) ->
+            keepSending.set(!keepSending.get())
+        );
         sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        List<Sensor> sensorList = sm.getSensorList(Sensor.TYPE_ALL);
         acc = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -113,8 +130,6 @@ public class RootActivity extends Activity implements SensorEventListener {
         intent.setAction(MQTTService.ACTION_STOP);
         startService(intent); // to stop
     }
-
-    ;
 
     @Override
     public void onSensorChanged(SensorEvent event) {

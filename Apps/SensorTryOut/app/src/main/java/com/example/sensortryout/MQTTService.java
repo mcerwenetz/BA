@@ -40,6 +40,8 @@ public class MQTTService extends Service {
     final public static String PASSWORT = "";
 //    final public static String PASSWORT = "n4xdnp36";
     private static final String TOPIC = "test";
+    private static final String TOPIC_QOS = "test_qos";
+    private RootActivity rootActivity;
 
     private MqttMessaging mqttMessaging;
     private final ArrayList<String> topicList = new ArrayList<>();
@@ -147,6 +149,26 @@ public class MQTTService extends Service {
 
     //Send and Receive
     final private MqttMessaging.MessageListener messageListener = (topic, stringMsg) -> {
+        JSONObject jo = null;
+        try {
+            jo = new JSONObject(stringMsg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            if(jo.getString("type").equals("rpc")){
+                if(jo.getString("command").equals("textview")){
+                    this.rootActivity.setTextView(jo.getString("value"));
+                }
+                if(jo.getString("command").equals("button")){
+                    this.rootActivity.setBtn(jo.getString("value"));
+                }
+            }
+
+        } catch (JSONException | NullPointerException e) {
+            e.printStackTrace();
+        }
+
     };
 
     //Connect and Disconnect
@@ -164,7 +186,8 @@ public class MQTTService extends Service {
         Log.v(TAG, String.format("username=%s, password=%s, ", USER, PASSWORT));
 
         mqttMessaging.connect(CONNECTION_URL, options); // secure via URL
-        addTopic(this.TOPIC);
+        addTopic(MQTTService.TOPIC);
+        addTopic(MQTTService.TOPIC_QOS);
 
         Log.v(TAG, "connected");
     }
@@ -193,6 +216,10 @@ public class MQTTService extends Service {
 
     public void setKeepSending(AtomicBoolean keepSending) {
         this.keepSending=keepSending;
+    }
+
+    public void setRootActivity(RootActivity rootActivity) {
+        this.rootActivity = rootActivity;
     }
 
 
