@@ -1,36 +1,13 @@
 "Client Test simulates C-Library"
 
 import logging
+import random
 import threading
 import socket
 import queue
-import json
-from time import sleep
+import string
+from request_json_adapter import RequestJsonAdapter
 
-
-class RequestJsonAdapter():
-    """This Class provides static methods to convert function calls to json"""
-    def __init__(self) -> None:
-        pass
-
-    @staticmethod
-    def get_update_request(sensor_type,value):
-        "update a sensor value"
-        res ={
-            "type":"update_request",
-            "sensor_type":str(sensor_type),
-            "sensor_value":str(value)
-        }
-        return json.dumps(res)
-
-    @staticmethod
-    def get_sensor_request(sensor_type):
-        "get the value of a sensor"
-        res = {
-            "type":"sensor_request",
-            "sensor_type": str(sensor_type)
-        }
-        return json.dumps(res)
 
 
 class Client():
@@ -51,19 +28,25 @@ class Client():
         "start client"
         self.listener_thread.start()
         self.sender_thread.start()
-        while True:
-            # val = random.randint(1, 10)
-            # request_1 = RequestJsonAdapter.get_update_request(sensor_type="accell_x",
-            #      value=str(val))
-            # if(command.startswith("accel_set")):
-            #     request = RequestJsonAdapter.get_update_request("accell_x", "10")
-            # elif(command.startswith("accell_get")):
-            #     request = RequestJsonAdapter.get_sensor_request("accell_x")
-            # self.sender_queue.put(request_1)
-            request_2 = RequestJsonAdapter.get_sensor_request(sensor_type="accell_x")
-            # logging.info("putting request in queue: %s" % request_2)
-            self.sender_queue.put(request_2)
-            sleep(0.5)
+        a = True
+        for _ in range(100000):
+            request = RequestJsonAdapter.get_rpc_request(command="button", value=str(a).lower())
+            a = not a
+            self.sender_queue.put(request)
+        self.stop()
+        # while True:
+        #     # val = random.randint(1, 10)
+        #     # request_1 = RequestJsonAdapter.get_update_request(sensor_type="accell_x",
+        #     #      value=str(val))
+        #     # if(command.startswith("accel_set")):
+        #     #     request = RequestJsonAdapter.get_update_request("accell_x", "10")
+        #     # elif(command.startswith("accell_get")):
+        #     #     request = RequestJsonAdapter.get_sensor_request("accell_x")
+        #     # self.sender_queue.put(request_1)
+        #     request_2 = RequestJsonAdapter.get_sensor_request(sensor_type="accell_x")
+        #     # logging.info("putting request in queue: %s" % request_2)
+        #     self.sender_queue.put(request_2)
+        #     sleep(0.5)
 
 
     def stop(self):
@@ -77,7 +60,7 @@ class Client():
         sock = socket.socket(socket.AF_INET, # Internet
                                 socket.SOCK_DGRAM) # UDP
         sock.settimeout(1)
-        while not self.stop_client.is_set():
+        while not self.stop_client.is_set() or self.sender_queue.qsize() > 0:
             try:
                 message = sender_queue.get(timeout=1)
             except queue.Empty:
