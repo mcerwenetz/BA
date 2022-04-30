@@ -139,7 +139,6 @@ class DataHandler():
                     sensor_key = request["sensor_type"]
                     value = request["sensor_value"]
                     self.data_structure.update(sensor_key, value)
-                #todo: responses auch als json. json adapter einführen?
                 elif request["type"] == "sensor_request":
                     # self.logger.info("sensor request: %s" % request)
                     sensor_key = request["sensor_type"]
@@ -190,7 +189,8 @@ class MqttHandlerThread(threading.Thread):
         try:
             msg = json.loads(message.payload.decode("utf-8"))
         except json.JSONDecodeError as json_exception:
-            self.logger.warning(str(json_exception))
+            self.logger.warning("Json Exception" + str(json_exception))
+            return
         # self.logger.info("Got mqtt message: %s" % msg)
 
         if msg["type"] == "update_request" or msg["type"] == "rpc_response" :
@@ -218,9 +218,13 @@ class MqttHandlerThread(threading.Thread):
         while not self.stop_mqtt.is_set() or self.sender_queue.qsize() > 0:
             try:
                 # nur auf dem topic mit hoher qos senden
-                client.publish(self.QOSTOPIC, self.sender_queue.get(timeout=1), qos=2)
-            except queue.Empty:
+                message = str(self.sender_queue.get(timeout=1))
+                client.publish(self.QOSTOPIC, message, qos=2)
+            except (queue.Empty):
                 continue
+
+            except TypeError as exception:
+                self.logger.error(print(exception))
         client.loop_stop()
 
 
