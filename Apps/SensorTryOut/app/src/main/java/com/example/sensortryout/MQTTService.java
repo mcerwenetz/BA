@@ -31,7 +31,7 @@ public class MQTTService extends Service {
     final public static String PROTOCOL = "tcp";
 //    final public static String PROTOCOL = "ssl";
 //        final public static String PROTOCOL = "mqtts";
-    final public static String URL = "192.168.178.89";
+    final public static String URL = "atborg.fritz.box";
     final public static int PORT = 1883;
     final public static String CONNECTION_URL = String.format(Locale.GERMAN,
             "%s://%s:%d", PROTOCOL, URL, PORT);
@@ -80,7 +80,6 @@ public class MQTTService extends Service {
 
     public void send(JSONObject jo){
         mqttMessaging.send(TOPIC, jo.toString());
-        Log.v(TAG, jo.toString());
     }
 
     @Override

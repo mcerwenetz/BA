@@ -79,11 +79,11 @@ class DataHandler():
         while not self.stop_handler_event.is_set():
             try:
                 data = self.sock.recvfrom(1024)
-            except socket.timeout:
+            except (socket.timeout, ConnectionResetError):
                 continue
             data_str = str(data[0].decode("UTF-8"))
             # self.logger.info("got udp request %s" % data_str)
-            self.request_queue.put((1, data_str))
+            self.request_queue.put((2, data_str))
 
     def answer_queue_worker(self):
         "sends back answers from the answer queue if there are any"
@@ -136,7 +136,6 @@ class DataHandler():
                 if request["type"] == "rpc":
                     self.mqtt_sender_queue.put(request)
                 elif request["type"] == "update_request":
-                    # self.logger.info("update_request: %s" % request )
                     sensor_key = request["sensor_type"]
                     value = request["sensor_value"]
                     self.data_structure.update(sensor_key, value)
@@ -173,7 +172,7 @@ class MqttHandlerThread(threading.Thread):
 
         super().__init__()
         # self.HOSTNAME = "pma.inftech.hs-mannheim.de"
-        self.HOSTNAME = "DESKTOP-LBOMDJH"
+        self.HOSTNAME = "atborg"
         self.TOPIC= "test"
         self.QOSTOPIC = "test_qos"
         self.USERNAME = "22thesis01"
@@ -191,11 +190,11 @@ class MqttHandlerThread(threading.Thread):
         try:
             msg = json.loads(message.payload.decode("utf-8"))
         except json.JSONDecodeError as json_exception:
-            self.logger.warn(str(json_exception))
+            self.logger.warning(str(json_exception))
         # self.logger.info("Got mqtt message: %s" % msg)
 
         if msg["type"] == "update_request" or msg["type"] == "rpc_response" :
-            self.request_queue.put((2, message.payload.decode("utf-8")))
+            self.request_queue.put((1, message.payload.decode("utf-8")))
 
     def stop(self):
         "stop mqtt listener"
@@ -210,7 +209,7 @@ class MqttHandlerThread(threading.Thread):
             client.connect(self.HOSTNAME, port=1883)
             self.logger.info("connected to server %s" % self.HOSTNAME)
         except socket.timeout:
-            self.logger.warn("no connection could be established")
+            self.logger.warning("no connection could be established")
         client.subscribe(self.TOPIC)
         self.logger.info("mqtt subscribed to topic: %s" % self.TOPIC)
         client.subscribe(self.QOSTOPIC, qos=2)
