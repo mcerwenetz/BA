@@ -95,32 +95,6 @@ class DataHandler():
             self.sock.sendto(bytes(res, 'UTF-8'),
             (self.udp_ip, self.udp_sender_port))
 
-#   @staticmethod
-#     def count_cat(category : str, it : list) -> int:
-#         ret = 0
-#         for ele in it:
-#             request = json.loads(ele)
-#             if request["type"] == category:
-#                 ret+=1
-#         return ret
-
-#     def result_stats(self):
-#         categories = ["rpc", "update_request", "rpc_response", "sensor_request"]
-#         erg = []
-#         req_lis=[]
-
-#         while self.request_queue.qsize() > 0:
-#             req_lis.append(self.request_queue.get())
-
-#         for ele in req_lis:
-#             self.request_queue.put(ele)
-
-#         for category in categories:
-#             ergs = DataHandler.count_cat(category, req_lis)
-#             erg.append(ergs)
-
-#         if any([ele > 1 for ele in erg]):
-#             self.logger.info(str(list(zip(categories, erg))))  
 
     def request_handler(self):
         """decides weather to get answer for request from database and put it in answer queue
