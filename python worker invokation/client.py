@@ -1,11 +1,10 @@
 "Client Test simulates C-Library"
 
 import logging
-import random
 import threading
 import socket
 import queue
-import string
+from time import sleep
 from request_json_adapter import RequestJsonAdapter
 
 
@@ -28,13 +27,13 @@ class Client():
         "start client"
         self.listener_thread.start()
         self.sender_thread.start()
-        a = True
-        for _ in range(100000):
-            request = RequestJsonAdapter.get_rpc_request(command="button", value=str(a).lower())
-            a = not a
-            self.sender_queue.put(request)
-        self.stop()
-        # while True:
+        # a = True
+        # for _ in range(100000):
+        #     request = RequestJsonAdapter.get_rpc_request(command="button", value=str(a).lower())
+        #     a = not a
+        #     self.sender_queue.put(request)
+        # self.stop()
+        while True:
         #     # val = random.randint(1, 10)
         #     # request_1 = RequestJsonAdapter.get_update_request(sensor_type="accell_x",
         #     #      value=str(val))
@@ -43,10 +42,10 @@ class Client():
         #     # elif(command.startswith("accell_get")):
         #     #     request = RequestJsonAdapter.get_sensor_request("accell_x")
         #     # self.sender_queue.put(request_1)
-        #     request_2 = RequestJsonAdapter.get_sensor_request(sensor_type="accell_x")
-        #     # logging.info("putting request in queue: %s" % request_2)
-        #     self.sender_queue.put(request_2)
-        #     sleep(0.5)
+            request_2 = RequestJsonAdapter.get_sensor_request(sensor_type="accell_x")
+            # logging.info("putting request in queue: %s" % request_2)
+            self.sender_queue.put(request_2)
+            sleep(1)
 
 
     def stop(self):

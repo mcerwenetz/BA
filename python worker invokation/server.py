@@ -144,10 +144,10 @@ class MqttHandlerThread(threading.Thread):
         """
 
         super().__init__()
-        # self.HOSTNAME = "pma.inftech.hs-mannheim.de"
-        self.HOSTNAME = "atborg"
-        self.TOPIC= "test"
-        self.QOSTOPIC = "test_qos"
+        self.HOSTNAME = "pma.inftech.hs-mannheim.de"
+        #self.HOSTNAME = "atborg"
+        self.TOPIC= "22thesis01/test"
+        self.QOSTOPIC = "22thesis01/test_qos"
         self.USERNAME = "22thesis01"
         self.PASSWORD = "n4xdnp36"
         self.sender_queue=mqqt_sender_queue
@@ -165,7 +165,7 @@ class MqttHandlerThread(threading.Thread):
         except json.JSONDecodeError as json_exception:
             self.logger.warning("Json Exception" + str(json_exception))
             return
-        # self.logger.info("Got mqtt message: %s" % msg)
+        self.logger.info("Got mqtt message: %s" % msg)
 
         if msg["type"] == "update_request" or msg["type"] == "rpc_response" :
             self.request_queue.put((1, message.payload.decode("utf-8")))
@@ -177,7 +177,7 @@ class MqttHandlerThread(threading.Thread):
     def run(self):
         client = mqtt.Client("c1")
         client.on_message = self.on_message
-        # client.username_pw_set(self.USERNAME, self.PASSWORD)
+        client.username_pw_set(self.USERNAME, self.PASSWORD)
         try:
             self.logger.info("trying to connect to mqtt server")
             client.connect(self.HOSTNAME, port=1883)
@@ -194,11 +194,11 @@ class MqttHandlerThread(threading.Thread):
                 # nur auf dem topic mit hoher qos senden
                 message = str(self.sender_queue.get(timeout=1))
                 client.publish(self.QOSTOPIC, message, qos=2)
-            except (queue.Empty):
+            except queue.Empty:
                 continue
 
             except TypeError as exception:
-                self.logger.error(print(exception))
+                self.logger.error(str(exception))
         client.loop_stop()
 
 
@@ -226,4 +226,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-        
