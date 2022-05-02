@@ -28,19 +28,19 @@ public class MQTTService extends Service {
     final public static String ACTION_STOP = "stop"; // disconnect
     // for LocalService Messaging
     final public static String ACTION_PRESS = "press";
-    final public static String PROTOCOL = "tcp";
-//    final public static String PROTOCOL = "ssl";
-//        final public static String PROTOCOL = "mqtts";
-    final public static String URL = "atborg.fritz.box";
-    final public static int PORT = 1883;
+//    final public static String PROTOCOL = "tcp";
+    final public static String PROTOCOL = "ssl";
+//    final public static String URL = "atborg.fritz.box";
+    final public static String URL = "pma.inftech.hs-mannheim.de";
+    final public static int PORT = 8883;
     final public static String CONNECTION_URL = String.format(Locale.GERMAN,
             "%s://%s:%d", PROTOCOL, URL, PORT);
-    final public static String USER = "";
-//    final public static String USER = "22thesis01";
-    final public static String PASSWORT = "";
-//    final public static String PASSWORT = "n4xdnp36";
-    private static final String TOPIC = "test";
-    private static final String TOPIC_QOS = "test_qos";
+//    final public static String USER = "";
+    final public static String USER = "22thesis01";
+//    final public static String PASSWORT = "";
+    final public static String PASSWORT = "n4xdnp36";
+    private static final String TOPIC = "22thesis01/test";
+    private static final String TOPIC_QOS = "22thesis01/test_qos";
     private RootActivity rootActivity;
 
     private MqttMessaging mqttMessaging;
@@ -181,8 +181,8 @@ public class MQTTService extends Service {
         mqttMessaging = new MqttMessaging(failureListener, messageListener, connectionListener);
         Log.v(TAG, "connectionURL=" + CONNECTION_URL);
         MqttConnectOptions options = MqttMessaging.getMqttConnectOptions();
-//        options.setUserName(USER);
-//        options.setPassword(PASSWORT.toCharArray());
+        options.setUserName(USER);
+        options.setPassword(PASSWORT.toCharArray());
         Log.v(TAG, String.format("username=%s, password=%s, ", USER, PASSWORT));
 
         mqttMessaging.connect(CONNECTION_URL, options); // secure via URL
