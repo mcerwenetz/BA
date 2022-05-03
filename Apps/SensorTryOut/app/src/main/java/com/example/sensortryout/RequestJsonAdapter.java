@@ -13,4 +13,13 @@ public class RequestJsonAdapter {
         return jo;
     }
 
+    public static JSONObject get_rpc_response(String command, String value) throws JSONException {
+        JSONObject jo = new JSONObject();
+        jo.put("type", "rpc_response");
+        jo.put("command",command);
+        jo.put("value", value);
+        return jo;
+    }
+
+
 }

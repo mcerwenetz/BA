@@ -61,6 +61,7 @@ class DataHandler():
 
 
     def start_handler(self):
+        "starts all threads of the handler"
         threading.Thread(target=self.requests_queue_worker).start()
         threading.Thread(target=self.answer_queue_worker).start()
         threading.Thread(target=self.request_handler).start()
@@ -107,7 +108,7 @@ class DataHandler():
             # self.result_stats()
             if not request is None:
                 request = json.loads(request)
-                if request["type"] == "rpc":
+                if request["type"] == "rpc_request":
                     self.mqtt_sender_queue.put(request)
                 elif request["type"] == "update_request":
                     sensor_key = request["sensor_type"]

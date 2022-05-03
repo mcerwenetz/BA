@@ -84,6 +84,11 @@ public class MQTTService extends Service {
         mqttMessaging.send(TOPIC, jo.toString());
     }
 
+    public void send_rpc_anser(JSONObject jo){
+        mqttMessaging.send(TOPIC_QOS, jo.toString());
+    }
+
+
     @Override
     public void onCreate() {
         Log.v(TAG, "onCreate");
@@ -162,6 +167,11 @@ public class MQTTService extends Service {
                 }
                 if(jo.getString("command").equals("button")){
                     this.rootActivity.setBtn(jo.getString("value"));
+                }
+                if(jo.getString("command").equals("checkbox")){
+                    this.rootActivity.setCheckBox(jo.getString("value"));
+                    JSONObject rpc_answer = RequestJsonAdapter.get_rpc_response(jo.getString("command"), jo.getString("value"));
+                    send_rpc_anser(rpc_answer);
                 }
             }
 

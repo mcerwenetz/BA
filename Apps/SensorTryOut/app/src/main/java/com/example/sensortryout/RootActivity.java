@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ public class RootActivity extends Activity implements SensorEventListener {
     private SensorManager sm;
     private Sensor acc;
     private TextView tv;
+    private CheckBox cb;
     private AtomicBoolean keepSending = new AtomicBoolean(false);
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -74,12 +76,19 @@ public class RootActivity extends Activity implements SensorEventListener {
         );
     }
 
+    public void setCheckBox(String value){
+        runOnUiThread(()->
+                this.cb.setPressed(Boolean.valueOf(value))
+        );
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout);
         btn = findViewById(R.id.button);
         tv = findViewById(R.id.tv);
+        cb = findViewById(R.id.checkbox);
         btn.setOnClickListener((View v) ->
             keepSending.set(!keepSending.get())
         );

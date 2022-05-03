@@ -38,9 +38,20 @@ class RequestJsonAdapter():
     def get_rpc_request(command :str, value : str):
         "start an rpc on the smartphone"
         res = {
-            "type":"rpc",
+            "type":"rpc_request",
             "command": str(command),
             "value" : str(value)
         }
         return json.dumps(res)
 
+
+    @staticmethod
+    def get_rpc_response(command :str, value : str):
+        "answers an rpc request"
+        res ={
+            "type":"rpc_response",
+            "command": str(command),
+            "value" : str(value)
+        }
+        return res
+        

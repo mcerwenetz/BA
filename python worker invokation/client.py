@@ -4,8 +4,7 @@ import logging
 import threading
 import socket
 import queue
-from time import sleep
-from request_json_adapter import RequestJsonAdapter
+from  request_json_adapter import RequestJsonAdapter as rja
 
 
 
@@ -24,35 +23,18 @@ class Client():
              args=(self.sender_queue,))
 
     def start(self):
-        "start client"
+        "start client with threads"
         self.listener_thread.start()
         self.sender_thread.start()
-        # a = True
-        # for _ in range(100000):
-        #     request = RequestJsonAdapter.get_rpc_request(command="button", value=str(a).lower())
-        #     a = not a
-        #     self.sender_queue.put(request)
-        # self.stop()
-        while True:
-        #     # val = random.randint(1, 10)
-        #     # request_1 = RequestJsonAdapter.get_update_request(sensor_type="accell_x",
-        #     #      value=str(val))
-        #     # if(command.startswith("accel_set")):
-        #     #     request = RequestJsonAdapter.get_update_request("accell_x", "10")
-        #     # elif(command.startswith("accell_get")):
-        #     #     request = RequestJsonAdapter.get_sensor_request("accell_x")
-        #     # self.sender_queue.put(request_1)
-            request_2 = RequestJsonAdapter.get_sensor_request(sensor_type="accell_x")
-            # logging.info("putting request in queue: %s" % request_2)
-            self.sender_queue.put(request_2)
-            sleep(1)
-
+        request = rja.get_rpc_request(command="checkbox", value="true")
+        self.sender_queue.put(request)
 
     def stop(self):
         "stop client"
         self.stop_client.set()
         self.listener_thread.join()
         self.sender_thread.join()
+
 
     def client_sender_thread(self, sender_queue):
         "sends all request from queue via udp"
@@ -80,12 +62,8 @@ class Client():
             except socket.timeout:
                 continue
             data_str = str(data.decode("UTF-8"))
-            if data_str.startswith("server"):
-                data_str = data_str.split(":")[1]
             logging.info("Got answer from server %s" % data_str)
-            # if(abs(float(data_str)) > 3.0):
-                # logging.info("device was shaken")
-
+            
 def main():
     "main"
     logging.basicConfig(level=logging.INFO)
