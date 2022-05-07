@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -84,7 +83,7 @@ public class MQTTService extends Service {
         mqttMessaging.send(TOPIC, jo.toString());
     }
 
-    public void send_rpc_anser(JSONObject jo){
+    public void sendRpcAnswer(JSONObject jo){
         mqttMessaging.send(TOPIC_QOS, jo.toString());
     }
 
@@ -160,23 +159,31 @@ public class MQTTService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        String type = null;
+        String command = null;
+        String value = null;
         try {
-            if(jo.getString("type").equals("rpc")){
-                if(jo.getString("command").equals("textview")){
-                    this.rootActivity.setTextView(jo.getString("value"));
-                }
-                if(jo.getString("command").equals("button")){
-                    this.rootActivity.setBtn(jo.getString("value"));
-                }
-                if(jo.getString("command").equals("checkbox")){
-                    this.rootActivity.setCheckBox(jo.getString("value"));
-                    JSONObject rpc_answer = RequestJsonAdapter.get_rpc_response(jo.getString("command"), jo.getString("value"));
-                    send_rpc_anser(rpc_answer);
-                }
-            }
+            type = jo.getString("type");
+            command = jo.getString("command");
+            value = jo.getString("value");
 
-        } catch (JSONException | NullPointerException e) {
-            e.printStackTrace();
+        } catch (JSONException je) {
+            je.printStackTrace();
+        } catch (NullPointerException npe){
+            //ignore. if type is not rpc command and value are not needed anyway
+        }
+        if(type.equals("rpc")){
+            if(command.equals("textview")){
+                this.rootActivity.setTextView(value);
+            }
+            if(command.equals("button")){
+                this.rootActivity.toogleButton();
+            }
+            if(command.equals("checkbox")){
+                this.rootActivity.setCheckBox(value);
+                JSONObject rpc_answer = RequestJsonAdapter.get_rpc_response(command, value);
+                sendRpcAnswer(rpc_answer);
+            }
         }
 
     };

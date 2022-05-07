@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -34,6 +35,7 @@ public class RootActivity extends Activity implements SensorEventListener {
     private MQTTService mqttService;
     private boolean mqttServiceBound;
     private Button btn;
+    private boolean ButtonToggleBool = true;
     private SensorManager sm;
     private Sensor acc;
     private TextView tv;
@@ -89,14 +91,20 @@ public class RootActivity extends Activity implements SensorEventListener {
         btn = findViewById(R.id.button);
         tv = findViewById(R.id.tv);
         cb = findViewById(R.id.checkbox);
-        btn.setOnClickListener((View v) ->
-            keepSending.set(!keepSending.get())
-        );
         sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        List<Sensor> sensorList = sm.getSensorList(Sensor.TYPE_ALL);
         acc = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sm.registerListener(this, acc, SensorManager.SENSOR_DELAY_NORMAL);
 
+    }
+
+
+    public void toogleButton(){
+        if(ButtonToggleBool == true){
+            btn.setBackgroundColor(Color.RED);
+        }else{
+            btn.setBackgroundColor(Color.GREEN);
+        }
     }
 
     @Override

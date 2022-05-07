@@ -54,4 +54,41 @@ class RequestJsonAdapter():
             "value" : str(value)
         }
         return res
+
+    
+
+class _RequestResponseDict(dict):
+    """constant dictionary which checks if key exists if accessed and does not throw an error
+    if key is not inside.
+    Also provides a check function to check if a request fits the received response
+    """
+    
+    def __init__(self) -> None:
+        super().__init__()
+        dictionary = {
+            "sensor_request":"sensor_response"
+        }
+
+        for k,v in dictionary.items():
+            self.__internal__setitem__(k,v)
+    
+    def check(self, request, response):
+        """
+        returns false if the request does not match the response
+        or if request is not in dictionary
+        """
+        return self[request] == response
         
+    def __getitem__(self, __k):
+        if __k in self:
+            return super().__getitem__(__k)
+
+    def __setitem__(self, __k, __v) -> None:
+        pass
+
+    def __internal__setitem__(self, __k, __v) -> None:
+        return super().__setitem__(__k, __v)
+
+
+
+REQUEST_RESPONSE_DICT = _RequestResponseDict()
