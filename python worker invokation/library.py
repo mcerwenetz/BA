@@ -1,11 +1,7 @@
-import asyncio as asy
-from email import message
 import socket
-
-from zmq import Socket
+import threading
 from  util import RequestJsonAdapter as rja
 from util import REQUEST_RESPONSE_DICT
-from util import SensorTypeMissmatchException
 
 
 class Phone():
@@ -21,15 +17,15 @@ class Phone():
 
 
 
-    def write_text(self, text):
+    def write_text(self, text_outer):
 
-        async def _write_text(self, text : str) -> None:
+        def _write_text(self, text : str) -> None:
             """can be called with various text to display on the smartphone display"""
             rpc_message = rja.get_rpc_request(command="textview", value=text)
             self._sendMessage(message=rpc_message)
 
-        asy.run(_write_text, text)
-
+        threading.Thread(target=_write_text, args=(self, text_outer)).start()
+       
     def get_sensor(self, sensor_name):
         sensor_message = rja.get_sensor_request(sensor_name)
         self._sendMessage(message=sensor_message)
@@ -42,8 +38,6 @@ class Phone():
         else:
             raise Exception(f"Sensortypes mismatch: wanted: {request_sensor_type}, got {result_sensor_type}")
 
-    def 
-
 
     def _wait_on_result(self, request : dict) -> dict:
         """get's response blocking with socket timeout
@@ -53,7 +47,7 @@ class Phone():
         data = self.sock.recvfrom()[0]
         response = dict(data)
 
-        
+
         request_type = request["type"]
         response_type= response["type"]
 
@@ -61,10 +55,6 @@ class Phone():
         if REQUEST_RESPONSE_DICT.check(request_type, response_type):
             return response
 
-
-
-        
-        
 
     def _sendMessage(self, message):
         self.sock.sendto(bytes(message, 'UTF-8'), (self.udp_ip, self.udp_sender_port))

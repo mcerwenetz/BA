@@ -172,7 +172,7 @@ public class MQTTService extends Service {
         } catch (NullPointerException npe){
             //ignore. if type is not rpc command and value are not needed anyway
         }
-        if(type.equals("rpc")){
+        if(type.equals("rpc_request")){
             if(command.equals("textview")){
                 this.rootActivity.setTextView(value);
             }

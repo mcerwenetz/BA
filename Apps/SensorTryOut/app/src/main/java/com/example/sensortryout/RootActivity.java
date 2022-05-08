@@ -105,6 +105,7 @@ public class RootActivity extends Activity implements SensorEventListener {
         }else{
             btn.setBackgroundColor(Color.GREEN);
         }
+        ButtonToggleBool = !ButtonToggleBool;
     }
 
     @Override

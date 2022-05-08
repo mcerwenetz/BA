@@ -109,6 +109,7 @@ class DataHandler():
             if not request is None:
                 request = json.loads(request)
                 if request["type"] == "rpc_request":
+                    self.logger.info("rpc request: %s" % str(request))
                     self.mqtt_sender_queue.put(request)
                 elif request["type"] == "update_request":
                     sensor_key = request["sensor_type"]
@@ -146,11 +147,12 @@ class MqttHandlerThread(threading.Thread):
 
         super().__init__()
         self.HOSTNAME = "pma.inftech.hs-mannheim.de"
-        #self.HOSTNAME = "atborg"
+        self.HOSTNAME = "atborg"
         self.TOPIC= "22thesis01/test"
         self.QOSTOPIC = "22thesis01/test_qos"
         self.USERNAME = "22thesis01"
         self.PASSWORD = "n4xdnp36"
+        self.PORT = 8883
         self.sender_queue=mqqt_sender_queue
         #queue get's shared with handler
         self.request_queue=request_queue
@@ -181,20 +183,22 @@ class MqttHandlerThread(threading.Thread):
         client.username_pw_set(self.USERNAME, self.PASSWORD)
         try:
             self.logger.info("trying to connect to mqtt server")
-            client.connect(self.HOSTNAME, port=1883)
+            client.connect(self.HOSTNAME, port=self.PORT)
             self.logger.info("connected to server %s" % self.HOSTNAME)
         except socket.timeout:
             self.logger.warning("no connection could be established")
+            return
         client.subscribe(self.TOPIC)
         self.logger.info("mqtt subscribed to topic: %s" % self.TOPIC)
         client.subscribe(self.QOSTOPIC, qos=2)
         self.logger.info("mqtt subscribed to QOS-topic: %s" % self.QOSTOPIC)
         client.loop_start()
-        while not self.stop_mqtt.is_set() or self.sender_queue.qsize() > 0:
+        while not self.stop_mqtt.is_set() and self.sender_queue.qsize() > 0:
             try:
                 # nur auf dem topic mit hoher qos senden
                 message = str(self.sender_queue.get(timeout=1))
-                client.publish(self.QOSTOPIC, message, qos=2)
+                client.publish(topic=self.QOSTOPIC, payload=message, qos=2)
+                self.logger.info("sent: %s" % message)  
             except queue.Empty:
                 continue
 
