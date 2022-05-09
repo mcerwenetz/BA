@@ -15,7 +15,6 @@ import android.hardware.TriggerEventListener;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -24,7 +23,6 @@ import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -74,13 +72,13 @@ public class RootActivity extends Activity implements SensorEventListener {
 
     public void setBtn(String activated) {
         runOnUiThread(
-                (String activted) -> (
-        if (Boolean.valueOf(activated) == true) {
-            btn.setBackgroundColor(Color.GREEN);
-        } else {
-            btn.setBackgroundColor(Color.RED);
-        }
-            )
+                () -> {
+                    if (Boolean.valueOf(activated) == true) {
+                        btn.setBackgroundColor(Color.GREEN);
+                    } else {
+                        btn.setBackgroundColor(Color.RED);
+                    }
+                });
     }
 
     public void setCheckBox(String value) {
