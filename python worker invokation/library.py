@@ -25,6 +25,15 @@ class Phone():
             self._sendMessage(message=rpc_message)
 
         threading.Thread(target=_write_text, args=(self, text_outer)).start()
+
+    def toggle_button(self):
+        
+        def _toogle_button(self) -> None:
+            """this toggles the button in the interface"""
+            rpc_message = rja.get_rpc_request(command="button", value="")
+            self._sendMessage(message=rpc_message)
+
+        threading.Thread(target=_toogle_button, args=(self, )).start()
        
     def get_sensor(self, sensor_name):
         sensor_message = rja.get_sensor_request(sensor_name)
