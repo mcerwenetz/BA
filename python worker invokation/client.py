@@ -4,7 +4,7 @@ import logging
 import threading
 import socket
 import queue
-from  request_json_adapter import RequestJsonAdapter as rja
+from  util import RequestJsonAdapter as rja
 
 
 
