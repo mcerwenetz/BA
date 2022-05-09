@@ -1,2 +1,2 @@
 Phone p;
-p.vibrate();
+p.vibrate(500);

@@ -62,7 +62,7 @@ Kleine Interaktionsmöglichkeiten werden geschaffen.
 
 Benötigt werden dafür eine Library zum Einbinden, eine Python-Anwendung und eine mobile Anwendung für Android Smartphones.
 
-\subsection*{Anwendung}
+\subsection*{Android-App}
 Die Anwendung besteht aus einem Textfeld, einer Ausgabe-LED, einer Signal LED für Nutzereingaben und zwei Buttons.
 Auf dem Textfeld können verschiedene Ausgaben präsentiert werden.
 Die Ausgbale LED kann vom Computer aus an und ausgeschaltet werden.
@@ -112,10 +112,6 @@ Diese soll im Textfeld angezeigt werden.
 \textbf{Dreh-Zähler}\\
 Ein Nutzer möchte in einem bestimmten Zeitraum zählen wie oft das Smartphone gedreht wurde.
 
-
-
-
-
 \section*{API}\label{sec:API}
 Gelöst werden sollen die Aufgaben durch das Aufrufen der API.
 Diese bietet die benötigten Funktionen an.
@@ -152,7 +148,7 @@ Der Aufruf sieht folgendermaßen aus.
 
 \subsection*{Ausgaben}\label{subsec:Ausgaben}
 
-\textbf{Display-Ausgabe}\\
+\textbf{Text-Ausgabe}\\
 Um auf dem Smartphone einen beliebigen Text anzuzeigen.
 Dies kann er zum Beispiel wie im folgenden Beispielcode machen.
 \lstinputlisting[]{listings/api/display.c}
@@ -162,27 +158,28 @@ Ein User möchte eine "LED" auf dem Display ansteuern.
 Dies kann er so machen.
 \lstinputlisting[]{listings/api/led.c}
 
-\textbf{LEDt toggeln}\\
+\textbf{LED toggeln}\\
 Ein User möchte den Zustand einer LED auf dem Display auf "aus" stellen wenn Sie an war und auf "an" wenn Sie aus war.
 Dies kann er so machen.
-\lstinputlisting[]{listings/api/led.c
+\lstinputlisting[]{listings/api/led.c}
 
 \textbf{Vibrationsauslöser}\\
-Ein Nutzer möchte das Smartphone auf Anfrage virbrieren lassen.
-Der Aufruf einer Methode lässt das Smartphone einmal vibrieren.
+Ein Nutzer möchte das Smartphone für eine gewisse Zeitspanne vibrieren lassen.
 \lstinputlisting[]{listings/api/vib.c}
 
-\textbf{Audio-Ausgabe}\\
-Ein Nutzer möchte den Pfad zu einer Audio-Datei angeben und
-\lstinputlisting[]{listings/api/vib.c}
-
-\section*{Android-Anwendung}
-Für Ausgaben existent eine Android Anwendung die verschiedene Interaktionsmöglichkeiten bereitstellt.
+\section*{Android Anwendung}
+Für Ausgaben existiert eine Android Anwendung die verschiedene Interaktionsmöglichkeiten bereitstellt.
 Das Userinterface wird in Grafik \ref{fig:android_ui} gezeigt.
+\\
 Bereit stehen eine LED bzw. ein Button, eine Textausgabezeile und eine Checkbox.
 Der Button ist nicht drückbar.
-Eine eingabe ist nicht vorgesehen.
+Eine Eingabe ist nicht vorgesehen.
 Er fungiert als Signal-LED die getoggelt werden kann.
+\\
+In der Textausgabe können beliebige Texte ausgegeben werden.
+\\
+Bei der checkbox kann der Haken gesetzt und wieder entfernt werden.
+Nachdem der Zustand geändert wurde wird eine Antwort über den aktuellen Zustand der Checkbox zurückgegeben.
 \begin{figure}[htbp] 
   \centering
   \includegraphics[width=.9\textwidth]{images/android_ui.png}
@@ -200,7 +197,6 @@ Clientseitig erfolgen sämtliche Aufrufe die Sensordaten abgreifen oder Steueran
 Die Middleware sammelt, sobald sich eine Android-Anwendung bei ihr anmeldet, gewisse Sensordaten und speichert Sie intern zwischen, damit Sie schnell vorrätig vorliegen.
 Die Speicherung erfolgt in einem seperaten Thread, der die letzten Zustände der Sensordaten hält.
 Werden Sensordaten abgerufen werden Sie aus der Liste entfernt.
-Sollten mehr als 5 Sensorwerte vorliegen werden die ältesten entfernt um die Ergebnisse aktuell zu halten.
 Sind noch keine Daten vorhanden, oder wird ein Sensor angefragt der im Smartphone nicht existent ist, wird ein Fehlercode zwischengespeichert.
 Die Verfügbarkeit der jeweiligen Sensoren wird beim Start der Anwendung ermittelt.
 \\
@@ -236,13 +232,158 @@ Falls ein Sensor angefragt wird der auf dem Smartphone nicht existiert wird eine
   \label{fig:android_app}
 \end{figure}
 
+\subsection*{Kommandos und Ausgaben}
+Für die Ausgabe auf dem Smartphone sind verschiedene Kommandos definiert.
+Diese sind der Tabelle \ref{tab:command_types} zu entnehmen.
+\texttt{CMD-Kürzel} beschreibt die Notation des Kürzels mit dem eine Aktion ausgeführt werden kann.
+Diese wird unter \texttt{Beschreibung} kurz zusammengefasst.
+\texttt{return} gibt an, ob der Aufruf des Requests eine Antwort rücksendet und somit auch, ob ein Aufruf der Funktion in der Library blockiert oder nur sendet.
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|c|c|c|}
+      \hline
+      CMD-Kürzel & Beschreibung & return\\
+      \hline
+      textview & Setzt \texttt{value} als Text im Textvie & False \\
+      button & Setzt Button auf value. Dies kann sein 
+        \tabitem true : setzt die Farbe auf Grün \\
+        \tabitem false : setzt die Farbe auf Rot \\
+        \tabitem toggle : Kehrt die Farbe um \\
+       & False \\
+      \hline
+  \end{tabular}
+  \caption{Kommando-Kürzel mit Beschreibung}
+  \label{tab:command_types}
+\end{table}
+
+
+\section*{Sensoren}
+Smartphones beeinhalten verschiedene Sensoren die Daten über die Umgebung erfassen können.
+In der Android Anwendung werden folgende Sensortypen verwendet:
+\begin{itemize}
+  \item Lineare Beschleunigungssensoren
+  \item Microfon
+  \item Annäherungssensor
+  \item Gyroskop
+\end{itemize}
+
+\subsection*{Lineare Beschleunigungssensoren}
+Beschleunigungssensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
+Eine Übersicht über die Anordungen der drei Axen ist in Grafik \ref{fig:and_axes} zu sehen.
+Die X-Achse verläuft horizontal durch das Display des Smartphones hindruch, die Y-Achse vertikal und die Z-Achse durchschneidet das Smartphone in die Tiefe.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.9\textwidth]{images/android_axes.png}
+  \caption{Android-Koordinatensystem}
+  \label{fig:and_axes}
+\end{figure}
+
+Die Beschleunigungsdaten werden dabei in einem festen Zeitraum gemessen.
+Hierfür stehen vier Schnelligkeitsstufen in absteigender Frequenz bereit:
+\begin{itemize}
+  \item SENSOR\_DELAY\_FASTEST : Kein Verzögerung. Verwendet die Frequenz des Sensors.
+  \item SENSOR\_DELAY\_GAME : Verzögerung um 1ms
+  \item SENSOR\_DELAY\_UI : Verzögerung um 2ms
+  \item SENSOR\_DELAY\_NORMAL : Verzögerung um 3ms
+\end{itemize}
+Die mit der jeweiligen Taktrate aufgenommenen Beschleunigungssensordaten umfassen jedoch auch die Ergbeschleunigung \texttt{g} in Höhe von $9.81 m/s^2$.
+Diese muss für die bereinigten, realen Werte zuerst noch von den aufgenommenen Werten subtrahiert werden.
+\\
+Hierfür muss zuerst der Gleichanteil der Graviation mittels eines Tiefpassfilters von den gemessenen Werten isoliert werden.
+\\
+Der Algorithmus dafür ist folgendermaßen definiert:
+\\
+Für eine unendliche Folge an isolierten Gravitationswerten g und Beschleunigungssensor-Messwerten e mit index $n \in \mathbb{N} $ gilt:
+\begin{equation}
+  g_n = g_{n-1} \cdot \alpha + (1 - \alpha) \cdot e_n
+\end{equation}
+Die Konstante $\alpha$ wird dabei folgendermaßen berechnet:
+\begin{equation}
+  \alpha = t / (t + \Delta_t )
+\end{equation}
+$t$ ist dabei die Zeitkonstante des Tiefpass-Filters und $\Delta_t$ die Anpassungsrate.
+\\
+Die Berechnung des bereinigten Beschleunigungssensorwerts ist durch einen Hochpass definiert:
+\\\\
+Für eine unendliche Folge an ereinigten Beschleunigungssensor-Messwerte l, isolierten Gravitationswerten g und Beschleunigungssensor-Messwerten e  mit index $n \in \mathbb{N}$ gilt:
+\begin{equation}
+  l_n = e_n - g_n
+\end{equation}
+Die Graviation könnte auch unter Zuhilfenahme des Gyroskops isoliert werden.
+Die wirkenden Kräfte auf die drei Achsen könnten je nach Neigung einzeln bemessen werden.
+Hierfür müsste die Masse des Smartphones jedoch bekannt und gleich verteilt sein.
+Deshalb wird hierfür auf die Pragmatische Hochpass-Tiefpass-Lösung zurückgegriffen.
+
+
+\subsection*{Angaben für die Nachrichtenformate}
+Alle Sensordaten besitzen ein festgelegtes Kürzel zur Standardisierung des Nachrichtenverkehrs.
+Sie dienen vor allem der Adressierung der jeweiligen Daten in der Middleware und in der Library.
+\\
+Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden. 
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|c|c|c}
+      \hline
+      TYPE-Kürzel & Beschreibung \\
+      \hline
+      accell\_x & Beschleunigungssensor für die X-Richtung \\
+      \hline
+      accell\_y & Beschleunigungssensor für die Y-Richtung \\
+      \hline
+      accell\_z & Beschleunigungssensor für die Z-Richtung \\
+      \hline
+
+  \end{tabular}
+  \caption{Sensor-Kürzel mit Beschreibung}
+  \label{tab:sensor_types}
+\end{table}
+
+
 
 \section*{Nachrichtenformate}
 Die Nachrichten werden im JSON-Format übertragen.
+Jede Nachricht beeinhaltet mindestens die Angabe eines Nachrichtenformat-Typs.
+Für die Aufrufe wurden verschiedene Nachrichtenformate definiert.
+\\
+Insgesamt gibt es vier Nachrichtentypen:
+\begin{enumerate}
+  \item sensor\_request
+  \item sensor\_update\_request
+  \item rpc\_request
+  \item rpc\_response
+\end{enumerate}
+\textbf{sensor\_requests} werden vom Endanwender-PC per UDP an die MIddleware gesendet.
+Sie beeinhalten neben dem Typ auch noch das Feld \texttt{sensor\_type}.
+Dieses definiert den Sensortyp für den eine Anfrage generiert wurde.
+Eine Übersicht ist in Listing \href{lst:sensor_request} zu finden.
+\\
+Im Listing wurde der Platzhalter \texttt{TYPE} für alle möglichen Sensortypen angegeben.
+Eine vollständige Aufschlüsselung ist in Tabelle \ref{tab:sensor_types} zu finden.
+\lstinputlisting[label={lst:sensor_request}, caption={sensor\_request}, captionpos=b]{listings/messages/sensor_request.json}
+
+\textbf{sensor\_update\_requests} werden von Smartphone über MQTT an die Middleware versandt.
+Sie umfassen ebenfalls wie \texttt{sensor\_requests} das Feld \texttt{sensor\_type}, jedoch zusätzlich auch das Feld \texttt{value} in dem der gemessene Sensorwert gespeichert wird.
+Dieser wird von der Middleware in eine interne Datenstruktur eingetragen.
+
+\textbf{rpc\_requests} werden vom Endanwender-PC per UDP an die Middleware gesendet.
+Sie lösen Aktionen auf dem Smartphone aus wie zum Beispiel das anschalten der LED, oder das Starten von Messungen.
+Sie werden von der Middleware per MQTT an das Smartphone weitergereicht.
+Die Übermittlung erfolgt jedoch über ein seperates Topic mit einem Quality of Service Wert von 2 um eine garantierte Übertragung zu gewährleisten.
+Das Smartphone hat dieses TOPIC ebenfalls mit einer QOS von 2 abboniert.
+eine Liste der Tabelle \ref{tab:command_types} zu entnehmen.
+
+
+
+
+rpc\_requests und response beeinhalten außerdem mindestens ein \texttt{command}-Feld und ein \texttt{value}-Feld.
+
 Nachfolgendes Listing zeigt beispielsweise den Aufruf die LED einzusschalten.
+
 \lstinputlisting[]{listings/messages/led.json}
 Folgende Nachricht beschreibt beispielsweise den übermittelten Sensorwert des accelerometers.
 \lstinputlisting{listings/messages/accell.json}
+
+
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
 % Meist ist das aber unnötig.

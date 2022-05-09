@@ -1,5 +1,5 @@
 {
-    "type" : "control_request",
-    "value" : "led on",
-    "arguments" : []
-  }
+    "type" : "rpc_request",
+    "command" : "set_button",
+    "value" : "true"
+}
