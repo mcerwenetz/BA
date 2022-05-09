@@ -27,15 +27,28 @@ class Phone():
         threading.Thread(target=_write_text, args=(self, text_outer)).start()
 
     def toggle_button(self):
-        
+
         def _toogle_button(self) -> None:
             """this toggles the button in the interface"""
             rpc_message = rja.get_rpc_request(command="button", value="")
             self._sendMessage(message=rpc_message)
 
         threading.Thread(target=_toogle_button, args=(self, )).start()
-       
-    def get_sensor(self, sensor_name):
+
+    def vibrate(self, time : str):
+        "vibrates phone for time miliseconds"
+
+        def _vibrate(self):
+            rpc_message = rja.get_rpc_request(command="vibrate", value=time)
+            self._sendMessage(rpc_message)
+
+        threading.Thread(target=_vibrate, args=(self, )).start()
+
+
+    def get_x_accello(self):
+        self._get_sensor("accell_x")
+
+    def _get_sensor(self, sensor_name):
         sensor_message = rja.get_sensor_request(sensor_name)
         self._sendMessage(message=sensor_message)
         request= dict(sensor_message)
@@ -45,7 +58,8 @@ class Phone():
         if result_sensor_type  == request_sensor_type:
             return result
         else:
-            raise Exception(f"Sensortypes mismatch: wanted: {request_sensor_type}, got {result_sensor_type}")
+            raise Exception(f"""Sensortypes mismatch: wanted: {request_sensor_type}, 
+                got {result_sensor_type}""")
 
 
     def _wait_on_result(self, request : dict) -> dict:

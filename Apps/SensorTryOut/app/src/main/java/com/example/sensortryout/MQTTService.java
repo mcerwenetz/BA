@@ -1,9 +1,11 @@
 package com.example.sensortryout;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.util.Log;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -27,16 +29,16 @@ public class MQTTService extends Service {
     final public static String ACTION_STOP = "stop"; // disconnect
     // for LocalService Messaging
     final public static String ACTION_PRESS = "press";
-//    final public static String PROTOCOL = "tcp";
+    //    final public static String PROTOCOL = "tcp";
     final public static String PROTOCOL = "ssl";
-//    final public static String URL = "atborg.fritz.box";
+    //    final public static String URL = "atborg.fritz.box";
     final public static String URL = "pma.inftech.hs-mannheim.de";
     final public static int PORT = 8883;
     final public static String CONNECTION_URL = String.format(Locale.GERMAN,
             "%s://%s:%d", PROTOCOL, URL, PORT);
-//    final public static String USER = "";
+    //    final public static String USER = "";
     final public static String USER = "22thesis01";
-//    final public static String PASSWORT = "";
+    //    final public static String PASSWORT = "";
     final public static String PASSWORT = "n4xdnp36";
     private static final String TOPIC = "22thesis01/test";
     private static final String TOPIC_QOS = "22thesis01/test_qos";
@@ -48,42 +50,42 @@ public class MQTTService extends Service {
 
     final private MqttMessaging.FailureListener failureListener =
             new MqttMessaging.FailureListener() {
-        @Override
-        public void onConnectionError(Throwable throwable) {
-            Log.e(TAG,"ConnectionError: " + throwable.getMessage());
-        }
+                @Override
+                public void onConnectionError(Throwable throwable) {
+                    Log.e(TAG, "ConnectionError: " + throwable.getMessage());
+                }
 
-        @Override
-        public void onMessageError(Throwable throwable, String msg) {
-            Log.e(TAG,"MessageError: " + throwable.getMessage());
-        }
+                @Override
+                public void onMessageError(Throwable throwable, String msg) {
+                    Log.e(TAG, "MessageError: " + throwable.getMessage());
+                }
 
-        @Override
-        public void onSubscriptionError(Throwable throwable, String topic) {
-            Log.e(TAG,"SubscriptionError:" + throwable.getMessage());
-        }
-    };
+                @Override
+                public void onSubscriptionError(Throwable throwable, String topic) {
+                    Log.e(TAG, "SubscriptionError:" + throwable.getMessage());
+                }
+            };
 
     final private MqttMessaging.ConnectionListener connectionListener = new MqttMessaging.
             ConnectionListener() {
         @Override
         public void onConnect() {
-            Log.v(TAG,"connected");
+            Log.v(TAG, "connected");
 
         }
 
         @Override
         public void onDisconnect() {
-            Log.v(TAG,"disconnected");
+            Log.v(TAG, "disconnected");
         }
     };
     private AtomicBoolean keepSending;
 
-    public void send(JSONObject jo){
+    public void send(JSONObject jo) {
         mqttMessaging.send(TOPIC, jo.toString());
     }
 
-    public void sendRpcAnswer(JSONObject jo){
+    public void sendRpcAnswer(JSONObject jo) {
         mqttMessaging.send(TOPIC_QOS, jo.toString());
     }
 
@@ -136,8 +138,6 @@ public class MQTTService extends Service {
     }
 
 
-
-
     private void addTopic(String topic) {
         if (this.topicList.contains(topic))
             return;
@@ -160,33 +160,51 @@ public class MQTTService extends Service {
             e.printStackTrace();
         }
         String type = null;
-        String command = null;
-        String value = null;
         try {
             type = jo.getString("type");
+            if (type.equals("rpc_request")) {
+                handle_rpc_request(jo);
+            }
+        } catch (JSONException je) {
+            je.printStackTrace();
+        } catch (NullPointerException npe) {
+            //ignore. if type is not rpc command and value are not needed anyway
+        }
+    };
+
+    private void handle_rpc_request(JSONObject jo) {
+        String command = null;
+        String value = null;
+
+
+        try {
             command = jo.getString("command");
             value = jo.getString("value");
 
         } catch (JSONException je) {
             je.printStackTrace();
-        } catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
             //ignore. if type is not rpc command and value are not needed anyway
         }
-        if(type.equals("rpc_request")){
-            if(command.equals("textview")){
-                this.rootActivity.setTextView(value);
-            }
-            if(command.equals("button")){
-                this.rootActivity.toogleButton();
-            }
-            if(command.equals("checkbox")){
-                this.rootActivity.setCheckBox(value);
-                JSONObject rpc_answer = RequestJsonAdapter.get_rpc_response(command, value);
-                sendRpcAnswer(rpc_answer);
-            }
+        if (command.equals("textview")) {
+            this.rootActivity.setTextView(value);
         }
+        if (command.equals("button")) {
+            this.rootActivity.toogleButton();
+        }
+        if (command.equals("checkbox")) {
+            this.rootActivity.setCheckBox(value);
+            JSONObject rpc_answer = RequestJsonAdapter.get_rpc_response(command, value);
+            sendRpcAnswer(rpc_answer);
+        }
+        if (command.equals("vibrate")) {
+            Log.v(TAG, "trying to vibrate");
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(Integer.valueOf(value));
+            Log.v(TAG, String.format("Vibrating for %s miliseconds", value));
+        }
+    }
 
-    };
 
     //Connect and Disconnect
     private void connect() {
@@ -221,8 +239,7 @@ public class MQTTService extends Service {
                 }
             }
             mqttMessaging = null;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -232,7 +249,7 @@ public class MQTTService extends Service {
     final private IBinder localBinder = new LocalBinder();
 
     public void setKeepSending(AtomicBoolean keepSending) {
-        this.keepSending=keepSending;
+        this.keepSending = keepSending;
     }
 
     public void setRootActivity(RootActivity rootActivity) {
