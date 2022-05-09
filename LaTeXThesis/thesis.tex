@@ -113,6 +113,9 @@ Diese soll im Textfeld angezeigt werden.
 Ein Nutzer möchte in einem bestimmten Zeitraum zählen wie oft das Smartphone gedreht wurde.
 
 
+
+
+
 \section*{API}\label{sec:API}
 Gelöst werden sollen die Aufgaben durch das Aufrufen der API.
 Diese bietet die benötigten Funktionen an.
@@ -159,6 +162,11 @@ Ein User möchte eine "LED" auf dem Display ansteuern.
 Dies kann er so machen.
 \lstinputlisting[]{listings/api/led.c}
 
+\textbf{LEDt toggeln}\\
+Ein User möchte den Zustand einer LED auf dem Display auf "aus" stellen wenn Sie an war und auf "an" wenn Sie aus war.
+Dies kann er so machen.
+\lstinputlisting[]{listings/api/led.c
+
 \textbf{Vibrationsauslöser}\\
 Ein Nutzer möchte das Smartphone auf Anfrage virbrieren lassen.
 Der Aufruf einer Methode lässt das Smartphone einmal vibrieren.
@@ -168,6 +176,19 @@ Der Aufruf einer Methode lässt das Smartphone einmal vibrieren.
 Ein Nutzer möchte den Pfad zu einer Audio-Datei angeben und
 \lstinputlisting[]{listings/api/vib.c}
 
+\section*{Android-Anwendung}
+Für Ausgaben existent eine Android Anwendung die verschiedene Interaktionsmöglichkeiten bereitstellt.
+Das Userinterface wird in Grafik \ref{fig:android_ui} gezeigt.
+Bereit stehen eine LED bzw. ein Button, eine Textausgabezeile und eine Checkbox.
+Der Button ist nicht drückbar.
+Eine eingabe ist nicht vorgesehen.
+Er fungiert als Signal-LED die getoggelt werden kann.
+\begin{figure}[htbp] 
+  \centering
+  \includegraphics[width=.9\textwidth]{images/android_ui.png}
+  \caption{Android App UI}
+  \label{fig:android_ui}
+\end{figure}
 
 
 
@@ -190,7 +211,7 @@ Auf diesem Topic werden Nachrichten mit der QOS von 2 versandt auf dem für regu
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.9\textwidth]{images/design.png}
-  \caption{Android-App-Aufbau}
+  \caption{System-Aufbau}
   \label{fig:design}
 \end{figure}
 
