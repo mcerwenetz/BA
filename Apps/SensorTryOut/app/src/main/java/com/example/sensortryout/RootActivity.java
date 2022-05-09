@@ -66,20 +66,25 @@ public class RootActivity extends Activity implements SensorEventListener {
         }
     };
 
-    public void setTextView(String toSet){
-        if(this.tv != null){
+    public void setTextView(String toSet) {
+        if (this.tv != null) {
             this.tv.setText(toSet);
         }
     }
 
-    public void setBtn(String activated){
-        runOnUiThread(()->
-            this.btn.setPressed(Boolean.valueOf(activated))
-        );
+    public void setBtn(String activated) {
+        runOnUiThread(
+                (String activted) -> (
+        if (Boolean.valueOf(activated) == true) {
+            btn.setBackgroundColor(Color.GREEN);
+        } else {
+            btn.setBackgroundColor(Color.RED);
+        }
+            )
     }
 
-    public void setCheckBox(String value){
-        runOnUiThread(()->
+    public void setCheckBox(String value) {
+        runOnUiThread(() ->
                 this.cb.setPressed(Boolean.valueOf(value))
         );
     }
@@ -99,10 +104,10 @@ public class RootActivity extends Activity implements SensorEventListener {
     }
 
 
-    public void toogleButton(){
-        if(ButtonToggleBool == true){
+    public void toogleButton() {
+        if (ButtonToggleBool == true) {
             btn.setBackgroundColor(Color.RED);
-        }else{
+        } else {
             btn.setBackgroundColor(Color.GREEN);
         }
         ButtonToggleBool = !ButtonToggleBool;
@@ -152,35 +157,35 @@ public class RootActivity extends Activity implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
 //        Runnable r = () -> {
-            float[] linear_acceleration = {0.0F, 0.0F, 0.0F};
-            float[] gravity = {0.0F, 0.0F, 0.0F};
+        float[] linear_acceleration = {0.0F, 0.0F, 0.0F};
+        float[] gravity = {0.0F, 0.0F, 0.0F};
 
-            final float alpha = (float) 0.8;
+        final float alpha = (float) 0.8;
 
-            // Isolate the force of gravity with the low-pass filter.
-            gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
-            gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
-            gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
+        // Isolate the force of gravity with the low-pass filter.
+        gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
+        gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
+        gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
 
-            // Remove the gravity contribution with the high-pass filter.
-            linear_acceleration[0] = event.values[0] - gravity[0];
-            linear_acceleration[1] = event.values[1] - gravity[1];
-            linear_acceleration[2] = event.values[2] - gravity[2];
+        // Remove the gravity contribution with the high-pass filter.
+        linear_acceleration[0] = event.values[0] - gravity[0];
+        linear_acceleration[1] = event.values[1] - gravity[1];
+        linear_acceleration[2] = event.values[2] - gravity[2];
 
-            JSONObject[] jos = new JSONObject[3];
-            try {
-                jos[0]=RequestJsonAdapter.get_update_request("accell_x", String.valueOf(linear_acceleration[0]));
-                jos[1]=RequestJsonAdapter.get_update_request("accell_y", String.valueOf(linear_acceleration[0]));
-                jos[2]=RequestJsonAdapter.get_update_request("accell_z", String.valueOf(linear_acceleration[0]));
-            } catch (JSONException e) {
-                e.printStackTrace();
+        JSONObject[] jos = new JSONObject[3];
+        try {
+            jos[0] = RequestJsonAdapter.get_update_request("accell_x", String.valueOf(linear_acceleration[0]));
+            jos[1] = RequestJsonAdapter.get_update_request("accell_y", String.valueOf(linear_acceleration[0]));
+            jos[2] = RequestJsonAdapter.get_update_request("accell_z", String.valueOf(linear_acceleration[0]));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        for (JSONObject jo : jos) {
+            if (mqttService != null) {
+                mqttService.send(jo);
             }
-            for(JSONObject jo : jos){
-                if(mqttService != null){
-                    mqttService.send(jo);
-                }
-            }
-            //            for (float la : linear_acceleration) {
+        }
+        //            for (float la : linear_acceleration) {
 //                JSONObject jo = null;
 //                try {
 //                    jo = RequestJsonAdapter.get_update_request("accell_x", String.valueOf(la));

@@ -190,7 +190,12 @@ public class MQTTService extends Service {
             this.rootActivity.setTextView(value);
         }
         if (command.equals("button")) {
-            this.rootActivity.toogleButton();
+            if(value.equals("toggle")){
+                this.rootActivity.toogleButton();
+            }
+            else{
+                this.rootActivity.setBtn()
+            }
         }
         if (command.equals("checkbox")) {
             this.rootActivity.setCheckBox(value);
