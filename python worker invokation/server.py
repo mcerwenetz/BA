@@ -3,6 +3,7 @@
 import logging
 import queue
 import socket
+import ssl
 import threading
 import json
 import paho.mqtt.client as mqtt
@@ -147,7 +148,7 @@ class MqttHandlerThread(threading.Thread):
 
         super().__init__()
         self.HOSTNAME = "pma.inftech.hs-mannheim.de"
-        self.HOSTNAME = "atborg"
+        # self.HOSTNAME = "atborg"
         self.TOPIC= "22thesis01/test"
         self.QOSTOPIC = "22thesis01/test_qos"
         self.USERNAME = "22thesis01"
@@ -181,6 +182,9 @@ class MqttHandlerThread(threading.Thread):
         client = mqtt.Client("c1")
         client.on_message = self.on_message
         client.username_pw_set(self.USERNAME, self.PASSWORD)
+        client.tls_set_context(ssl.create_default_context())
+        client.tls_insecure_set(True)
+
         try:
             self.logger.info("trying to connect to mqtt server")
             client.connect(self.HOSTNAME, port=self.PORT)
@@ -193,18 +197,19 @@ class MqttHandlerThread(threading.Thread):
         client.subscribe(self.QOSTOPIC, qos=2)
         self.logger.info("mqtt subscribed to QOS-topic: %s" % self.QOSTOPIC)
         client.loop_start()
-        while not self.stop_mqtt.is_set() and self.sender_queue.qsize() > 0:
+        while not self.stop_mqtt.is_set() or self.sender_queue.qsize() > 0:
             try:
                 # nur auf dem topic mit hoher qos senden
                 message = str(self.sender_queue.get(timeout=1))
                 client.publish(topic=self.QOSTOPIC, payload=message, qos=2)
-                self.logger.info("sent: %s" % message)  
+                self.logger.info("sent: %s" % message) 
             except queue.Empty:
                 continue
 
             except TypeError as exception:
                 self.logger.error(str(exception))
         client.loop_stop()
+        self.logger.info("stopped loop")
 
 
 
