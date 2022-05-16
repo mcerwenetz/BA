@@ -31,7 +31,7 @@ für die didaktische Unterstützung von Programmiervorlesungen}
   Embeddedprojekte erlauben mit vergleichsweise wenig Aufwand einen gelungen Einstieg mit effektiver Lernerfahrung.
   Solche Projekte benötigen allerdings viel Peripherie und Hardware.
   Diese benötigt wiederrum eine nicht niedrigschwellige Erfahrung zum Beispiel im Umgang mit Microcontrollern.
-  Smartphones haben diese Nachteile nicht bieten allerdings trotzdem einen hohen Umfang an Sensoren.
+  Smartphones haben diese Nachteile nicht, bieten allerdings trotzdem einen hohen Umfang an Sensoren.
   \\
   In dieser Arbeit wird ein Framework erstellt, dass das Smartphone nutzt um mit dem Microcontroller kleine Softwareprojekte umzusetzen.
   Kleine Aufgabenstellungen mit Musterlösungen werden ausgearbeitet und mitgereicht.
@@ -57,20 +57,22 @@ Moderne Smartphones bieten hier Abhilfe da Sie meistens mit verschiedenen Sensor
 Viele Kinder besitzen bereits mit 10 Jahren \cite{bitkom_smartphones} ein Smartphone. 
 \\
 Im Rahmen dieser Arbeit soll ein Framework entwickelt werden, dass das Smartphone von Anwendern einbindet um Sie beim Programmierenlernen zu unterstützen.
-Dieses orientiert sich ganz an bereits bestehenden System wie Arduino und Microbit.
-Kleine Interaktionsmöglichkeiten werden geschaffen.
-
-Benötigt werden dafür eine Library zum Einbinden, eine Python-Anwendung und eine mobile Anwendung für Android Smartphones.
-
-\subsection*{Android-App}
-Die Anwendung besteht aus einem Textfeld, einer Ausgabe-LED, einer Signal LED für Nutzereingaben und zwei Buttons.
-Auf dem Textfeld können verschiedene Ausgaben präsentiert werden.
-Die Ausgbale LED kann vom Computer aus an und ausgeschaltet werden.
-Die Signal-LED dient dazu dem Nutzer zu signalisieren, ob sich das Smartphone gerade in einem Aufnahmeprozess befindet.
-Die Buttons werden verwendet um auf dem PC Steuerbefehle auszuführen.
+Dieses orientiert sich ganz an bereits bestehenden Schulungsprojekten wie dem Arduino oder BBC Microbit.
+Schüler und Studenten lösen Aufgaben, lesen Sensordaten aus oder starten Messungen oder Aktionen auf dem Smartphone.
 \\
-Neben den Ein- und Ausgabemöglichkeiten im UI-Screen kann zur Eingabe auch noch das Microphon und das accelerometer genutzt werden, sofern vorhanden.
-Als Ausgabemöglichkeiten kommen der Vibrationsmotor sowie der Lautsprecher des Smartphones zum Einsatz.
+Das Framework besteht aus einer programmiersprachenunabhängigen Library, einer Server-Anwendung und einer mobilen Anwendung für Android Smartphones.
+\\
+Die Library stellt Funktionsaufrufe bereit.
+Diese können aufgerufen werden und geben Sensordaten zurück oder starten Aktion 
+% \subsection*{Android-App}
+% Die Anwendung besteht aus einem Textfeld, einer Ausgabe-LED, einer Signal LED für Nutzereingaben und zwei Buttons.
+% Auf dem Textfeld können verschiedene Ausgaben präsentiert werden.
+% Die Ausgbale LED kann vom Computer aus an und ausgeschaltet werden.
+% Die Signal-LED dient dazu dem Nutzer zu signalisieren, ob sich das Smartphone gerade in einem Aufnahmeprozess befindet.
+% Die Buttons werden verwendet um auf dem PC Steuerbefehle auszuführen.
+% \\
+% Neben den Ein- und Ausgabemöglichkeiten im UI-Screen kann zur Eingabe auch noch das Microphon und das accelerometer genutzt werden, sofern vorhanden.
+% Als Ausgabemöglichkeiten kommen der Vibrationsmotor sowie der Lautsprecher des Smartphones zum Einsatz.
 
 \chapter{Experimente/Aufgaben} \label{chap:Experimente}
 

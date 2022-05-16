@@ -194,7 +194,7 @@ class MqttHandlerThread(threading.Thread):
             return
         client.subscribe(self.TOPIC)
         self.logger.info("mqtt subscribed to topic: %s" % self.TOPIC)
-        client.subscribe(self.QOSTOPIC, qos=2)
+        client.subscribe(self.QOSTOPIC, qos=0)
         self.logger.info("mqtt subscribed to QOS-topic: %s" % self.QOSTOPIC)
         client.loop_start()
         while not self.stop_mqtt.is_set() or self.sender_queue.qsize() > 0:
