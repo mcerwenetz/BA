@@ -57,11 +57,7 @@ public:
     {
         return f_addr;
     }
-    std::string get_addr() const
-    {
-        return f_addr;
-    }
-
+    
     int send(const char *msg, size_t size)
     {
         return sendto(f_socket, msg, size, 0, f_addrinfo->ai_addr, f_addrinfo->ai_addrlen);
