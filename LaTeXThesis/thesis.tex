@@ -74,7 +74,7 @@ Diese können aufgerufen werden und geben Sensordaten zurück oder starten Aktio
 % Neben den Ein- und Ausgabemöglichkeiten im UI-Screen kann zur Eingabe auch noch das Microphon und das accelerometer genutzt werden, sofern vorhanden.
 % Als Ausgabemöglichkeiten kommen der Vibrationsmotor sowie der Lautsprecher des Smartphones zum Einsatz.
 
-\chapter{Experimente/Aufgaben} \label{chap:Experimente}
+\chapter{Aufgabenstellungen} \label{chap:Experimente}
 
 \section*{Aufgaben}
 Dieses Kapitel enthält verschiedene Beispielaufgaben die mit dem Framework gelöst werden sollen.
@@ -189,7 +189,7 @@ Nachdem der Zustand geändert wurde wird eine Antwort über den aktuellen Zustan
   \label{fig:android_ui}
 \end{figure}
 
-
+\section*{Softwareanforderungen}\label{sec:anforderungen}
 
 \chapter{Architektur} \label{chap:architektur}
 Der Aufbau des Frameworks besteht aus einer mobilen Anwendung für Android-Smartphones, Bibliothek in der Programmiersprache C und einer Middleware die den Austausch Koordiniert.
@@ -342,7 +342,13 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
 
 
 
-\section*{Nachrichtenformate}
+\chapter*{Nachrichtenformate}
+Damit der gesamte Funktionsablauf des Frameworks korrekt funktioniert müssen Nachrichten zwischen den einzelenen Komponenten gesendet werden können.
+Diese werden vorher konzipiert und berücksichtigen die in Kapitel \ref{sec:anforderungen} erwähnten Anforderungen sowohl auf Library, Middleware, und Smartphone-Seite.
+
+
+
+
 Die Nachrichten werden im JSON-Format übertragen.
 Jede Nachricht beeinhaltet mindestens die Angabe eines Nachrichtenformat-Typs.
 Für die Aufrufe wurden verschiedene Nachrichtenformate definiert.
@@ -386,6 +392,8 @@ Folgende Nachricht beschreibt beispielsweise den übermittelten Sensorwert des a
 \lstinputlisting{listings/messages/accell.json}
 
 
+\chapter*{Fazit}
+
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
 % Meist ist das aber unnötig.
@@ -409,3 +417,5 @@ Folgende Nachricht beschreibt beispielsweise den übermittelten Sensorwert des a
 ;;; Local Variables:
 ;;; ispell-local-dictionary: "de_DE-neu"
 ;;; End:
+
+
