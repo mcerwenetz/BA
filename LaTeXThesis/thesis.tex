@@ -182,14 +182,34 @@ In der Textausgabe können beliebige Texte ausgegeben werden.
 \\
 Bei der checkbox kann der Haken gesetzt und wieder entfernt werden.
 Nachdem der Zustand geändert wurde wird eine Antwort über den aktuellen Zustand der Checkbox zurückgegeben.
-\begin{figure}[htbp] 
-  \centering
-  \includegraphics[width=.9\textwidth]{images/android_ui.png}
-  \caption{Android App UI}
-  \label{fig:android_ui}
-\end{figure}
+
 
 \section*{Softwareanforderungen}\label{sec:anforderungen}
+Aus den unter \ref*{sec:API} genannten Funktionen ergeben sich die Anforderungen an das Framework.
+\\
+Es wird unterschieden in Funktionen die Sensordaten auslesen und Funktionen die Aktionen auf dem  auslösen.
+\subsection*{Sensordaten-Funktionen}
+Um das optimale Lernergebnis zu erhalten müssen Sensordaten responsiv vorliegen.
+Je schneller Richtungs-, Helligkeits oder Lautstärkedaten vorliegen desto schneller kann im Programm drauf reagiert werden.
+So können Experimente eher begriffen werden, da Auswirkungen in der Realität instantan Auswirkungen auf den vom Schüler geschriebenen Programmablauf haben.
+Eine maximale Responszeit von ca. 20 ms ist hierfür zielführend.
+\\
+Beim Aufruf der Funktion wird kein Aufruf gestartet der das Smartphone anweist eine einzelne Sensormessung zu starten und den aktuell vorliegenden Sensorwert zurückzusenden.
+Die Latenzen zwischen Smartphone und Bibliothek könnten je nach Verbindungsart, Bandbreite und Geräteanzahl im WLAN stark varrieren.
+Das Smartphone muss in periodischen Abständen Sensordaten messen und senden. Die Sensorwerte werden dann zentral auf dem gleichen Rechner, auf dem auch die Bibliothek läuft zwischengespeichert.
+So wird die mögliche Distanz zwischen Sender und Empfänger beschränkt auf den gleichen Rechner.
+Sensordaten liegen immer zwischengespeichert vor.
+Neue Daten werden beim Eintreffen der periodischen Aktualisierungen eingetragen.
+Ein Funktionsaufruf der Sensordaten abfragt muss dann auf die zentral zwischengespeicherten Sensordaten zurückgreifen.
+So wird der Responszeit erhöht und es liegt immer das aktuellste Sensor-Ergebnis im Zwischenspeicher vor.
+Der Tätigkeitsbereich vom Smartphone umfasst jedoch nicht nur die Messung und Übermittlung der gemessenen Daten.
+
+\subsection*{Auslösende Funktionen}
+Die Anwendung auf dem Smartphone bietet ebenfalls verschiedene UI-Elemente welche aus der Ferne per Funktionsaufruf bedient werden.
+Außerdem werden zeitlich beschränkte Messungen umgesetzt die auf Anfrage gestartet werden sollen.
+Diese Art der Aufrufe benötigt keinen kontunierlichen Strom aus Werten, sondern wird einzeln aufgerufen und geben gegebenenfalls einzeln Werte zurück.
+Der Fokus liegt bei diesen Anfragen nicht auf Responsivität, sondern auf Sicherheit des Aufrufs.
+Bei dieser Art Aufruf werden Daten erst auf Anfrage generiert und dann, sofern vorgesehen, zurückgesendet.
 
 \chapter{Architektur} \label{chap:architektur}
 Der Aufbau des Frameworks besteht aus einer mobilen Anwendung für Android-Smartphones, Bibliothek in der Programmiersprache C und einer Middleware die den Austausch Koordiniert.
