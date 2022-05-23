@@ -1,9 +1,10 @@
 import json
+import os.path
 
 class RequestJsonAdapter():
     """This Class provides static methods to convert function calls to json"""
-    def __init__(self) -> None:
-        pass
+    def __init__(self, path_to_config) -> None:
+        "creates JSON Adapter"
 
     @staticmethod
     def get_update_request(sensor_type,value):
@@ -55,9 +56,23 @@ class RequestJsonAdapter():
         }
         return res
 
-    
 
-class _RequestResponseDict(dict):
+class ReadOnlyDict(dict):
+    def __init__(self) -> None:
+        super().__init__()
+        
+    def __getitem__(self, __k):
+        if __k in self:
+            return super().__getitem__(__k)
+
+    def __setitem__(self, __k, __v) -> None:
+        pass
+
+    def __internal__setitem__(self, __k, __v) -> None:
+        return super().__setitem__(__k, __v)
+
+
+class _RequestResponseDict(ReadOnlyDict):
     """constant dictionary which checks if key exists if accessed and does not throw an error
     if key is not inside.
     Also provides a check function to check if a request fits the received response
@@ -79,16 +94,7 @@ class _RequestResponseDict(dict):
         """
         return self[request] == response
         
-    def __getitem__(self, __k):
-        if __k in self:
-            return super().__getitem__(__k)
-
-    def __setitem__(self, __k, __v) -> None:
-        pass
-
-    def __internal__setitem__(self, __k, __v) -> None:
-        return super().__setitem__(__k, __v)
-
 
 
 REQUEST_RESPONSE_DICT = _RequestResponseDict()
+CONFIG = json.load("config.json")

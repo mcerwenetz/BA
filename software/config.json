@@ -1,0 +1,62 @@
+{
+    "messages": {
+        "update_request": {
+            "type": "update_request",
+            "sensor_type": "",
+            "sensor_value": ""
+        },
+        "sensor_response": {
+            "type": "sensor_response",
+            "sensor_type": "",
+            "value": ""
+        },
+        "sensor_request": {
+            "type": "sensor_request",
+            "sensor_type": ""
+        },
+        "rpc_request": {
+            "type": "rpc_request",
+            "command": "",
+            "value": ""
+        },
+        "rpc_response": {
+            "type": "rpc_response",
+            "command": "",
+            "value": ""
+        }
+    },
+    "commands": {
+        "write_text": "write_text",
+        "button": "button",
+        "button_toggle": "button_toggle",
+        "vibrate": "vibrate"
+    },
+    "sensors": {
+        "accell_x": "accell_x",
+        "accell_y": "accell_y",
+        "accell_z": "accell_z"
+    },
+    "mqtt": {
+        "topics": {
+            "normal": "22thesis01/test",
+            "qos": "22thesis01"
+        },
+        "credentials": {
+            "username": "22thesis01",
+            "password": "n4xdnp36"
+        },
+        "network": {
+            "port": 8883,
+            "hostname": "pma.inftech.hs-mannheim.de"
+        }
+    },
+    "middleware" : {
+        "udp_ip" : "127.0.0.1",
+        "listener_port" : 5006,
+        "sender_port" : 5005
+    },
+    "client" : {
+      "listener_port" : 5005,
+      "sender_port" : 5006   
+    }
+}
