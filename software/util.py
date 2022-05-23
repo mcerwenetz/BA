@@ -5,7 +5,7 @@ import json
 with open("config.json", "r") as fp:
     _CONFIG : dict = json.load(fp)
 
-def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFIG):
+def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFIG) -> (dict | str | None):
     """recursivly searches configuration dictionary
 
     Args:
@@ -40,6 +40,17 @@ def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFI
                 return value
 
 
+class MessageTypes():
+    UPDATE_REQUEST = get_config_parameter("update_request")["type"]
+    SENSOR_REQUEST = get_config_parameter("sensor_request")["type"]
+    SENSOR_RESPONSE = get_config_parameter("sensor_response")["type"]
+    RPC_REQUEST = get_config_parameter("rpc_request")["type"]
+    RPC_RESPONSE = get_config_parameter("rpc_response")["type"]
+    PROTOCOL_REQUEST = get_config_parameter("protocol_request")["type"]
+    PROTOCOL_RESPONSE = get_config_parameter("protocol_response")["type"]
+
+
+
 class JsonMessagesWrapper():
     """This Class provides static methods to convert function calls to json"""
 
@@ -66,7 +77,7 @@ class JsonMessagesWrapper():
         """
         command = get_config_parameter(command)
         if command == None:
-            raise Exception("command %s not found in configdatabase")
+            raise CommandNotSupportedException(command)
         message : dict = get_config_parameter("rpc_request")
         message["command"] = command
         message["value"] = value
@@ -80,12 +91,22 @@ class JsonMessagesWrapper():
         """
         command = get_config_parameter(command)
         if command == None:
-            raise Exception("command %s not found in configdatabase")
+            raise CommandNotSupportedException(command)
         message : dict = get_config_parameter("rpc_request")
         message["command"] = command
         message["value"] = value
         return message
 
+
+    @staticmethod
+    def get_protocol_response():
+        """
+        answers an rpc request
+        raises: Exception if command is not found
+        """
+        message : dict = get_config_parameter("protocol_response")
+        message["value"] = _CONFIG
+        return message
 
 class ReadOnlyDict(dict):
     def __init__(self) -> None:
@@ -127,6 +148,11 @@ class _RequestResponseDict(ReadOnlyDict):
 class SensorNotSupportedException(Exception):
     def __init__(self, sensor_name) -> None:
         cause = "Sensor %s not supported" % sensor_name
+        super().__init__(cause)
+
+class CommandNotSupportedException(Exception):
+    def __init__(self, command) -> None:
+        cause = "Command %s not supported" % command
         super().__init__(cause)
         
 

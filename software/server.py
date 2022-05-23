@@ -8,7 +8,7 @@ import threading
 import json
 import paho.mqtt.client as mqtt
 
-from util import SensorNotSupportedException, get_config_parameter
+from util import JsonMessagesWrapper, MessageTypes, SensorNotSupportedException, get_config_parameter
 
 
 class SensorDB():
@@ -66,6 +66,7 @@ class DataHandler():
         self.stop_handler_event = threading.Event()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
         self.sock.settimeout(1)
+        self.json_message_wrapper = JsonMessagesWrapper()
         self.logger = logging.getLogger(str(type(self).__name__))
 
 
@@ -117,20 +118,24 @@ class DataHandler():
             # self.result_stats()
             if not request is None:
                 request = json.loads(request)
-                if request["type"] == "rpc_request":
+                request_type = request["type"]
+                if request_type == MessageTypes.RPC_REQUEST:
                     self.logger.info("rpc request: %s" % str(request))
                     self.mqtt_sender_queue.put(request)
-                elif request["type"] == "update_request":
+                elif request_type == MessageTypes.UPDATE_REQUEST:
                     sensor_key = request["sensor_type"]
                     value = request["sensor_value"]
                     self.data_structure.update(sensor_key, value)
-                elif request["type"] == "sensor_request":
+                elif request_type == MessageTypes.SENSOR_REQUEST:
                     # self.logger.info("sensor request: %s" % request)
                     sensor_key = request["sensor_type"]
                     result = self.data_structure.get(sensor_key)
                     self.answer_queue.put(result)
-                elif request["type"] == "rpc_response":
+                elif request_type == MessageTypes.RPC_RESPONSE:
                     self.answer_queue.put(request["value"])
+                elif request_type == MessageTypes.PROTOCOL_REQUEST:
+                    reponse = self.json_message_wrapper.get_protocol_response()
+                    self.mqtt_sender_queue.put(reponse)
             else:
                 continue
 

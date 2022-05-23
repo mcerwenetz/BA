@@ -6,14 +6,14 @@
             "sensor_type": "",
             "sensor_value": ""
         },
+        "sensor_request": {
+            "type": "sensor_request",
+            "sensor_type": ""
+        },
         "sensor_response": {
             "type": "sensor_response",
             "sensor_type": "",
             "value": ""
-        },
-        "sensor_request": {
-            "type": "sensor_request",
-            "sensor_type": ""
         },
         "rpc_request": {
             "type": "rpc_request",
@@ -23,6 +23,13 @@
         "rpc_response": {
             "type": "rpc_response",
             "command": "",
+            "value": ""
+        },
+        "protocol_request": {
+            "type": "protocol_request"
+        },
+        "protocol_response": {
+            "type": "protocol_response",
             "value": ""
         }
     },
