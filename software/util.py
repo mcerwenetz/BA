@@ -1,45 +1,88 @@
 """This Modules provied auxillary tools for the server and python library"""
 
-from asyncio.windows_events import NULL
+from email import message
 import json
-
-from numpy import isin
-
 
 with open("config.json", "r") as fp:
     _CONFIG : dict = json.load(fp)
+
+def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFIG):
+    """recursivly searches configuration dictionary
+
+    Args:
+        parameter_key : str \\
+        Parameterkeyword to access tict
+
+        config_dictionary : dict \\
+        Dictionary to look into recursivly.
+        Gets called with default global _CONFIG Dictionary of Module.
+        Can be subsituted with every dictionary to recursivly search key.
+
+    Returns:
+        str or dict depending of the value for key or None if key is not in config_dictionary
+
+    use best to access constant configuration parameters like sensors or network ports
+
+    raises exception if parameter_key is not found
+    """
+    
+    for key, value in config_dictionary.items():
+        if isinstance(value, dict):
+            if key == parameter_key:
+                return value
+            ret = get_config_parameter(parameter_key, value)
+            if ret != None:
+                return ret
+        elif isinstance(value, str):
+            if key == parameter_key:
+                return value
 
 
 class JsonMessagesWrapper():
     """This Class provides static methods to convert function calls to json"""
 
-
-    @staticmethod
-    def get_update_request(sensor_type,value):
-        "update a sensor value"
-        return _CONFIG["messages"]["update_request"]
-
-
     @staticmethod
     def get_sensor_response(sensor_type, value):
         "get the value of a sensor"
-        return _CONFIG["messages"]["sensor_response"]
+        message : dict = get_config_parameter("sensor_response")
+        message["sensor_type"] = sensor_type
+        message["value"] = value
+        return message
 
     @staticmethod
     def get_sensor_request(sensor_type):
         "get the value of a sensor"
-        return _CONFIG["messages"]["sensor_request"]
+        message : dict = get_config_parameter("sensor_request")
+        message["sensor_type"] = sensor_type
+        return message
 
     @staticmethod
     def get_rpc_request(command :str, value : str):
-        "start an rpc on the smartphone"
-        return _CONFIG["messages"]["rpc_request"]
-
+        """
+        start an rpc on the smartphone
+        raises: Exception if command is not found
+        """
+        command = get_config_parameter(command)
+        if command == None:
+            raise Exception("command %s not found in configdatabase")
+        message : dict = get_config_parameter("rpc_request")
+        message["command"] = command
+        message["value"] = value
+        return message
 
     @staticmethod
     def get_rpc_response(command :str, value : str):
-        "answers an rpc request"
-        return _CONFIG["messages"]["rpc_response"]
+        """
+        answers an rpc request
+        raises: Exception if command is not found
+        """
+        command = get_config_parameter(command)
+        if command == None:
+            raise Exception("command %s not found in configdatabase")
+        message : dict = get_config_parameter("rpc_request")
+        message["command"] = command
+        message["value"] = value
+        return message
 
 
 class ReadOnlyDict(dict):
@@ -83,36 +126,6 @@ class _RequestResponseDict(ReadOnlyDict):
 
 REQUEST_RESPONSE_DICT = _RequestResponseDict()
 
-def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFIG):
-    """recursivly searches configuration dictionary
 
-    Args:
-        parameter_key : str \\
-        Parameterkeyword to access tict
-
-        config_dictionary : dict \\
-        Dictionary to look into recursivly.
-        Gets called with default global _CONFIG Dictionary of Module.
-        Can be subsituted with every dictionary to recursivly search key.
-
-    Returns:
-        str or dict depending of the value for key
-
-    Raises:
-        Exception if key not in provided dictionary which is _CONFIG by default
-
-    use best to access constant configuration parameters like sensors or network ports
-
-    raises exception if parameter_key is not found
-    """
-    
-    for key, value in config_dictionary.items():
-        if isinstance(value, dict):
-            ret = get_config_parameter(parameter_key, value)
-            if ret != None:
-                return ret
-        elif isinstance(value, str):
-            if key == parameter_key:
-                return value
 
 
