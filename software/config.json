@@ -40,7 +40,7 @@
     "mqtt": {
         "topics": {
             "normal": "22thesis01/test",
-            "qos": "22thesis01"
+            "qos": "22thesis01/test_qos"
         },
         "credentials": {
             "username": "22thesis01",

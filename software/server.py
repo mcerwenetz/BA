@@ -8,30 +8,34 @@ import threading
 import json
 import paho.mqtt.client as mqtt
 
-from util import get_config_parameter
+from util import SensorNotSupportedException, get_config_parameter
 
 
 class SensorDB():
     "data structure to hold sensor_data"
     def __init__(self) -> None:
-        self.sensor_vals = {
-            "accell_x":"0",
-            "accell_y":"0",
-            "accell_z":"0"
-        }
 
+        all_sensors = get_config_parameter("sensors")
+        self.sensor_vals = {}
+
+        for sensor_val in all_sensors.items():
+            self.sensor_vals[sensor_val] = 0
 
         self.lock = threading.Lock()
 
-    def get(self, key):
+    def get(self, sensor_name):
         "gets value from internal db"
+        if get_config_parameter(sensor_name) == None:
+            raise SensorNotSupportedException(sensor_name)
         with self.lock:
-            return self.sensor_vals[key]
+            return self.sensor_vals[sensor_name]
 
-    def update(self, key, value):
+    def update(self, sensor_name, value):
         "updates value from db"
+        if get_config_parameter(sensor_name) == None:
+            raise SensorNotSupportedException(sensor_name)
         with self.lock:
-            self.sensor_vals[key]=value
+            self.sensor_vals[sensor_name]=value
 
 
 class DataHandler():
@@ -55,9 +59,10 @@ class DataHandler():
         self.answer_queue = queue.Queue()
         self.mqtt_sender_queue=mqtt_sender_queue
         self.data_structure = SensorDB()
-        self.udp_ip="127.0.0.1"
-        self.udp_listener_port = 5006
-        self.udp_sender_port = 5005
+        self.udp_ip=get_config_parameter("udp_ip")
+        network_config = get_config_parameter("middleware")
+        self.udp_listener_port = network_config["listener_port"]
+        self.udp_sender_port = network_config["sender_port"]
         self.stop_handler_event = threading.Event()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
         self.sock.settimeout(1)
@@ -150,13 +155,13 @@ class MqttHandlerThread(threading.Thread):
         """
 
         super().__init__()
-        self.HOSTNAME = "pma.inftech.hs-mannheim.de"
-        # self.HOSTNAME = "atborg"
-        self.TOPIC= "22thesis01/test"
-        self.QOSTOPIC = "22thesis01/test_qos"
-        self.USERNAME = "22thesis01"
-        self.PASSWORD = "n4xdnp36"
-        self.PORT = 8883
+        mqtt_config = get_config_parameter("mqtt")
+        self.HOSTNAME = mqtt_config["network"]["hostname"]
+        self.PORT =  mqtt_config["network"]["port"]
+        self.TOPIC= mqtt_config["topics"]["normal"]
+        self.QOSTOPIC = mqtt_config["topics"]["qos"]
+        self.USERNAME =  mqtt_config["credentials"]["username"]
+        self.PASSWORD =  mqtt_config["credentials"]["password"]
         self.sender_queue=mqqt_sender_queue
         #queue get's shared with handler
         self.request_queue=request_queue

@@ -1,6 +1,5 @@
 """This Modules provied auxillary tools for the server and python library"""
 
-from email import message
 import json
 
 with open("config.json", "r") as fp:
@@ -19,7 +18,10 @@ def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFI
         Can be subsituted with every dictionary to recursivly search key.
 
     Returns:
-        str or dict depending of the value for key or None if key is not in config_dictionary
+        str or dict depending of the value for key or 
+        None if key is not in config_dictionary.\\
+        if parameter_key is found multiple times only 
+        the first occurence is returned
 
     use best to access constant configuration parameters like sensors or network ports
 
@@ -122,7 +124,11 @@ class _RequestResponseDict(ReadOnlyDict):
         """
         return self[request] == response
         
-
+class SensorNotSupportedException(Exception):
+    def __init__(self, sensor_name) -> None:
+        cause = "Sensor %s not supported" % sensor_name
+        super().__init__(cause)
+        
 
 REQUEST_RESPONSE_DICT = _RequestResponseDict()
 
