@@ -7,4 +7,4 @@ with open("example.json") as fp:
     di = json.load(fp)
 command = get_config_parameter(config_dictionary=_CONFIG, parameter_key="vibrate")
 
-print(type(command))
+print(command)

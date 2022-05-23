@@ -3,6 +3,8 @@
 from asyncio.windows_events import NULL
 import json
 
+from numpy import isin
+
 
 with open("config.json", "r") as fp:
     _CONFIG : dict = json.load(fp)
@@ -81,7 +83,7 @@ class _RequestResponseDict(ReadOnlyDict):
 
 REQUEST_RESPONSE_DICT = _RequestResponseDict()
 
-def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFIG, depth : int = 0):
+def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFIG):
     """recursivly searches configuration dictionary
 
     Args:
@@ -104,18 +106,13 @@ def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFI
     raises exception if parameter_key is not found
     """
     
-    if parameter_key in config_dictionary:
-        return config_dictionary[parameter_key]
-        
-
     for key, value in config_dictionary.items():
         if isinstance(value, dict):
-            ret = get_config_parameter(parameter_key, value, depth+1)
-            if ret != NULL:
+            ret = get_config_parameter(parameter_key, value)
+            if ret != None:
                 return ret
         elif isinstance(value, str):
             if key == parameter_key:
-                return config_dictionary[parameter_key]
+                return value
 
-    if depth == 0:
-        raise Exception("parameter not found")
+
