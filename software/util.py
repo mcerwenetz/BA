@@ -5,7 +5,8 @@ import json
 with open("config.json", "r") as fp:
     _CONFIG : dict = json.load(fp)
 
-def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFIG) -> (dict | str | None):
+def get_config_parameter(parameter_key : str ,
+    config_dictionary : dict = _CONFIG) -> (dict | str | None):
     """recursivly searches configuration dictionary
 
     Args:
@@ -27,7 +28,7 @@ def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFI
 
     raises exception if parameter_key is not found
     """
-    
+
     for key, value in config_dictionary.items():
         if isinstance(value, dict):
             if key == parameter_key:
@@ -105,13 +106,13 @@ class JsonMessagesWrapper():
         raises: Exception if command is not found
         """
         message : dict = get_config_parameter("protocol_response")
-        message["value"] = _CONFIG
+        message["value"] = get_config_parameter("protocol")
         return message
 
 class ReadOnlyDict(dict):
     def __init__(self) -> None:
         super().__init__()
-        
+
     def __getitem__(self, __k):
         if __k in self:
             return super().__getitem__(__k)
@@ -128,7 +129,7 @@ class _RequestResponseDict(ReadOnlyDict):
     if key is not inside.
     Also provides a check function to check if a request fits the received response
     """
-    
+
     def __init__(self) -> None:
         super().__init__()
         dictionary = {
@@ -137,7 +138,7 @@ class _RequestResponseDict(ReadOnlyDict):
 
         for k,v in dictionary.items():
             self.__internal__setitem__(k,v)
-    
+
     def check(self, request, response):
         """
         returns false if the request does not match the response
@@ -154,10 +155,6 @@ class CommandNotSupportedException(Exception):
     def __init__(self, command) -> None:
         cause = "Command %s not supported" % command
         super().__init__(cause)
-        
+
 
 REQUEST_RESPONSE_DICT = _RequestResponseDict()
-
-
-
-

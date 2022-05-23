@@ -4,7 +4,7 @@ import logging
 import threading
 import socket
 import queue
-from  util import JsonMessagesWrapper as rja
+from  util import JsonMessagesWrapper as jmw
 
 
 
@@ -26,7 +26,7 @@ class Client():
         "start client with threads"
         self.listener_thread.start()
         self.sender_thread.start()
-        request = rja.get_rpc_request(command="checkbox", value="true")
+        request = jmw.get_rpc_request(command="checkbox", value="true")
         self.sender_queue.put(request)
 
     def stop(self):

@@ -1,6 +1,7 @@
+"""This module provides the Python-Client Software to use the framework"""
 import socket
 import threading
-from  util import JsonMessagesWrapper as rja
+from  util import JsonMessagesWrapper as jmw
 from util import REQUEST_RESPONSE_DICT
 
 
@@ -21,7 +22,7 @@ class Phone():
 
         def _write_text(self, text : str) -> None:
             """can be called with various text to display on the smartphone display"""
-            rpc_message = rja.get_rpc_request(command="textview", value=text)
+            rpc_message = jmw.get_rpc_request(command="textview", value=text)
             self._sendMessage(message=rpc_message)
 
         threading.Thread(target=_write_text, args=(self, text_outer)).start()
@@ -30,7 +31,7 @@ class Phone():
 
         def _toogle_button(self) -> None:
             """this toggles the button in the interface"""
-            rpc_message = rja.get_rpc_request(command="button", value="")
+            rpc_message = jmw.get_rpc_request(command="button", value="")
             self._sendMessage(message=rpc_message)
 
         threading.Thread(target=_toogle_button, args=(self, )).start()
@@ -39,7 +40,7 @@ class Phone():
         "vibrates phone for time miliseconds"
 
         def _vibrate(self):
-            rpc_message = rja.get_rpc_request(command="vibrate", value=time)
+            rpc_message = jmw.get_rpc_request(command="vibrate", value=time)
             self._sendMessage(rpc_message)
 
         threading.Thread(target=_vibrate, args=(self, )).start()
@@ -49,7 +50,7 @@ class Phone():
         self._get_sensor("accell_x")
 
     def _get_sensor(self, sensor_name):
-        sensor_message = rja.get_sensor_request(sensor_name)
+        sensor_message = jmw.get_sensor_request(sensor_name)
         self._sendMessage(message=sensor_message)
         request= dict(sensor_message)
         result = self._wait_on_result(request=request)

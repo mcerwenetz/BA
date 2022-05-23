@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class RootActivity extends Activity implements SensorEventListener {
 
     final static String TAG = RootActivity.class.getCanonicalName();
+    private JsonMessageWrapper jsonMessageWrapper;
     private TriggerEventListener tel;
     private MQTTService mqttService;
     private boolean mqttServiceBound;
@@ -172,9 +173,9 @@ public class RootActivity extends Activity implements SensorEventListener {
 
         JSONObject[] jos = new JSONObject[3];
         try {
-            jos[0] = RequestJsonAdapter.get_update_request("accell_x", String.valueOf(linear_acceleration[0]));
-            jos[1] = RequestJsonAdapter.get_update_request("accell_y", String.valueOf(linear_acceleration[0]));
-            jos[2] = RequestJsonAdapter.get_update_request("accell_z", String.valueOf(linear_acceleration[0]));
+            jos[0] = JsonMessageWrapper.get_update_request("accell_x", String.valueOf(linear_acceleration[0]));
+            jos[1] = JsonMessageWrapper.get_update_request("accell_y", String.valueOf(linear_acceleration[0]));
+            jos[2] = JsonMessageWrapper.get_update_request("accell_z", String.valueOf(linear_acceleration[0]));
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -199,7 +199,7 @@ public class MQTTService extends Service {
         }
         if (command.equals("checkbox")) {
             this.rootActivity.setCheckBox(value);
-            JSONObject rpc_answer = RequestJsonAdapter.get_rpc_response(command, value);
+            JSONObject rpc_answer = JsonMessageWrapper.get_rpc_response(command, value);
             sendRpcAnswer(rpc_answer);
         }
         if (command.equals("vibrate")) {
