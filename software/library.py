@@ -1,6 +1,6 @@
 import socket
 import threading
-from  util import RequestJsonAdapter as rja
+from  util import JsonMessagesWrapper as rja
 from util import REQUEST_RESPONSE_DICT
 
 

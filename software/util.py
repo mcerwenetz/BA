@@ -1,60 +1,43 @@
-import json
-import os.path
+"""This Modules provied auxillary tools for the server and python library"""
 
-class RequestJsonAdapter():
+from asyncio.windows_events import NULL
+import json
+
+
+with open("config.json", "r") as fp:
+    _CONFIG : dict = json.load(fp)
+
+
+class JsonMessagesWrapper():
     """This Class provides static methods to convert function calls to json"""
-    def __init__(self, path_to_config) -> None:
-        "creates JSON Adapter"
+
 
     @staticmethod
     def get_update_request(sensor_type,value):
         "update a sensor value"
-        res ={
-            "type":"update_request",
-            "sensor_type":str(sensor_type),
-            "sensor_value":str(value)
-        }
-        return json.dumps(res)
+        return _CONFIG["messages"]["update_request"]
+
 
     @staticmethod
     def get_sensor_response(sensor_type, value):
         "get the value of a sensor"
-        res = {
-            "type":"sensor_response",
-            "sensor_type": str(sensor_type),
-            "value": str(value)
-        }
-        return json.dumps(res)
+        return _CONFIG["messages"]["sensor_response"]
 
     @staticmethod
     def get_sensor_request(sensor_type):
         "get the value of a sensor"
-        res = {
-            "type":"sensor_request",
-            "sensor_type": str(sensor_type)
-        }
-        return json.dumps(res)
+        return _CONFIG["messages"]["sensor_request"]
 
     @staticmethod
     def get_rpc_request(command :str, value : str):
         "start an rpc on the smartphone"
-        res = {
-            "type":"rpc_request",
-            "command": str(command),
-            "value" : str(value)
-        }
-        return json.dumps(res)
+        return _CONFIG["messages"]["rpc_request"]
 
 
     @staticmethod
     def get_rpc_response(command :str, value : str):
         "answers an rpc request"
-        res ={
-            "type":"rpc_response",
-            "command": str(command),
-            "value" : str(value)
-        }
-        return res
+        return _CONFIG["messages"]["rpc_response"]
 
 
 class ReadOnlyDict(dict):
@@ -97,4 +80,42 @@ class _RequestResponseDict(ReadOnlyDict):
 
 
 REQUEST_RESPONSE_DICT = _RequestResponseDict()
-CONFIG = json.load("config.json")
+
+def get_config_parameter(parameter_key : str , config_dictionary : dict = _CONFIG, depth : int = 0):
+    """recursivly searches configuration dictionary
+
+    Args:
+        parameter_key : str \\
+        Parameterkeyword to access tict
+
+        config_dictionary : dict \\
+        Dictionary to look into recursivly.
+        Gets called with default global _CONFIG Dictionary of Module.
+        Can be subsituted with every dictionary to recursivly search key.
+
+    Returns:
+        str or dict depending of the value for key
+
+    Raises:
+        Exception if key not in provided dictionary which is _CONFIG by default
+
+    use best to access constant configuration parameters like sensors or network ports
+
+    raises exception if parameter_key is not found
+    """
+    
+    if parameter_key in config_dictionary:
+        return config_dictionary[parameter_key]
+        
+
+    for key, value in config_dictionary.items():
+        if isinstance(value, dict):
+            ret = get_config_parameter(parameter_key, value, depth+1)
+            if ret != NULL:
+                return ret
+        elif isinstance(value, str):
+            if key == parameter_key:
+                return config_dictionary[parameter_key]
+
+    if depth == 0:
+        raise Exception("parameter not found")

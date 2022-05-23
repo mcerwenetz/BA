@@ -1,4 +1,5 @@
 {
+    "version": "0.0.1",
     "messages": {
         "update_request": {
             "type": "update_request",
@@ -50,13 +51,13 @@
             "hostname": "pma.inftech.hs-mannheim.de"
         }
     },
-    "middleware" : {
-        "udp_ip" : "127.0.0.1",
-        "listener_port" : 5006,
-        "sender_port" : 5005
+    "middleware": {
+        "udp_ip": "127.0.0.1",
+        "listener_port": 5006,
+        "sender_port": 5005
     },
-    "client" : {
-      "listener_port" : 5005,
-      "sender_port" : 5006   
+    "client": {
+        "listener_port": 5005,
+        "sender_port": 5006
     }
 }

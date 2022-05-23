@@ -4,7 +4,7 @@ import logging
 import threading
 import socket
 import queue
-from  util import RequestJsonAdapter as rja
+from  util import JsonMessagesWrapper as rja
 
 
 

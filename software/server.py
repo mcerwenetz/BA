@@ -8,6 +8,8 @@ import threading
 import json
 import paho.mqtt.client as mqtt
 
+from util import get_config_parameter
+
 
 class SensorDB():
     "data structure to hold sensor_data"
@@ -17,6 +19,7 @@ class SensorDB():
             "accell_y":"0",
             "accell_z":"0"
         }
+
 
         self.lock = threading.Lock()
 
