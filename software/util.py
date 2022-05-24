@@ -6,7 +6,7 @@ with open("config.json", "r") as fp:
     _CONFIG : dict = json.load(fp)
 
 def get_config_parameter(parameter_key : str ,
-    config_dictionary : dict = _CONFIG) -> (dict | str | None):
+    config_dictionary : dict = _CONFIG):
     """recursivly searches configuration dictionary
 
     Args:
@@ -99,15 +99,6 @@ class JsonMessagesWrapper():
         return message
 
 
-    @staticmethod
-    def get_protocol_response():
-        """
-        answers an rpc request
-        raises: Exception if command is not found
-        """
-        message : dict = get_config_parameter("protocol_response")
-        message["value"] = get_config_parameter("protocol")
-        return message
 
 class ReadOnlyDict(dict):
     def __init__(self) -> None:

@@ -8,7 +8,7 @@ import threading
 import json
 import paho.mqtt.client as mqtt
 
-from util import JsonMessagesWrapper, MessageTypes, SensorNotSupportedException, get_config_parameter
+from util import JsonMessagesWrapper, MessageTypes,SensorNotSupportedException, get_config_parameter
 
 
 class SensorDB():
@@ -40,8 +40,10 @@ class SensorDB():
 
 class DataHandler():
     "Container for worker and handler threads"
-    def __init__(self, request_queue : queue.PriorityQueue,
-        mqtt_sender_queue : queue.Queue):
+    def __init__(self,
+            udp_request_queue : queue.PriorityQueue,
+            mqtt_request_queue : queue.Queue,
+            mqtt_sender_queue : queue.Queue):
         """
         Parameters:
         -----------
@@ -54,8 +56,8 @@ class DataHandler():
         mqtt_sender_queue : queue.Queue
         Stores requests that should be sent via mqtt to invoke commands on smartphone.
         """
-        #request queue get's shared between mqqt handler thread and Request_queue_worker
-        self.request_queue = request_queue
+        self.udp_request_queue = udp_request_queue
+        self.mqtt_request_queue = mqtt_request_queue
         self.answer_queue = queue.Queue()
         self.mqtt_sender_queue=mqtt_sender_queue
         self.data_structure = SensorDB()
@@ -72,9 +74,10 @@ class DataHandler():
 
     def start_handler(self):
         "starts all threads of the handler"
-        threading.Thread(target=self.requests_queue_worker).start()
+        threading.Thread(target=self.udp_requests_queue_worker).start()
         threading.Thread(target=self.answer_queue_worker).start()
-        threading.Thread(target=self.request_handler).start()
+        threading.Thread(target=self.mqtt_request_handler).start()
+        threading.Thread(target=self.udp_request_handler).start()
 
 
     def stop_handler(self):
@@ -82,7 +85,7 @@ class DataHandler():
         self.stop_handler_event.set()
 
 
-    def requests_queue_worker(self):
+    def udp_requests_queue_worker(self):
         "handles mqtt and udp requests and puts it in a general request queue"
         # self.sock.bind(self.UDP_IP, self.UDP_LISTENER_PORT)
         self.sock.bind((self.udp_ip, self.udp_listener_port))
@@ -94,7 +97,7 @@ class DataHandler():
                 continue
             data_str = str(data[0].decode("UTF-8"))
             # self.logger.info("got udp request %s" % data_str)
-            self.request_queue.put((2, data_str))
+            self.udp_request_queue.put((2, data_str))
 
     def answer_queue_worker(self):
         "sends back answers from the answer queue if there are any"
@@ -107,12 +110,10 @@ class DataHandler():
             (self.udp_ip, self.udp_sender_port))
 
 
-    def request_handler(self):
-        """decides weather to get answer for request from database and put it in answer queue
-        or to put request in mqtt message answer queue"""
+    def udp_request_handler(self):
         while not self.stop_handler_event.is_set():
             try:
-                request = self.request_queue.get(timeout=1)[1]
+                request = self.udp_request_queue.get(timeout=1)[1]
             except queue.Empty:
                 continue
             # self.result_stats()
@@ -122,20 +123,32 @@ class DataHandler():
                 if request_type == MessageTypes.RPC_REQUEST:
                     self.logger.info("rpc request: %s" % str(request))
                     self.mqtt_sender_queue.put(request)
-                elif request_type == MessageTypes.UPDATE_REQUEST:
-                    sensor_key = request["sensor_type"]
-                    value = request["sensor_value"]
-                    self.data_structure.update(sensor_key, value)
                 elif request_type == MessageTypes.SENSOR_REQUEST:
                     # self.logger.info("sensor request: %s" % request)
                     sensor_key = request["sensor_type"]
                     result = self.data_structure.get(sensor_key)
                     self.answer_queue.put(result)
+            else:
+                continue
+
+    def mqtt_request_handler(self):
+        """decides weather to get answer for request from database and put it in answer queue
+        or to put request in mqtt message answer queue"""
+        while not self.stop_handler_event.is_set():
+            try:
+                request = self.mqtt_request_queue.get(timeout=1)[1]
+            except queue.Empty:
+                continue
+            # self.result_stats()
+            if not request is None:
+                request = json.loads(request)
+                request_type = request["type"]
+                if request_type == MessageTypes.UPDATE_REQUEST:
+                    sensor_key = request["sensor_type"]
+                    value = request["sensor_value"]
+                    self.data_structure.update(sensor_key, value)
                 elif request_type == MessageTypes.RPC_RESPONSE:
                     self.answer_queue.put(request["value"])
-                elif request_type == MessageTypes.PROTOCOL_REQUEST:
-                    reponse = self.json_message_wrapper.get_protocol_response()
-                    self.mqtt_sender_queue.put(reponse)
             else:
                 continue
 
@@ -232,12 +245,16 @@ def main():
     # receiver_queue = queue.Queue(maxsize=100)
     # request_queue = queue.Queue(maxsize=100)
 
-    request_queue = queue.PriorityQueue(maxsize=10)
-    mqtt_sender_queue = queue.Queue(maxsize=100)
+    udp_request_queue = queue.Queue()
+    mqtt_request_queue = queue.Queue()
+    mqtt_sender_queue = queue.Queue()
 
-    data_handler = DataHandler(request_queue=request_queue, mqtt_sender_queue=mqtt_sender_queue)
-    mqtt_handler_thread = MqttHandlerThread(mqqt_sender_queue=mqtt_sender_queue,
-     request_queue=request_queue)
+    data_handler = DataHandler(udp_request_queue=udp_request_queue,
+        mqtt_request_queue=mqtt_request_queue,
+        mqtt_sender_queue=mqtt_sender_queue)
+    mqtt_handler_thread = MqttHandlerThread(
+        mqqt_sender_queue=mqtt_sender_queue,
+        request_queue=mqtt_request_queue)
 
     try:
         mqtt_handler_thread.start()
