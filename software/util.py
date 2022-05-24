@@ -2,11 +2,14 @@
 
 import json
 
-with open("config.json", "r") as fp:
+with open("config.json", "r", encoding="utf-8") as fp:
     _CONFIG : dict = json.load(fp)
 
+with open("protocol.json", "r", encoding="utf-8") as fp:
+    _PROTOCOL : dict = json.load(fp)
+
 def get_config_parameter(parameter_key : str ,
-    config_dictionary : dict = _CONFIG):
+    config_dictionary : dict = _PROTOCOL):
     """recursivly searches configuration dictionary
 
     Args:
@@ -47,8 +50,6 @@ class MessageTypes():
     SENSOR_RESPONSE = get_config_parameter("sensor_response")["type"]
     RPC_REQUEST = get_config_parameter("rpc_request")["type"]
     RPC_RESPONSE = get_config_parameter("rpc_response")["type"]
-    PROTOCOL_REQUEST = get_config_parameter("protocol_request")["type"]
-    PROTOCOL_RESPONSE = get_config_parameter("protocol_response")["type"]
 
 
 
@@ -71,7 +72,7 @@ class JsonMessagesWrapper():
         return message
 
     @staticmethod
-    def get_rpc_request(command :str, value : str):
+    def get_rpc_request(command :str, value : str) ->str:
         """
         start an rpc on the smartphone
         raises: Exception if command is not found
@@ -82,6 +83,7 @@ class JsonMessagesWrapper():
         message : dict = get_config_parameter("rpc_request")
         message["command"] = command
         message["value"] = value
+        message = json.dumps(message)
         return message
 
     @staticmethod

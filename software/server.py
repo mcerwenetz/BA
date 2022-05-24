@@ -8,7 +8,7 @@ import threading
 import json
 import paho.mqtt.client as mqtt
 
-from util import JsonMessagesWrapper, MessageTypes,SensorNotSupportedException, get_config_parameter
+from util import JsonMessagesWrapper, MessageTypes,SensorNotSupportedException, get_config_parameter, _CONFIG
 
 
 class SensorDB():
@@ -61,8 +61,8 @@ class DataHandler():
         self.answer_queue = queue.Queue()
         self.mqtt_sender_queue=mqtt_sender_queue
         self.data_structure = SensorDB()
-        self.udp_ip=get_config_parameter("udp_ip")
-        network_config = get_config_parameter("middleware")
+        self.udp_ip=get_config_parameter("udp_ip", _CONFIG)
+        network_config = get_config_parameter("middleware", _CONFIG)
         self.udp_listener_port = network_config["listener_port"]
         self.udp_sender_port = network_config["sender_port"]
         self.stop_handler_event = threading.Event()
@@ -122,7 +122,7 @@ class DataHandler():
                 request_type = request["type"]
                 if request_type == MessageTypes.RPC_REQUEST:
                     self.logger.info("rpc request: %s" % str(request))
-                    self.mqtt_sender_queue.put(request)
+                    self.mqtt_sender_queue.put(json.dumps(request))
                 elif request_type == MessageTypes.SENSOR_REQUEST:
                     # self.logger.info("sensor request: %s" % request)
                     sensor_key = request["sensor_type"]
@@ -173,7 +173,7 @@ class MqttHandlerThread(threading.Thread):
         """
 
         super().__init__()
-        mqtt_config = get_config_parameter("mqtt")
+        mqtt_config = get_config_parameter("mqtt", _CONFIG)
         self.HOSTNAME = mqtt_config["network"]["hostname"]
         self.PORT =  mqtt_config["network"]["port"]
         self.TOPIC= mqtt_config["topics"]["normal"]
@@ -205,7 +205,7 @@ class MqttHandlerThread(threading.Thread):
         self.stop_mqtt.set()
 
     def run(self):
-        client = mqtt.Client("c1")
+        client = mqtt.Client("middleware")
         client.on_message = self.on_message
         client.username_pw_set(self.USERNAME, self.PASSWORD)
         client.tls_set_context(ssl.create_default_context())

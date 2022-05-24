@@ -2,7 +2,7 @@
 import socket
 import threading
 from  util import JsonMessagesWrapper as jmw
-from util import REQUEST_RESPONSE_DICT
+from util import REQUEST_RESPONSE_DICT, get_config_parameter
 
 
 class Phone():
@@ -22,7 +22,7 @@ class Phone():
 
         def _write_text(self, text : str) -> None:
             """can be called with various text to display on the smartphone display"""
-            rpc_message = jmw.get_rpc_request(command="textview", value=text)
+            rpc_message = jmw.get_rpc_request(command=get_config_parameter("write_text"), value=text)
             self._sendMessage(message=rpc_message)
 
         threading.Thread(target=_write_text, args=(self, text_outer)).start()
