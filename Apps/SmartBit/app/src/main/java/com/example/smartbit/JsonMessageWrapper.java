@@ -23,7 +23,7 @@ public class JsonMessageWrapper {
 
     public JsonMessageWrapper(Context context){
 
-        this.context = context;
+        this.context = context.getApplicationContext();
         this.protocol = readProtocolFromResource(R.raw.protocol);
         try {
             this.messageTypes = new MessageTypes();
