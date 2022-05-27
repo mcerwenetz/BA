@@ -30,6 +30,13 @@ int main() {
     sender_sock = socket(AF_INET, SOCK_DGRAM, 17);
     SOCKET receiver_sock;
     receiver_sock = socket(AF_INET, SOCK_DGRAM, 17);
+
+    char* message = "hallo von lib";
+    char server_reply[2000];
+    int rc;
+    int clientsize = sizeof(SOCKADDR_IN);
+    struct sockaddr_in remove_addr;
+
     if (sender_sock == INVALID_SOCKET){
         printf("Socket could not be created\n");
     }
@@ -45,9 +52,7 @@ int main() {
     client.sin_family = AF_INET;
     client.sin_port = htons(5005);
 
-    struct sockaddr_in remove_addr;
 
-    char* message = "hallo von lib";
     if( bind(receiver_sock ,(struct sockaddr *)&client , sizeof(client)) == SOCKET_ERROR)
 	{
 		printf("Bind failed with error code : %d" , WSAGetLastError());
@@ -60,9 +65,7 @@ int main() {
         printf("sent data\n");
     }
 
-    char server_reply[2000];
-    int rc;
-    int clientsize = sizeof(SOCKADDR_IN);
+    
     rc = recvfrom(receiver_sock, server_reply, 256, 0, (SOCKADDR*)&remove_addr,(int*) &clientsize);
     if(rc==SOCKET_ERROR)
     {
