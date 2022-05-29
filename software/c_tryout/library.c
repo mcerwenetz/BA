@@ -120,13 +120,13 @@ void* send_and_receive(const char* message, char response[]){
 int main(){
     const char* file_content = get_file_content("./protocol.json");
     cJSON* sensor_request = get_sensor_request(file_content, "accell_x");
+    free(file_content);
     const char* sensor_request_string = cJSON_Print(sensor_request);
+    cJSON_Delete(sensor_request);
     char response[100];
     startWinsock();
     send_and_receive(sensor_request_string, response);
     printf(response);
 
-    //todo: memory leak
-    // free(file_content);
     return 0;
 }
