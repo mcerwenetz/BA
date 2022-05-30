@@ -21,14 +21,15 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.example.smartbit.SensorEventListener.AccellerometerEventListener;
+
 import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class RootActivity extends Activity implements SensorEventListener {
+public class RootActivity extends Activity {
 
     final static String TAG = RootActivity.class.getCanonicalName();
-    private TriggerEventListener tel;
     private MQTTService mqttService;
     private boolean mqttServiceBound;
     private Button btn;
@@ -38,22 +39,16 @@ public class RootActivity extends Activity implements SensorEventListener {
     private TextView tv;
     private CheckBox cb;
     private AtomicBoolean keepSending = new AtomicBoolean(false);
+    private AccellerometerEventListener accellerometerEventListener;
     private JsonMessageWrapper jsonMessageWrapper;
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.v(TAG, "onServiceConnected");
             mqttService = ((MQTTService.LocalBinder) service).getMQTTService();
-            tel = new TriggerEventListener() {
-                @Override
-                public void onTrigger(TriggerEvent triggerEvent) {
-                    Log.v("TEL", "Motion detected");
-                }
-            };
-            sm.requestTriggerSensor(tel, acc);
-
             mqttService.setKeepSending(keepSending);
             mqttService.setRootActivity(RootActivity.this);
+            registerAccellEventListener();
         }
 
         @Override
@@ -63,6 +58,12 @@ public class RootActivity extends Activity implements SensorEventListener {
             unbindMQTTService(); // cleanup
         }
     };
+
+    private void registerAccellEventListener() {
+        accellerometerEventListener = new AccellerometerEventListener(jsonMessageWrapper, mqttService);
+        acc = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sm.registerListener(accellerometerEventListener, acc, SensorManager.SENSOR_DELAY_NORMAL);
+    }
 
     public void setTextView(String toSet) {
         if (this.tv != null) {
@@ -96,8 +97,7 @@ public class RootActivity extends Activity implements SensorEventListener {
         cb = findViewById(R.id.checkbox);
         sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        List<Sensor> sensorList = sm.getSensorList(Sensor.TYPE_ALL);
-        acc = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sm.registerListener(this, acc, SensorManager.SENSOR_DELAY_NORMAL);
+
         jsonMessageWrapper = new JsonMessageWrapper(this);
 
     }
@@ -117,12 +117,14 @@ public class RootActivity extends Activity implements SensorEventListener {
         super.onResume();
         onStartService();
         bindMQTTService();
+        sm.registerListener(accellerometerEventListener, acc, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     protected void onPause() {
         Log.v(TAG, "onPause");
         super.onPause();
         unbindMQTTService();
+        sm.unregisterListener(accellerometerEventListener);
     }
 
     @Override
@@ -153,51 +155,6 @@ public class RootActivity extends Activity implements SensorEventListener {
         startService(intent); // to stop
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-//        Runnable r = () -> {
-        float[] linear_acceleration = {0.0F, 0.0F, 0.0F};
-        float[] gravity = {0.0F, 0.0F, 0.0F};
-
-        final float alpha = (float) 0.8;
-
-        // Isolate the force of gravity with the low-pass filter.
-        gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
-        gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
-        gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
-
-        // Remove the gravity contribution with the high-pass filter.
-        linear_acceleration[0] = event.values[0] - gravity[0];
-        linear_acceleration[1] = event.values[1] - gravity[1];
-        linear_acceleration[2] = event.values[2] - gravity[2];
-
-        JSONObject[] jos = new JSONObject[3];
-        jos[0] = jsonMessageWrapper.get_update_request("accell_x", String.valueOf(linear_acceleration[0]));
-        jos[1] = jsonMessageWrapper.get_update_request("accell_y", String.valueOf(linear_acceleration[0]));
-        jos[2] = jsonMessageWrapper.get_update_request("accell_z", String.valueOf(linear_acceleration[0]));
-        for (JSONObject jo : jos) {
-            if (mqttService != null) {
-                mqttService.send(jo);
-            }
-        }
-        //            for (float la : linear_acceleration) {
-//                JSONObject jo = null;
-//                try {
-//                    jo = RequestJsonAdapter.get_update_request("accell_x", String.valueOf(la));
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                mqttService.send(jo);
-//            }
-//        };
-//        Thread t = new Thread(r);
-//        t.start();
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
-    }
 
     private void bindMQTTService() {
         Log.v(TAG, "bindMQTTService");
