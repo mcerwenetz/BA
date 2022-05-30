@@ -3,3 +3,6 @@ tryout : tryout.exe
 
 cJSON : cJSONTryOut
 	gcc cJsonConfigRead.c cJSON.c -o cJsonConfigRead.exe -lm
+
+libary : libary
+	gcc libary.c cJSON.c

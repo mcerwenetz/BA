@@ -38,7 +38,7 @@ public class RootActivity extends Activity implements SensorEventListener {
     private TextView tv;
     private CheckBox cb;
     private AtomicBoolean keepSending = new AtomicBoolean(false);
-    private JsonMessageWrapper jsonMessageWrapper = new JsonMessageWrapper(this);
+    private JsonMessageWrapper jsonMessageWrapper;
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -98,6 +98,7 @@ public class RootActivity extends Activity implements SensorEventListener {
 //        List<Sensor> sensorList = sm.getSensorList(Sensor.TYPE_ALL);
         acc = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sm.registerListener(this, acc, SensorManager.SENSOR_DELAY_NORMAL);
+        jsonMessageWrapper = new JsonMessageWrapper(this);
 
     }
 

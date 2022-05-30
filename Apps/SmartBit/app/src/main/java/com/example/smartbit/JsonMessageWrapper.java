@@ -60,16 +60,11 @@ public class JsonMessageWrapper {
         return textBuilder.toString();
     }
 
-    public static JSONObject get_protocol_request() throws JSONException {
-        JSONObject jo = new JSONObject();
-        jo.put("type", "protocol_response");
-        return  jo;
-    }
 
     public JSONObject get_update_request(String sensorType, String sensorValue) {
         JSONObject jo = null;
         try {
-            jo = this.protocol.getJSONObject(messageTypes.UPDATE_REQUEST);
+            jo = this.protocol.getJSONObject("messages").getJSONObject(messageTypes.UPDATE_REQUEST);
             jo.put("sensor_type",sensorType);
             jo.put("sensor_value", sensorValue);
         } catch (JSONException e) {
@@ -92,8 +87,9 @@ public class JsonMessageWrapper {
 
     public class MessageTypes{
 
-        public final String UPDATE_REQUEST = getOuter().protocol.getJSONObject("update_request").getString("type");
-        public String RPC_RESPONSE= getOuter().protocol.getJSONObject("rpc_response").getString("type");
+
+        public final String UPDATE_REQUEST = getOuter().protocol.getJSONObject("messages").getJSONObject("update_request").getString("type");
+        public String RPC_RESPONSE= getOuter().protocol.getJSONObject("messages").getJSONObject("rpc_response").getString("type");
 
         public MessageTypes() throws JSONException {
         }

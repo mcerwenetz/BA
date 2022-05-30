@@ -43,7 +43,7 @@ public class MQTTService extends Service {
     private static final String TOPIC = "22thesis01/test";
     private static final String TOPIC_QOS = "22thesis01/test_qos";
     private RootActivity rootActivity;
-    private JsonMessageWrapper jsonMessageWrapper = new JsonMessageWrapper(this);
+    private JsonMessageWrapper jsonMessageWrapper;
 
     private MqttMessaging mqttMessaging;
     private final ArrayList<String> topicList = new ArrayList<>();
@@ -108,6 +108,7 @@ public class MQTTService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.v(TAG, "onStartCommand");
         String action;
+        jsonMessageWrapper = new JsonMessageWrapper(this);
         if (intent != null) {
             action = intent.getAction();
         } else {
