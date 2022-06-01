@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.example.smartbit.JsonMessageWrapper;
 import com.example.smartbit.MQTTService;
-import com.example.smartbit.RootActivity;
 
 import org.json.JSONObject;
 
