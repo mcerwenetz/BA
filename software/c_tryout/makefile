@@ -1,8 +1,15 @@
-tryout : tryout.exe
-	gcc tryout.c -o tryout.exe -lws2_32
+CC=gcc
+CFLAGS=-g -Wall -fsanitize=address
 
-cJSON : cJSONTryOut
-	gcc cJsonConfigRead.c cJSON.c -o cJsonConfigRead.exe -lm
+all: tryout.exe cJSON.exe
 
-libary : libary
-	gcc libary.c cJSON.c
+tryout.exe : tryout.c
+	$(CC) $(CFLAGS) tryout.c -o tryout.exe -lws2_32
+
+cJSON.exe : cJSONTryOut.c
+	$(CC) $(CFLAGS) cJsonConfigRead.c cJSON.c -o cJsonConfigRead.exe -lm
+
+.PHONY: clean
+
+clean:
+	del -f tryout.exe cJSON.exe

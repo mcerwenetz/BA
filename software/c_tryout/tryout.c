@@ -4,9 +4,8 @@
 #include <string.h> 
 #include <sys/types.h> 
 #include <winsock.h>
-    
-#define PORT     8080 
-#define MAXLINE 1024 
+
+#define MAXLINE 1024
     
 int startWinsock(){
     WSADATA wsaData;

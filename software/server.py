@@ -18,7 +18,7 @@ class SensorDB():
         all_sensors = get_config_parameter("sensors")
         self.sensor_vals = {}
 
-        for sensor_val in all_sensors.items():
+        for sensor_val in all_sensors.values():
             self.sensor_vals[sensor_val] = 0
 
         self.lock = threading.Lock()
