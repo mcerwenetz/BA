@@ -5,7 +5,7 @@
 #include <sys/types.h> 
 #include <winsock.h>
 
-#define MAXLINE = 1024
+#define MAXLINE 1024
     
 int startWinsock(){
     WSADATA wsaData;
