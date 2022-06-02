@@ -62,9 +62,10 @@ public class JsonMessageWrapper {
 
 
     public JSONObject get_update_request(String sensorType, String sensorValue) {
-        JSONObject jo = null;
+        JSONObject  jo = null;
         try {
-            jo = this.protocol.getJSONObject("messages").getJSONObject(messageTypes.UPDATE_REQUEST);
+            String jos = this.protocol.getJSONObject("messages").getString(messageTypes.UPDATE_REQUEST);
+            jo = new JSONObject(jos);
             jo.put("sensor_type",sensorType);
             jo.put("sensor_value", sensorValue);
         } catch (JSONException e) {

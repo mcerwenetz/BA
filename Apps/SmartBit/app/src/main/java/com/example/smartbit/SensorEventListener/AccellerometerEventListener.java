@@ -39,14 +39,15 @@ public class AccellerometerEventListener extends SmartBitSensorEventListener {
         linear_acceleration[1] = event.values[1] - gravity[1];
         linear_acceleration[2] = event.values[2] - gravity[2];
 
-        JSONObject[] update_requests = null;
-        update_requests[0] = jsonMessageWrapper.get_update_request("accell_x", String.valueOf(linear_acceleration[0]));
-        update_requests[1] = jsonMessageWrapper.get_update_request("accell_y", String.valueOf(linear_acceleration[0]));
-        update_requests[2] = jsonMessageWrapper.get_update_request("accell_z", String.valueOf(linear_acceleration[0]));
+
+        JSONObject update_request_x = jsonMessageWrapper.get_update_request("accell_x", String.valueOf(linear_acceleration[0]));
+        JSONObject update_request_y = jsonMessageWrapper.get_update_request("accell_y", String.valueOf(linear_acceleration[1]));
+        JSONObject update_request_z = jsonMessageWrapper.get_update_request("accell_z", String.valueOf(linear_acceleration[2]));
+//        Log.v(TAG,String.valueOf(update_requests));
         if (mqttService != null) {
-            for (JSONObject update_request : update_requests) {
-                mqttService.send(update_request);
-            }
+            mqttService.send(update_request_x);
+            mqttService.send(update_request_y);
+            mqttService.send(update_request_z);
         }
     }
 

@@ -93,7 +93,7 @@ class DataHandler():
         while not self.stop_handler_event.is_set():
             try:
                 data = self.sock.recvfrom(1024)
-            except (socket.timeout, ConnectionResetError):
+            except (socket.timeout, ConnectionResetError) as e:
                 continue
             data_str = str(data[0].decode("UTF-8"))
             # self.logger.info("got udp request %s" % data_str)
@@ -118,15 +118,20 @@ class DataHandler():
                 continue
             # self.result_stats()
             if not request is None:
-                request = json.loads(request)
+                try:
+                    request = json.loads(request)
+                except json.JSONDecodeError:
+                    self.logger.exception("Could not decode request: %s" % request)
+                    break
                 request_type = request["type"]
                 if request_type == MessageTypes.RPC_REQUEST:
                     self.logger.info("rpc request: %s" % str(request))
                     self.mqtt_sender_queue.put(json.dumps(request))
                 elif request_type == MessageTypes.SENSOR_REQUEST:
-                    # self.logger.info("sensor request: %s" % request)
+                    self.logger.info("sensor request: %s" % request)
                     sensor_key = request["sensor_type"]
                     result = self.data_structure.get(sensor_key)
+                    self.json_message_wrapper.get_sensor_response(sensor_type=request["sensor_type"], value=result)
                     self.answer_queue.put(result)
             else:
                 continue
@@ -195,7 +200,7 @@ class MqttHandlerThread(threading.Thread):
         except json.JSONDecodeError as json_exception:
             self.logger.warning("Json Exception" + str(json_exception))
             return
-        self.logger.info("Got mqtt message: %s" % msg)
+        # self.logger.info("Got mqtt message: %s" % msg)
 
         if msg["type"] == "update_request" or msg["type"] == "rpc_response" :
             self.request_queue.put((1, message.payload.decode("utf-8")))

@@ -47,6 +47,7 @@ public class RootActivity extends AppCompatActivity {
             mqttService = ((MQTTService.LocalBinder) service).getMQTTService();
             mqttService.setKeepSending(keepSending);
             mqttService.setRootActivity(RootActivity.this);
+            createEventListeners();
             registerEventListeners();
         }
 
@@ -103,7 +104,6 @@ public class RootActivity extends AppCompatActivity {
 //        List<Sensor> sensorList = sm.getSensorList(Sensor.TYPE_ALL);
 
         jsonMessageWrapper = new JsonMessageWrapper(this);
-        createEventListeners();
      }
 
     private void createEventListeners() {
@@ -136,7 +136,12 @@ public class RootActivity extends AppCompatActivity {
         super.onResume();
         onStartService();
         bindMQTTService();
-        registerEventListeners();
+        if(mqttService != null){
+//            If not null service was already started and bound. No need for recreating Eventlisteners.
+//            If mqtt service is null this would throw null exception because Eventlistener are not already bound
+//            because mqtt service is not already bound.
+            registerEventListeners();
+        }
     }
 
     protected void onPause() {

@@ -65,11 +65,10 @@ class JsonMessagesWrapper():
         return message
 
     @staticmethod
-    def get_sensor_request(sensor_type) -> str:
+    def get_sensor_request(sensor_type):
         "get the value of a sensor"
         message : dict = get_config_parameter("sensor_request")
         message["sensor_type"] = sensor_type
-        message = json.dumps(message)
         return message
 
     @staticmethod
