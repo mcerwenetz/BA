@@ -131,7 +131,8 @@ class DataHandler():
                     self.logger.info("sensor request: %s" % request)
                     sensor_key = request["sensor_type"]
                     result = self.data_structure.get(sensor_key)
-                    self.json_message_wrapper.get_sensor_response(sensor_type=request["sensor_type"], value=result)
+                    result = self.json_message_wrapper.get_sensor_response(sensor_type=request["sensor_type"], value=result)
+                    result = json.dumps(result)
                     self.answer_queue.put(result)
             else:
                 continue
