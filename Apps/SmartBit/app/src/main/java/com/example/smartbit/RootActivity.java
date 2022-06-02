@@ -18,6 +18,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smartbit.SensorEventListener.AccellerometerEventListener;
+import com.example.smartbit.SensorEventListener.GyroSensorEventListener;
+import com.example.smartbit.SensorEventListener.ProximityEventListener;
+import com.example.smartbit.SensorEventListener.SmartBitEventListenerContainer;
 
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,8 +37,8 @@ public class RootActivity extends AppCompatActivity {
     private TextView tv_output_text;
     private boolean ButtonToggleBool = true;
     private SensorManager sensorManager;
+    private SmartBitEventListenerContainer smartBitEventListenerContainer;
     private AtomicBoolean keepSending = new AtomicBoolean(false);
-    private AccellerometerEventListener accellerometerEventListener;
     private JsonMessageWrapper jsonMessageWrapper;
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -44,7 +47,7 @@ public class RootActivity extends AppCompatActivity {
             mqttService = ((MQTTService.LocalBinder) service).getMQTTService();
             mqttService.setKeepSending(keepSending);
             mqttService.setRootActivity(RootActivity.this);
-            registerAccellEventListener();
+            registerEventListeners();
         }
 
         @Override
@@ -55,10 +58,23 @@ public class RootActivity extends AppCompatActivity {
         }
     };
 
-    private void registerAccellEventListener() {
-        accellerometerEventListener = new AccellerometerEventListener(jsonMessageWrapper, mqttService);
-        Sensor accellormeter = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(accellerometerEventListener, accellormeter, SensorManager.SENSOR_DELAY_NORMAL);
+
+    private void registerEventListeners() {
+        Sensor accellometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(this.smartBitEventListenerContainer.getAccellerometerEventListener(), accellometer, SensorManager.SENSOR_DELAY_NORMAL);
+
+        Sensor gyro = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        sensorManager.registerListener(this.smartBitEventListenerContainer.getGyroSensorEventListener(), gyro, SensorManager.SENSOR_DELAY_NORMAL);
+
+        Sensor proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        sensorManager.registerListener(this.smartBitEventListenerContainer.getProximityEventListener(), proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+    }
+
+    private void unregisterEventListeners(){
+        sensorManager.unregisterListener(this.smartBitEventListenerContainer.getAccellerometerEventListener());
+        sensorManager.unregisterListener(this.smartBitEventListenerContainer.getProximityEventListener());
+        sensorManager.unregisterListener(this.smartBitEventListenerContainer.getGyroSensorEventListener());
     }
 
     public void setTextView(String toSet) {
@@ -87,7 +103,14 @@ public class RootActivity extends AppCompatActivity {
 //        List<Sensor> sensorList = sm.getSensorList(Sensor.TYPE_ALL);
 
         jsonMessageWrapper = new JsonMessageWrapper(this);
+        createEventListeners();
+     }
 
+    private void createEventListeners() {
+        AccellerometerEventListener accellerometerEventListener = new AccellerometerEventListener(jsonMessageWrapper,mqttService);
+        GyroSensorEventListener gyroSensorEventListener = new GyroSensorEventListener(jsonMessageWrapper,mqttService);
+        ProximityEventListener proximityEventListener = new ProximityEventListener(jsonMessageWrapper,mqttService);
+        this.smartBitEventListenerContainer = new SmartBitEventListenerContainer(accellerometerEventListener,gyroSensorEventListener,proximityEventListener);
     }
 
     private void bindUI() {
@@ -113,15 +136,14 @@ public class RootActivity extends AppCompatActivity {
         super.onResume();
         onStartService();
         bindMQTTService();
-        Sensor accellormeter = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(accellerometerEventListener, accellormeter, SensorManager.SENSOR_DELAY_NORMAL);
+        registerEventListeners();
     }
 
     protected void onPause() {
         Log.v(TAG, "onPause");
         super.onPause();
         unbindMQTTService();
-        sensorManager.unregisterListener(accellerometerEventListener);
+        unregisterEventListeners();
     }
 
     @Override

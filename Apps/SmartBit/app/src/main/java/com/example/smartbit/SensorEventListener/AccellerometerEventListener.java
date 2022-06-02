@@ -12,17 +12,14 @@ import org.json.JSONObject;
 
 
 
-public class AccellerometerEventListener implements SensorEventListener {
+public class AccellerometerEventListener extends SmartBitSensorEventListener {
 
     final static String TAG = AccellerometerEventListener.class.getCanonicalName();
 
-
-    private JsonMessageWrapper jsonMessageWrapper;
-    private MQTTService mqttService;
-
     public AccellerometerEventListener(JsonMessageWrapper jsonMessageWrapper, MQTTService mqttService){
-        this.jsonMessageWrapper = jsonMessageWrapper;
-        this.mqttService = mqttService;
+        super(jsonMessageWrapper, mqttService);
+        super.jsonMessageWrapper = jsonMessageWrapper;
+        super.mqttService = mqttService;
     }
 
     public void onSensorChanged(SensorEvent event) {
@@ -41,15 +38,14 @@ public class AccellerometerEventListener implements SensorEventListener {
         linear_acceleration[0] = event.values[0] - gravity[0];
         linear_acceleration[1] = event.values[1] - gravity[1];
         linear_acceleration[2] = event.values[2] - gravity[2];
-        Log.v(TAG, String.valueOf(linear_acceleration[0]));
 
-        JSONObject[] jos = new JSONObject[3];
-        jos[0] = jsonMessageWrapper.get_update_request("accell_x", String.valueOf(linear_acceleration[0]));
-        jos[1] = jsonMessageWrapper.get_update_request("accell_y", String.valueOf(linear_acceleration[0]));
-        jos[2] = jsonMessageWrapper.get_update_request("accell_z", String.valueOf(linear_acceleration[0]));
-        for (JSONObject jo : jos) {
-            if (mqttService != null) {
-                mqttService.send(jo);
+        JSONObject[] update_requests = null;
+        update_requests[0] = jsonMessageWrapper.get_update_request("accell_x", String.valueOf(linear_acceleration[0]));
+        update_requests[1] = jsonMessageWrapper.get_update_request("accell_y", String.valueOf(linear_acceleration[0]));
+        update_requests[2] = jsonMessageWrapper.get_update_request("accell_z", String.valueOf(linear_acceleration[0]));
+        if (mqttService != null) {
+            for (JSONObject update_request : update_requests) {
+                mqttService.send(update_request);
             }
         }
     }
