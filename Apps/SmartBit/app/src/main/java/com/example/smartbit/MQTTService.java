@@ -196,13 +196,8 @@ public class MQTTService extends Service {
                 this.rootActivity.toogleButton();
             }
             else{
-                this.rootActivity.setBtn(value);
+                this.rootActivity.setAction_led(value);
             }
-        }
-        if (command.equals("checkbox")) {
-            this.rootActivity.setCheckBox(value);
-            JSONObject rpc_answer = jsonMessageWrapper.get_rpc_response(command, value);
-            sendRpcAnswer(rpc_answer);
         }
         if (command.equals("vibrate")) {
             Log.v(TAG, "trying to vibrate");
