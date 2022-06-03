@@ -7,7 +7,7 @@
 
 \include{preamble} % alle Pakete und Einstellungen
 
-\bibliography{online}
+%\bibliography{online}
 
 % Hier anpassen 
 \newcommand{\welchethesis}{Bachelor}
@@ -243,16 +243,35 @@ Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen
 User können über die Library RPC-Anfragen oder Sensor-Anfragen an den Server stellen.
 Dies geschieht in form von JSON-Anfragen die per UDP übermittelt werden.
 Der Server ist unter der localhost-Adresse 127.0.0.1 auf dem Port 5006 erreichbar.
+\\
+Für die MQTT-Verbindung kommt dabei die unter OpenSource-Liznenz stehende MQTT-Library Paho der Eclipse-Foundation zum Einsatz. \cite{paho}
 
 \subsection*{Interner Aufbau}
-Der Server muss für die Vermittlung per UDP und MQTT erreichbar sein.
-Dies erfordert asynchrone Reaktionen auf unterschiedliche Anfragen von unterschiedlichen Seiten.
-Daher werden mehrere nebenläufige Threads verwendet die per Threadsicheren queues Aufgaben austauschen.
+Aus den Anforderungen ergeben sich folgende Aufgaben die der Server umsetzen muss:
+\begin{itemize}
+\item Sensoranfragen schnell beantworten
+\item Anfragen die Funktionen auf dem Smartphone starte, müssen schnell an das Smartphone weitergereicht und gegebenfalls wieder beantwortet werden.
+\end{itemize}
+Damit Sensoranfragen schnell beantwortet werden werden die aktuellen Sensorworte laufend vom Smartphone an den Server übermittelt.
+Dieser speichert Sie dann, sobald ein Sensorwert gemessen und übermittelt wurde in eine interne, threadsichere Datenstruktur.
+Hierdurch wird insbesondere der Latenzunterschied zwischen Smartphone und Localhost berücksichtigt.
+UDP Anfragen per Localhost haben eine wesentlich geringe Latenz als MQTT-Anfragen, auf die das Smartphone reagieren muss.
+Durch das Cachen auf dem Server liegen bei Anfragen per UDP, also von der Library aus, immer Sensordaten vor.
 \\
-Zur Verwendung kamen hier queues der Python-Implementierung cpython \cite{}
-
-
-
+Um Funktionsanfragen zeitnah auszuführen müssen unterschiedliche Netzwerklatenzen berücksichtigt werden.
+Die Übermittlung erfolgt asynchron zwischen Library und Smartphone, wobei zu erwarten ist dass Übermittlungen an das Smartphone mit einer höheren Latenz übertragen werden, als Anfragen zwischen Library und Server, da sich beide auf dem gleichen Host befinden.
+Die Verbindung zwischen Library und Server erfolgt darüber hinaus über localhost und somit über ein Loopback-Device.
+Loopback-Devices reichen Netzwerkpakete nicht herkömmlich über ein physisches Netzwerkinterface weiter sondern stellen ein virtuelles Gerät dar, dessen Übertragungsrate an die CPU gekoppelt ist.
+Die Bandbreiten sind dadurch sehr hoch und die Latenzen gering.
+\\
+Um die Latenzen und die damit verbundenen unterschiedlichen Auftrittszeitpunkte von Anfragen zu berücksichten, sowie eine möglichst effiziente Abarbeitung der selbiger zu ermöglichen wird eien paralelle Algorithmusstruktur verwendet.
+\\
+Vier Threads koordinieren die Abarbeitung von Anfragen.
+Um Anfragen austauschen zu können kommen queues der Python-Implementierung cpython \cite{python_queue} zum Einsatz.
+Sie erlauben ein threadsicheres Einsetzen und Entfernen von Nachrichten.
+\\
+Damit die Sensorwerte vorgehalten werden können muss ein Thread kontinuierlich auf Sensoraktualisierungsanfragen des Smartphones per MQTT hören.
+Dies ist so
 
 \section*{Android Anwendung}
 Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
@@ -540,7 +559,8 @@ UDP ist ein verbindungsloses Netzwerkprotokoll, dass auf der Transportschicht de
 \end{btSect}
 \begin{btSect}{online}
 \section*{Online-Quellen}
-\btPrintCited
+%\btPrintCited
+\bibliography{online}
 \end{btSect}
 % dann mit "bibtex thesis1" und "bibtex thesis2" arbeiten
 
