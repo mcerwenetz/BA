@@ -2,12 +2,95 @@
 import socket
 import threading
 import json
-from  util import JsonMessagesWrapper as jmw
-from util import REQUEST_RESPONSE_DICT, get_config_parameter
 
+with open("protocol.json", "r", encoding="utf-8") as fp:
+    _PROTOCOL : dict = json.load(fp)
+
+def get_config_parameter(parameter_key : str ,
+    config_dictionary : dict = _PROTOCOL):
+    """recursivly searches configuration dictionary
+
+    Args:
+        parameter_key : str \\
+        Parameterkeyword to access tict
+
+        config_dictionary : dict \\
+        Dictionary to look into recursivly.
+        Gets called with default global _CONFIG Dictionary of Module.
+        Can be subsituted with every dictionary to recursivly search key.
+
+    Returns:
+        str or dict depending of the value for key or 
+        None if key is not in config_dictionary.\\
+        if parameter_key is found multiple times only 
+        the first occurence is returned
+
+    use best to access constant configuration parameters like sensors or network ports
+
+    raises exception if parameter_key is not found
+    """
+
+    for key, value in config_dictionary.items():
+        if isinstance(value, dict):
+            if key == parameter_key:
+                return value
+            ret = get_config_parameter(parameter_key, value)
+            if ret != None:
+                return ret
+        elif isinstance(value, str):
+            if key == parameter_key:
+                return value
+
+class JsonMessagesWrapper():
+    """This Class provides static methods to convert function calls to json"""
+
+    @staticmethod
+    def get_sensor_response(sensor_type, value):
+        "get the value of a sensor"
+        message : dict = get_config_parameter("sensor_response")
+        message["sensor_type"] = sensor_type
+        message["value"] = value
+        return message
+
+    @staticmethod
+    def get_sensor_request(sensor_type) -> str:
+        "get the value of a sensor"
+        message : dict = get_config_parameter("sensor_request")
+        message["sensor_type"] = sensor_type
+        message = json.dumps(message)
+        return message
+
+    @staticmethod
+    def get_rpc_request(command :str, value : str) ->str:
+        """
+        start an rpc on the smartphone
+        raises: Exception if command is not found
+        """
+        command = get_config_parameter(command)
+        if command == None:
+            raise CommandNotSupportedException(command)
+        message : dict = get_config_parameter("rpc_request")
+        message["command"] = command
+        message["value"] = value
+        message = json.dumps(message)
+        return message
+
+    @staticmethod
+    def get_rpc_response(command :str, value : str):
+        """
+        answers an rpc request
+        raises: Exception if command is not found
+        """
+        command = get_config_parameter(command)
+        if command == None:
+            raise CommandNotSupportedException(command)
+        message : dict = get_config_parameter("rpc_request")
+        message["command"] = command
+        message["value"] = value
+        return message
 
 class Phone():
-
+    """This class provides all the functions to interact with the Phone"""
     def __init__(self) -> None:
         self.sock = socket.socket(socket.AF_INET, # Internet
                                 socket.SOCK_DGRAM) # UDP
@@ -23,7 +106,7 @@ class Phone():
 
         def _write_text(self, text : str) -> None:
             """can be called with various text to display on the smartphone display"""
-            rpc_message = jmw.get_rpc_request(command=get_config_parameter("write_text"), value=text)
+            rpc_message = JsonMessagesWrapper.get_rpc_request(command=get_config_parameter("write_text"), value=text)
             self._sendMessage(message=rpc_message)
 
         threading.Thread(target=_write_text, args=(self, text_outer)).start()
@@ -32,7 +115,7 @@ class Phone():
 
         def _toogle_button(self) -> None:
             """this toggles the button in the interface"""
-            rpc_message = jmw.get_rpc_request(command="button", value="")
+            rpc_message = JsonMessagesWrapper.get_rpc_request(command="button", value="")
             self._sendMessage(message=rpc_message)
 
         threading.Thread(target=_toogle_button, args=(self, )).start()
@@ -41,7 +124,7 @@ class Phone():
         "vibrates phone for time miliseconds"
 
         def _vibrate(self):
-            rpc_message = jmw.get_rpc_request(command="vibrate", value=time)
+            rpc_message = JsonMessagesWrapper.get_rpc_request(command="vibrate", value=time)
             self._sendMessage(rpc_message)
 
         threading.Thread(target=_vibrate, args=(self, )).start()
@@ -52,7 +135,7 @@ class Phone():
 
 
     def _get_sensor(self, sensor_name):
-        sensor_message = jmw.get_sensor_request(sensor_name)
+        sensor_message = JsonMessagesWrapper.get_sensor_request(sensor_name)
         self._sendMessage(message=str(sensor_message))
         request= json.loads(sensor_message)
         result = self._wait_on_result(request=request)
@@ -75,21 +158,7 @@ class Phone():
         except TimeoutError:
             print("Timeout was reached")
             return
-        
-        # if request['type'] == 'sensor_request':
-        #     response = jmw.get_sensor_response(sensor_type=request["sensor_type"], value=data)
-        # elif request['type'] == 'rpc_request':
-        #     # rpc request gets built on android smartphone just let it pass through
-        #     response = data
         return data
-
-
-        # request_type = request["type"]
-        # response_type= response["type"]
-
-
-        # if REQUEST_RESPONSE_DICT.check(request_type, response_type):
-        #     return response
 
 
     def _sendMessage(self, message):
