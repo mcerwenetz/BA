@@ -7,6 +7,8 @@
 
 \include{preamble} % alle Pakete und Einstellungen
 
+\bibliography{online}
+
 % Hier anpassen 
 \newcommand{\welchethesis}{Bachelor}
 % \newcommand{\welchethesis}{Master}
@@ -234,6 +236,24 @@ Auf diesem Topic werden Nachrichten mit der QOS von 2 versandt auf dem für regu
 \end{figure}
 
 
+\section*{Server-Anwendung}
+
+Für Vermittlung zwischen den Komponenten fungiert eine Server-Anwendung.
+Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen Seite vom Client aus und MQTT-Anfragen vom Smartphone auf der anderen Seite.
+User können über die Library RPC-Anfragen oder Sensor-Anfragen an den Server stellen.
+Dies geschieht in form von JSON-Anfragen die per UDP übermittelt werden.
+Der Server ist unter der localhost-Adresse 127.0.0.1 auf dem Port 5006 erreichbar.
+
+\subsection*{Interner Aufbau}
+Der Server muss für die Vermittlung per UDP und MQTT erreichbar sein.
+Dies erfordert asynchrone Reaktionen auf unterschiedliche Anfragen von unterschiedlichen Seiten.
+Daher werden mehrere nebenläufige Threads verwendet die per Threadsicheren queues Aufgaben austauschen.
+\\
+Zur Verwendung kamen hier queues der Python-Implementierung cpython \cite{}
+
+
+
+
 \section*{Android Anwendung}
 Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
 Sie besteht aus einer Haupt-Activity deren außerlicher Aufbau in \ref{chap:intro} beschrieben ist. 
@@ -359,6 +379,8 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
   \caption{Sensor-Kürzel mit Beschreibung}
   \label{tab:sensor_types}
 \end{table}
+
+
 
 
 
