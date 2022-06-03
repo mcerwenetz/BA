@@ -14,6 +14,16 @@ with open("config.json", "r", encoding="utf-8") as fp:
 with open("protocol.json", "r", encoding="utf-8") as fp:
     _PROTOCOL : dict = json.load(fp)
 
+class SensorNotSupportedException(Exception):
+    def __init__(self, sensor_name) -> None:
+        cause = "Sensor %s not supported" % sensor_name
+        super().__init__(cause)
+
+class CommandNotSupportedException(Exception):
+    def __init__(self, command) -> None:
+        cause = "Command %s not supported" % command
+        super().__init__(cause)
+
 def get_config_parameter(parameter_key : str ,
     config_dictionary : dict = _PROTOCOL):
     """recursivly searches configuration dictionary
@@ -145,16 +155,7 @@ class _RequestResponseDict(ReadOnlyDict):
         or if request is not in dictionary
         """
         return self[request] == response
-        
-class SensorNotSupportedException(Exception):
-    def __init__(self, sensor_name) -> None:
-        cause = "Sensor %s not supported" % sensor_name
-        super().__init__(cause)
 
-class CommandNotSupportedException(Exception):
-    def __init__(self, command) -> None:
-        cause = "Command %s not supported" % command
-        super().__init__(cause)
 
 
 REQUEST_RESPONSE_DICT = _RequestResponseDict()
@@ -304,7 +305,7 @@ class DataHandler():
                     value = request["sensor_value"]
                     self.data_structure.update(sensor_key, value)
                 elif request_type == MessageTypes.RPC_RESPONSE:
-                    self.answer_queue.put(request["value"])
+                    self.answer_queue.put(json.dumps(request))
             else:
                 continue
 
@@ -353,7 +354,9 @@ class MqttHandlerThread(threading.Thread):
             return
         # self.logger.info("Got mqtt message: %s" % msg)
 
-        if msg["type"] == "update_request" or msg["type"] == "rpc_response" :
+        if msg["type"] == "update_request":
+            self.request_queue.put((1, message.payload.decode("utf-8")))
+        if msg["type"] == "rpc_response":
             self.request_queue.put((1, message.payload.decode("utf-8")))
 
     def stop(self):

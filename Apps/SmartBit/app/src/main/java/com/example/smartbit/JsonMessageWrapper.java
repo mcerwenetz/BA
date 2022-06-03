@@ -77,7 +77,8 @@ public class JsonMessageWrapper {
     public JSONObject get_rpc_response(String command, String value) {
         JSONObject jo = null;
         try {
-            jo = this.protocol.getJSONObject(messageTypes.RPC_RESPONSE);
+            String jos = this.protocol.getJSONObject("messages").getString(messageTypes.RPC_RESPONSE);
+            jo = new JSONObject(jos);
             jo.put("command",command);
             jo.put("value", value);
         } catch (JSONException e) {

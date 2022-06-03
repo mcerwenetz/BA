@@ -87,7 +87,7 @@ public class MQTTService extends Service {
     }
 
     public void sendRpcAnswer(JSONObject jo) {
-        mqttMessaging.send(TOPIC_QOS, jo.toString());
+        mqttMessaging.send(TOPIC, jo.toString());
     }
 
 
@@ -188,6 +188,7 @@ public class MQTTService extends Service {
         } catch (NullPointerException npe) {
             //ignore. if type is not rpc command and value are not needed anyway
         }
+        rootActivity.toggle_recording();
         if (command.equals("textview")) {
             this.rootActivity.setTextView(value);
         }
@@ -200,11 +201,22 @@ public class MQTTService extends Service {
             }
         }
         if (command.equals("vibrate")) {
-            Log.v(TAG, "trying to vibrate");
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(Integer.valueOf(value));
             Log.v(TAG, String.format("Vibrating for %s miliseconds", value));
+            vibrator.vibrate(Integer.valueOf(value));
+            try {
+                Thread.sleep(Long.valueOf(value));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        if(command.equals("write_text")){
+            this.rootActivity.setTextView(value);
+            JSONObject rpc_answer = jsonMessageWrapper.get_rpc_response(command, String.format("text %s was printed", value));
+            sendRpcAnswer(rpc_answer);
+            Log.v(TAG, "answer sent");
+        }
+        rootActivity.toggle_recording();
     }
 
 

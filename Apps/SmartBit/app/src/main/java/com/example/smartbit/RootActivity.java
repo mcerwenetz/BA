@@ -119,8 +119,17 @@ public class RootActivity extends AppCompatActivity {
         tv_output_text = findViewById(R.id.tv);
         button_a = findViewById(R.id.button_a);
         button_b = findViewById(R.id.button_b);
+        action_led.setBackgroundColor(Color.RED);
+        recording_led.setImageAlpha(50);
     }
 
+    public void toggle_recording(){
+        if (recording_led.getImageAlpha() < 52){
+            recording_led.setImageAlpha(255);
+        }else{
+            recording_led.setImageAlpha(51);
+        }
+    }
 
     public void toogleButton() {
         if (ButtonToggleBool == true) {

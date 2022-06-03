@@ -41,6 +41,16 @@ def get_config_parameter(parameter_key : str ,
             if key == parameter_key:
                 return value
 
+class SensorNotSupportedException(Exception):
+    def __init__(self, sensor_name) -> None:
+        cause = "Sensor %s not supported" % sensor_name
+        super().__init__(cause)
+
+class CommandNotSupportedException(Exception):
+    def __init__(self, command) -> None:
+        cause = "Command %s not supported" % command
+        super().__init__(cause)
+
 class JsonMessagesWrapper():
     """This Class provides static methods to convert function calls to json"""
 
@@ -94,7 +104,7 @@ class Phone():
     def __init__(self) -> None:
         self.sock = socket.socket(socket.AF_INET, # Internet
                                 socket.SOCK_DGRAM) # UDP
-        self.sock.settimeout(1)
+        self.sock.settimeout(5)
         self.udp_ip="127.0.0.1"
         self.udp_sender_port = 5006
         self.udp_listener_port = 5005
@@ -102,7 +112,7 @@ class Phone():
 
 
 
-    def write_text(self, text_outer):
+    def write_text(self, text_outer) -> str:
 
         def _write_text(self, text : str) -> None:
             """can be called with various text to display on the smartphone display"""
@@ -110,6 +120,8 @@ class Phone():
             self._sendMessage(message=rpc_message)
 
         threading.Thread(target=_write_text, args=(self, text_outer)).start()
+        res = self._wait_on_result()
+        return res
 
     def toggle_button(self):
 
@@ -149,7 +161,7 @@ class Phone():
         #         got {result_sensor_type}""")
 
 
-    def _wait_on_result(self, request : dict = None) -> dict:
+    def _wait_on_result(self) -> dict:
         """get's response blocking with socket timeout
         and checks if types match.
         """
