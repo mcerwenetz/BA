@@ -213,9 +213,17 @@ Diese Art der Aufrufe benötigt keinen kontunierlichen Strom aus Werten, sondern
 Der Fokus liegt bei diesen Anfragen nicht auf Responsivität, sondern auf Sicherheit des Aufrufs.
 Bei dieser Art Aufruf werden Daten erst auf Anfrage generiert und dann, sofern vorgesehen, zurückgesendet.
 
+\
+
 \chapter{Architektur} \label{chap:architektur}
 Der Aufbau des Frameworks besteht aus einer mobilen Anwendung für Android-Smartphones, Bibliothek in der Programmiersprache C und einer Middleware die den Austausch Koordiniert.
-\\
+Der Aufbau ist in Abbildung \ref{fig:design} dargestellt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.9\textwidth]{images/design.png}
+  \caption{System-Aufbau}
+  \label{fig:design}
+\end{figure}
 Clientseitig erfolgen sämtliche Aufrufe die Sensordaten abgreifen oder Steueranfragen senden immer erst per UDP über die Middleware.
 \\
 Die Middleware sammelt, sobald sich eine Android-Anwendung bei ihr anmeldet, gewisse Sensordaten und speichert Sie intern zwischen, damit Sie schnell vorrätig vorliegen.
@@ -228,12 +236,144 @@ Steueraufrufe werden beim Aufruf über ein seperates Topic versandt.
 Der Austausch erfolgt auf mehreren Topics, da manche Nachrichten, wie Steuerbefehle wie in \ref{subsec:Ausgaben} erwähnt, mit einem höheren QOS-Level versendet werden müssen als im Moment existente Sensordaten die nur eine kurzzeitige Relevanz besitzen und deren Zustellung nicht obligatorisch ist.
 Auf diesem Topic werden Nachrichten mit der QOS von 2 versandt auf dem für reguläre Sensordaten mit einer QOS von 0.
 % Todo: admin channel? Erster Aufbau auf admin channel mit anschließender negotiation auf welchen channeln gesendet werden soll. Wie hart aufziehen?
+
+section*{Nachrichtenformate}
+Damit der gesamte Funktionsablauf des Frameworks korrekt funktioniert müssen Nachrichten zwischen den einzelenen Komponenten ausgetauscht werden.
+Hierfür wird ein Format definiert dass die in Kapitel \ref{sec:anforderungen} erwähnten Anforderungen sowohl auf Library-, Middleware-, und Smartphone-Seite umsetzt.
+
+Die Nachrichten werden im JSON-Format übertragen.
+Jede Nachricht beeinhaltet mindestens die Angabe eines Nachrichtenformat-Typs.
+Für die Aufrufe wurden folgende Nachrichtenformate definiert:
+\begin{enumerate}
+  \item sensor\_request
+  \item sensor\_update\_request
+  \item rpc\_request
+  \item rpc\_response
+\end{enumerate}
+Die Nachrichtenformate werden als Vorlagen in einer zentralen Datei abgelegt.
+Diese werden in der Library, Middleware und auf dem Smartphone eingelesen, damit Sie nur einer Stelle definiert werden müssen, wie in \ref*{fig:all_json} dargestellt.
+Neben den Nachrichtenformaten werden hier auch weitere Konfigurations-Konstanten wie Commands für rpc\_requests, Namen der Sensordaten und Namen der MQTT Topics spezifiziert spezifiziert.
+
+
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.9\textwidth]{images/design.png}
-  \caption{System-Aufbau}
-  \label{fig:design}
+  \includegraphics[width=.9\textwidth]{images/all_json.png}
+  \caption{Zentrale Konfigurationsdatei}
+  \label{fig:all_json}
 \end{figure}
+
+
+\textbf{sensor\_requests} werden vom Endanwender-PC per UDP an die Middleware gesendet.
+Sie beeinhalten neben dem Typ das Feld \texttt{sensor\_type}.
+Dieses definiert den Sensortyp für den eine Anfrage generiert wurde.
+Eine Übersicht ist in Listing \href{lst:sensor_request} zu finden.
+\\
+Im Listing wurde der Platzhalter \texttt{TYPE} für alle möglichen Sensortypen angegeben.
+Eine vollständige Aufschlüsselung ist in Tabelle \ref{tab:sensor_types} zu finden.
+\lstinputlisting[label={lst:sensor_request}, caption={sensor\_request}, captionpos=b]{listings/messages/sensor_request.json}
+
+\textbf{sensor\_update\_requests} werden von Smartphone über MQTT an die Middleware versandt.
+Sie umfassen ebenfalls wie \texttt{sensor\_requests} das Feld \texttt{sensor\_type}, jedoch zusätzlich auch das Feld \texttt{value} in dem der gemessene Sensorwert gespeichert wird.
+Dieser wird von der Middleware in eine interne Datenstruktur eingetragen.
+
+\textbf{rpc\_requests} werden vom Endanwender-PC per UDP an die Middleware gesendet.
+Sie lösen Aktionen auf dem Smartphone aus wie zum Beispiel das anschalten der LED, oder das Starten von Messungen.
+Sie werden von der Middleware per MQTT an das Smartphone weitergereicht.
+Die Übermittlung erfolgt jedoch über ein seperates Topic mit einem Quality of Service Wert von 2 um eine garantierte Übertragung zu gewährleisten.
+Das Smartphone hat dieses TOPIC ebenfalls mit einer QOS von 2 abboniert.
+eine Liste der Tabelle \ref{tab:command_types} zu entnehmen.
+
+
+
+
+rpc\_requests und response beeinhalten außerdem mindestens ein \texttt{command}-Feld und ein \texttt{value}-Feld.
+
+Nachfolgendes Listing zeigt beispielsweise den Aufruf die LED einzusschalten.
+
+\lstinputlisting[]{listings/messages/led.json}
+Folgende Nachricht beschreibt beispielsweise den übermittelten Sensorwert des accelerometers.
+\lstinputlisting{listings/messages/accell.json}
+
+\section*{Nachrichtenablauf}
+
+Der Nachrichtenablauf ist in Grafik \ref*{fig:message flow} dargestellt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.9\textwidth]{images/message_flow.png}
+  \caption{Nachrichtenablauf}
+  \label{fig:message flow}
+\end{figure}
+\\
+Grau dargestellt ist hier die periodische aktualisierung der Sensordaten durch sensor\_update\_requests.
+Diese werden mit einer auf dem Smartphone definierten Taktung an die Middleware übertragen
+Die Middleware trägt die neuen Daten dann in der internen Datenbank ein.
+\\
+Grün dargestellt ist der Ablauf eines sensor\_requests.
+Aus der Library heraus werden sensor\_requests gesendet.
+Die Middleware, die die aktuellen Sensorwerte vorhält sendet dann als Antwort den Sensorwert als einzelnen Wert, also nicht im JSON-Format zurück.
+\\
+Blau dargestellt ist ein rpc\_request, dass ein Command auf dem Smartphone ausführt, dass keinen Rückgabewert zurückliefert. Änlich wie bei sensor\_update\_requests handelt es sich hier um fire-and-forget-requests.
+\\
+Lila dargestellt sind rpc\_requests die ein Command ausführen dass einen Rückgabewert erwartet, wie es beispielsweise bei zeitlich getakteten Messungen der Fall ist. 
+In diesem Fall wird eine rpc\_response-Nachricht mit versendet.
+
+
+
+\section*{Verwendete Technologien}
+In diesem Kapitel werden die Technologien und Protokolle beschrieben die beim Nachrichtenaustausch zwischen Library, Middleware und Smartphone zum Einsatz kommen.
+\\
+Der Fokus liegt auf Serialisierung und Transport.
+Da im gesamten Prozess zwischen den drei Einheiten unterschiedliche Programmiersprachen auf verschiedenen Plattformen zum Einsatz kommen müssen sämtliche Protokolle und Notationen von möglichst vielen Programmiersprachen unterstztützt werden.
+\\
+Beim Transport liegt die Anforderung vor allem auf einer schnellen Ausführung, da sich Sensordaten schnell ändern und ein Lerneffekt am Besten eintritt wenn keine hohen Latenzen bei der Übertragung auftreten.
+
+\subsection*{JSON}
+JSON ist eine Abkürzung für JavaScript Object Notation.
+Es handelt sich um ein Nachrichten-Austausch-Format \cite{json}
+\\\\
+Der Aufbau ist minimalistisch. Objekte können mit Schlüssel-Wert-Paaren serialisiert werden.
+Auch Arrays können eingesetzt werden.
+Durch den einfachen Aufbau werden für eine Nachricht auch nicht viele Ressourcen benötigt.
+Gerade bei der Übertragung von Sensordaten ist ein schneller Datenaustausch sehr positiv.
+\\
+JSON wird außerdem von vielen Programmiersprachen wie Python und Java nativ unterstützt.
+Da die Bibliotheken programmiersprachenunabhäng bereitgestellt werden sollen bietet sich JSON als gemeinsame Notation hervorrangend an.
+Da es in C keinen eingebauten JSON Parser gibt wird hier auf den cJSON \cite{cjson} zurückgegriffen.
+
+\subsection*{MQTT}
+MQTT steht für Message Queuing Telemetry Transport und ist ein Client-Server Protokoll das auf TPC basiert.
+Es kommt häufig mei Machine-to-Machine Interaktionen zum Einsatz.
+Dies umfasst Lösungen im IoT-, Smarthome und Automatisierungstechnik-Bereich.
+Durch den platzsparenden Header von 2 Bytes und einer maximalen Nachrichtengröße von ca. 260 MB ist es gleichzeitig ein leichtgewichtiges jedoch auch flexibles Protokoll zum Nachrichtenaustausch.
+\\
+Für den Nachrichtenaustausch registrieren sich Clients an einem Broker, dem MQTT-Server, an ein oder mehrere Topics.
+Auf diesen Topics können dann Nachrichten gesendet und empfangen werden.
+Topics können hierarchisch geschichtet werden.
+Subtopics können dann pro ebene oder rekursiv für alle Subtopics abboniert werden.
+Dieses Feature ist jedoch für die Entwicklung nicht weiter von Belang.
+Nachrichten werden von Clients an den Broker gesendet.
+Dieser hält den Nachrichteninhalt intern für das jeweilige Topic.
+\\
+Alle Clients besitzen einen Identifier, so dass empfangene Nachrichten zurückgeführt werden können.
+Somit sind auch Topic-Interne Filter möglich nur Nachrichten von bestimmten Clients zu empfangen.
+\\
+Nachrichten können mit einer Quality of Service (QoS), einer Übertragungsgüte, übertragen werden.
+Insgesamt gibt es drei Stufen: 0, 1 und 2.
+Je höher die QoS-Stufe desto höher die Latenz der Übertragung.
+\\
+Bei einer QoS von 0 werden Daten einfach übertragen ohne sicherzugehen, dass die Nachricht auch wirklich beim Broker ankommt. 
+Bei QoS 1 wird eine Nachricht so lange auf einem Topic gesendet bis der Broker den Empfang einmal bestätigt.
+Es kann jedoch auch passieren, dass der Broker die Nachricht mehrmals empfängt und nur einmal bestätigt.
+Bei QoS 2 wird die Nachricht einmal an den Broker gesendet.
+Dieser muss dann den Empfang der Nachricht einmal bestätigen.
+Erst dann gilt die Nachricht als Empfangen.
+\\
+Damit die verlangte Güte sichergestellt wird müssen Sender und Empfänger mit der gleichen Güte senden bzw. ein Topic mit der gleichen Güte-Stufe abbonieren.
+Wird ein Topic mit einer geringeren Güte abboniert als die Güte der publizierten Nachricht wird die Nachricht mit der Güte des Abbonenten übertragen.
+Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wurde als dieses Topic abboniert wurde wird die Übertragung mit der Güte-Stufe des publizierenden Clients übertragen.
+
+\subsection*{UDP}
+UDP ist ein verbindungsloses Netzwerkprotokoll, dass auf der Transportschicht des TCP/IP-Stack zum Einsatz kommt.
 
 
 \section*{Server-Anwendung}
@@ -246,13 +386,14 @@ Der Server ist unter der localhost-Adresse 127.0.0.1 auf dem Port 5006 erreichba
 \\
 Für die MQTT-Verbindung kommt dabei die unter OpenSource-Liznenz stehende MQTT-Library Paho der Eclipse-Foundation zum Einsatz. \cite{paho}
 
-\subsection*{Interner Aufbau}
+
+\subsection{Anforderungen}
 Aus den Anforderungen ergeben sich folgende Aufgaben die der Server umsetzen muss:
 \begin{itemize}
 \item Sensoranfragen schnell beantworten
 \item Anfragen die Funktionen auf dem Smartphone starte, müssen schnell an das Smartphone weitergereicht und gegebenfalls wieder beantwortet werden.
 \end{itemize}
-Damit Sensoranfragen schnell beantwortet werden werden die aktuellen Sensorworte laufend vom Smartphone an den Server übermittelt.
+Damit Sensoranfragen schnell beantwortet werden können, werden die aktuellen Sensorworte fortlaufend vom Smartphone an den Server übermittelt.
 Dieser speichert Sie dann, sobald ein Sensorwert gemessen und übermittelt wurde in eine interne, threadsichere Datenstruktur.
 Hierdurch wird insbesondere der Latenzunterschied zwischen Smartphone und Localhost berücksichtigt.
 UDP Anfragen per Localhost haben eine wesentlich geringe Latenz als MQTT-Anfragen, auf die das Smartphone reagieren muss.
@@ -265,13 +406,66 @@ Loopback-Devices reichen Netzwerkpakete nicht herkömmlich über ein physisches 
 Die Bandbreiten sind dadurch sehr hoch und die Latenzen gering.
 \\
 Um die Latenzen und die damit verbundenen unterschiedlichen Auftrittszeitpunkte von Anfragen zu berücksichten, sowie eine möglichst effiziente Abarbeitung der selbiger zu ermöglichen wird eien paralelle Algorithmusstruktur verwendet.
+
+\subsection*{Interner Aufbau}
+Die Serveranwendung mit dem Namen server.py ist aufgeteilt in einen Datenverwaltungsteil, DataHandler, und eine MQTT Anbindung, MQTTHandlerThread.
+Da die Sensorwerte des Smartphoens vorrätig gehalten werden, wird außerdem eine Datenklasse für diese, SensorDB, intern gehalten.
+Eine Übersicht über die Komponenten ist Abbildung \ref{fig:serverUml} zu entnehmen.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.8\textwidth]{images/ServerUml.png}
+  \caption{UML Digaramm Server}
+  \label{fig:serverUml}
+\end{figure}
 \\
-Vier Threads koordinieren die Abarbeitung von Anfragen.
-Um Anfragen austauschen zu können kommen queues der Python-Implementierung cpython \cite{python_queue} zum Einsatz.
-Sie erlauben ein threadsicheres Einsetzen und Entfernen von Nachrichten.
+DataHandler wiederrum teilt sich nochmal auf in vier seperate Funktionen, die als Threads nebenläufig laufen: MqttRequestHandler, UDPRequestHandler, UDPRequestQueueWorker und AnswerQueueWorker.
 \\
-Damit die Sensorwerte vorgehalten werden können muss ein Thread kontinuierlich auf Sensoraktualisierungsanfragen des Smartphones per MQTT hören.
-Dies ist so
+Die Funktionsweise und Zwecke dieser Threads wird im Folgenden an zwei Beispielen erläutert.
+Für das erste Beispiel wird Abbildung \ref{fig:serverMqttReqPath} betrachtet.
+Zu sehen ist ein MQTT-Request, also eine Anfragen des Smartphones, dass über MQTT an den Server gesendet wird.
+Schnittstellen zu MQTT sind in der Grafik grün, Schnittstellen zur Library per UDP, sind blau markiert.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.8\textwidth]{images/MqttRequestServerPath}
+  \caption{Ablaufdiagramm MQTT Request}
+  \label{fig:serverMqttReqPath}
+\end{figure}
+\\
+Erreicht ein MQTT Request den Server wird es im MQTTHandlerThread entgegengenommen.
+Dieser setzt die Nachricht in eine MQTTRequestQueue ein.
+Der MQTTRequestHandler des DataHandlers wartet bis ein Eintrag in der Queue vorhanden ist und nimmt gegebenenfalls eine Nachricht.
+Daraufhin wird derTyp des Requests bestimmt.
+Handelt sich um ein Sensorupdate muss nur der Sensorwert in der Datenbank aktualisiert werden.
+Handelt es sich um eine rpc\_response, also um eine Antwort auf eine vorausgegangenes rpc\_request, dass einen Rückgabewert fordert, wird das request in eine udp\_answer\_queue eingefügt.
+Der AnswerQueue Worker wartet, ähnlich wie der MQTT Request Handler, bis eine neue Nachricht vorhanden ist die per UDP an den Client gesendet werden soll und sendet diese dann gegebenfalls ab.
+\\
+
+Das zweite Beispiel befasst sich mit dem Ablauf eines UDP-Requests, also einer Anfrage die mithilfe der Library gesendet wurde.
+Der Ablauf ist in Abbildung \ref{fig:serverUDPReqPath} dargestellt.
+Wie auch schon in der letzten Grafik sind alle Schnittstellen zum Smartphone grün und alle Schnittstellen zur Library blau markiert.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.8\textwidth]{images/UDPRequestServerPath}
+  \caption{Ablaufdiagramm UDP Request}
+  \label{fig:serverUDPReqPath}
+\end{figure}
+Erreicht ein UDP Request den Server wird es vom UDPRequestQueue-Worker in eine UDP Request Queue gelegt.
+Der UDPRequestHandler-Thread entnimmt die Nachricht und bestimmt den Anfragentyp.
+Handelt es sich um eine Anfrage des Types RPC\_Request soll sie Aktionen auf dem Smartphone auslösen.
+Sie muss an das Smartphone gesendet werden, was über MQTT möglich ist.
+Dafür wird Sie ineine MqttAnswerQueue eingesetzt.
+Der MQTTHandlerThread entnimmt Sie und sendet Sie per MQTT ab.
+\\
+Ist Request hingegen ein SensorRequest, also eine Anfrage auf die ein Sensorwert geantwortet werden soll wird der nachgefragte Sensorwert über die Klasse SensorDB entnommen und in die Udp\_answer\_queue eingetragen.
+Der AnswerQueueWorker entnimmt die Anfrage und sendet Sie per udp an die Library zurück.
+\\\\
+Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues des queue-Moduls\cite{python_queue} der cpython Implementierung.
+Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
+
+
+
+
+
 
 \section*{Android Anwendung}
 Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
@@ -403,142 +597,7 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
 
 
 
-\chapter*{Nachrichtenformate}
-Damit der gesamte Funktionsablauf des Frameworks korrekt funktioniert müssen Nachrichten zwischen den einzelenen Komponenten ausgetauscht werden.
-Hierfür wird ein Format definiert dass die in Kapitel \ref{sec:anforderungen} erwähnten Anforderungen sowohl auf Library-, Middleware-, und Smartphone-Seite umsetzt.
 
-Die Nachrichten werden im JSON-Format übertragen.
-Jede Nachricht beeinhaltet mindestens die Angabe eines Nachrichtenformat-Typs.
-Für die Aufrufe wurden folgende Nachrichtenformate definiert:
-\begin{enumerate}
-  \item sensor\_request
-  \item sensor\_update\_request
-  \item rpc\_request
-  \item rpc\_response
-\end{enumerate}
-Die Nachrichtenformate werden als Vorlagen in einer zentralen Datei abgelegt.
-Diese werden in der Library, Middleware und auf dem Smartphone eingelesen, damit Sie nur einer Stelle definiert werden müssen, wie in \ref*{fig:all_json} dargestellt.
-Neben den Nachrichtenformaten werden hier auch weitere Konfigurations-Konstanten wie Commands für rpc\_requests, Namen der Sensordaten und Namen der MQTT Topics spezifiziert spezifiziert.
-
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.9\textwidth]{images/all_json.png}
-  \caption{Zentrale Konfigurationsdatei}
-  \label{fig:all_json}
-\end{figure}
-
-
-\textbf{sensor\_requests} werden vom Endanwender-PC per UDP an die Middleware gesendet.
-Sie beeinhalten neben dem Typ das Feld \texttt{sensor\_type}.
-Dieses definiert den Sensortyp für den eine Anfrage generiert wurde.
-Eine Übersicht ist in Listing \href{lst:sensor_request} zu finden.
-\\
-Im Listing wurde der Platzhalter \texttt{TYPE} für alle möglichen Sensortypen angegeben.
-Eine vollständige Aufschlüsselung ist in Tabelle \ref{tab:sensor_types} zu finden.
-\lstinputlisting[label={lst:sensor_request}, caption={sensor\_request}, captionpos=b]{listings/messages/sensor_request.json}
-
-\textbf{sensor\_update\_requests} werden von Smartphone über MQTT an die Middleware versandt.
-Sie umfassen ebenfalls wie \texttt{sensor\_requests} das Feld \texttt{sensor\_type}, jedoch zusätzlich auch das Feld \texttt{value} in dem der gemessene Sensorwert gespeichert wird.
-Dieser wird von der Middleware in eine interne Datenstruktur eingetragen.
-
-\textbf{rpc\_requests} werden vom Endanwender-PC per UDP an die Middleware gesendet.
-Sie lösen Aktionen auf dem Smartphone aus wie zum Beispiel das anschalten der LED, oder das Starten von Messungen.
-Sie werden von der Middleware per MQTT an das Smartphone weitergereicht.
-Die Übermittlung erfolgt jedoch über ein seperates Topic mit einem Quality of Service Wert von 2 um eine garantierte Übertragung zu gewährleisten.
-Das Smartphone hat dieses TOPIC ebenfalls mit einer QOS von 2 abboniert.
-eine Liste der Tabelle \ref{tab:command_types} zu entnehmen.
-
-
-
-
-rpc\_requests und response beeinhalten außerdem mindestens ein \texttt{command}-Feld und ein \texttt{value}-Feld.
-
-Nachfolgendes Listing zeigt beispielsweise den Aufruf die LED einzusschalten.
-
-\lstinputlisting[]{listings/messages/led.json}
-Folgende Nachricht beschreibt beispielsweise den übermittelten Sensorwert des accelerometers.
-\lstinputlisting{listings/messages/accell.json}
-
-\section*{Nachrichtenablauf}
-
-Der Nachrichtenablauf ist in Grafik \ref*{fig:message flow} dargestellt.
-\\
-Grau dargestellt ist hier die periodische aktualisierung der Sensordaten durch sensor\_update\_requests.
-Diese werden mit einer auf dem Smartphone definierten Taktung an die Middleware übertragen
-Die Middleware trägt die neuen Daten dann in der internen Datenbank ein.
-\\
-Grün dargestellt ist der Ablauf eines sensor\_requests.
-Aus der Library heraus werden sensor\_requests gesendet.
-Die Middleware, die die aktuellen Sensorwerte vorhält sendet dann als Antwort den Sensorwert als einzelnen Wert, also nicht im JSON-Format zurück.
-\\
-Blau dargestellt ist ein rpc\_request, dass ein Command auf dem Smartphone ausführt, dass keinen Rückgabewert zurückliefert. Änlich wie bei sensor\_update\_requests handelt es sich hier um fire-and-forget-requests.
-\\
-Lila dargestellt sind rpc\_requests die ein Command ausführen dass einen Rückgabewert erwartet, wie es beispielsweise bei zeitlich getakteten Messungen der Fall ist. 
-In diesem Fall wird eine rpc\_response-Nachricht mit versendet.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.9\textwidth]{images/message_flow.png}
-  \caption{Nachrichtenablauf}
-  \label{fig:message flow}
-\end{figure}
-
-\section*{Verwendete Technologien}
-In diesem Kapitel werden die Technologien und Protokolle beschrieben die beim Nachrichtenaustausch zwischen Library, Middleware und Smartphone zum Einsatz kommen.
-\\
-Der Fokus liegt auf Serialisierung und Transport.
-Da im gesamten Prozess zwischen den drei Einheiten unterschiedliche Programmiersprachen auf verschiedenen Plattformen zum Einsatz kommen müssen sämtliche Protokolle und Notationen von möglichst vielen Programmiersprachen unterstztützt werden.
-\\
-Beim Transport liegt die Anforderung vor allem auf einer schnellen Ausführung, da sich Sensordaten schnell ändern und ein Lerneffekt am Besten eintritt wenn keine hohen Latenzen bei der Übertragung auftreten.
-
-\subsection*{JSON}
-JSON ist eine Abkürzung für JavaScript Object Notation.
-Es handelt sich um ein Nachrichten-Austausch-Format \cite{json}
-\\\\
-Der Aufbau ist minimalistisch. Objekte können mit Schlüssel-Wert-Paaren serialisiert werden.
-Auch Arrays können eingesetzt werden.
-Durch den einfachen Aufbau werden für eine Nachricht auch nicht viele Ressourcen benötigt.
-Gerade bei der Übertragung von Sensordaten ist ein schneller Datenaustausch sehr positiv.
-\\
-JSON wird außerdem von vielen Programmiersprachen wie Python und Java nativ unterstützt.
-Da die Bibliotheken programmiersprachenunabhäng bereitgestellt werden sollen bietet sich JSON als gemeinsame Notation hervorrangend an.
-Da es in C keinen eingebauten JSON Parser gibt wird hier auf den cJSON \cite{cjson} zurückgegriffen.
-
-\subsection*{MQTT}
-MQTT steht für Message Queuing Telemetry Transport und ist ein Client-Server Protokoll das auf TPC basiert.
-Es kommt häufig mei Machine-to-Machine Interaktionen zum Einsatz.
-Dies umfasst Lösungen im IoT-, Smarthome und Automatisierungstechnik-Bereich.
-Durch den platzsparenden Header von 2 Bytes und einer maximalen Nachrichtengröße von ca. 260 MB ist es gleichzeitig ein leichtgewichtiges jedoch auch flexibles Protokoll zum Nachrichtenaustausch.
-\\
-Für den Nachrichtenaustausch registrieren sich Clients an einem Broker, dem MQTT-Server, an ein oder mehrere Topics.
-Auf diesen Topics können dann Nachrichten gesendet und empfangen werden.
-Topics können hierarchisch geschichtet werden.
-Subtopics können dann pro ebene oder rekursiv für alle Subtopics abboniert werden.
-Dieses Feature ist jedoch für die Entwicklung nicht weiter von Belang.
-Nachrichten werden von Clients an den Broker gesendet.
-Dieser hält den Nachrichteninhalt intern für das jeweilige Topic.
-\\
-Alle Clients besitzen einen Identifier, so dass empfangene Nachrichten zurückgeführt werden können.
-Somit sind auch Topic-Interne Filter möglich nur Nachrichten von bestimmten Clients zu empfangen.
-\\
-Nachrichten können mit einer Quality of Service (QoS), einer Übertragungsgüte, übertragen werden.
-Insgesamt gibt es drei Stufen: 0, 1 und 2.
-Je höher die QoS-Stufe desto höher die Latenz der Übertragung.
-\\
-Bei einer QoS von 0 werden Daten einfach übertragen ohne sicherzugehen, dass die Nachricht auch wirklich beim Broker ankommt. 
-Bei QoS 1 wird eine Nachricht so lange auf einem Topic gesendet bis der Broker den Empfang einmal bestätigt.
-Es kann jedoch auch passieren, dass der Broker die Nachricht mehrmals empfängt und nur einmal bestätigt.
-Bei QoS 2 wird die Nachricht einmal an den Broker gesendet.
-Dieser muss dann den Empfang der Nachricht einmal bestätigen.
-Erst dann gilt die Nachricht als Empfangen.
-\\
-Damit die verlangte Güte sichergestellt wird müssen Sender und Empfänger mit der gleichen Güte senden bzw. ein Topic mit der gleichen Güte-Stufe abbonieren.
-Wird ein Topic mit einer geringeren Güte abboniert als die Güte der publizierten Nachricht wird die Nachricht mit der Güte des Abbonenten übertragen.
-Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wurde als dieses Topic abboniert wurde wird die Übertragung mit der Güte-Stufe des publizierenden Clients übertragen.
-
-\subsection*{UDP}
-UDP ist ein verbindungsloses Netzwerkprotokoll, dass auf der Transportschicht des TCP/IP-Stack zum Einsatz kommt.
 
 
 
@@ -559,8 +618,8 @@ UDP ist ein verbindungsloses Netzwerkprotokoll, dass auf der Transportschicht de
 \end{btSect}
 \begin{btSect}{online}
 \section*{Online-Quellen}
-%\btPrintCited
-\bibliography{online}
+\btPrintCited
+%\bibliography{online}
 \end{btSect}
 % dann mit "bibtex thesis1" und "bibtex thesis2" arbeiten
 
