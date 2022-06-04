@@ -172,18 +172,19 @@ Ein Nutzer möchte das Smartphone für eine gewisse Zeitspanne vibrieren lassen.
 \lstinputlisting[]{listings/api/vib.c}
 
 \section{Android Anwendung}\label{sec:androidApp}
-Für Ausgaben existiert eine Android Anwendung die verschiedene Interaktionsmöglichkeiten bereitstellt.
-Das Userinterface wird in Grafik \ref{fig:android_ui} gezeigt.
+Für Ausgaben auf dem Smartphone existiert die Android Anwendung Smartbit, die verschiedene Interaktionsmöglichkeiten bereitstellt.
+Das Userinterface wird in Abbildung \ref{fig:androidUI} gezeigt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.6\textwidth]{images/android_app_ui}
+  \caption{Userinterface Android Anwendung}
+  \label{fig:androidUI}
+\end{figure}
 \\
-Bereit stehen eine LED bzw. ein Button, eine Textausgabezeile und eine Checkbox.
-Der Button ist nicht drückbar.
-Eine Eingabe ist nicht vorgesehen.
-Er fungiert als Signal-LED die getoggelt werden kann.
-\\
-In der Textausgabe können beliebige Texte ausgegeben werden.
-\\
-Bei der checkbox kann der Haken gesetzt und wieder entfernt werden.
-Nachdem der Zustand geändert wurde wird eine Antwort über den aktuellen Zustand der Checkbox zurückgegeben.
+Die Anwendung besteht aus zwei Leds, den beiden Punkten im oberen rechten Eck.
+Ein Textfeld in der Mitte kann zur Ausgabe von Text verwendet werden.
+Die beiden Buttons können gedrückt werden.
+Neben den sichtbaren Elementen kann die Anwendung das Smartphone außerdem vibrieren lassen.
 
 
 \section{Softwareanforderungen}\label{sec:anforderungen}
@@ -319,7 +320,7 @@ In diesem Fall wird eine rpc\_response-Nachricht mit versendet.
 
 
 
-\section{Verwendete Technologien}
+\section{Verwendete Technologien}\label{sec:net_tech}
 In diesem Kapitel werden die Technologien und Protokolle beschrieben die beim Nachrichtenaustausch zwischen Library, Middleware und Smartphone zum Einsatz kommen.
 \\
 Der Fokus liegt auf Serialisierung und Transport.
@@ -375,6 +376,18 @@ Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wurde als di
 \subsection{UDP}
 UDP ist ein verbindungsloses Netzwerkprotokoll, dass auf der Transportschicht des TCP/IP-Stack zum Einsatz kommt.
 
+\section{Bibliotheken}
+Die Bibliotheken bilden die Einstiegsstelle für Nutzer um die Anwendung fernzusteuern oder Sensorwerte abzufragen.
+Funktionsaufrufe liegen jeweils in den Sprachen C, Java und Python vor.
+Daten werden wie in Kapitel \ref{chap:architektur} in Abbildung \ref{fig:design} gezeigt per UDP an eine Serveranwendung gesendet.
+Diese sendet die Daten dann nach gegebenenfalls per MQTT an das Smartphone weiter, oder wieder per UDP zurück.
+\\
+Die Bibliotheken senden und empfangen alle jeweils Daten per UDP.
+Hierfür werden Sockets benötigt.
+Für's Empfangen muss der Socket binded sein.
+Die Serveranwendung ist auf dem Port 5006 erreichbar.
+Antworten erwarten die Bibliotheken auf dem Port 5005.
+
 
 \section{Android Anwendung}
 Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
@@ -426,57 +439,32 @@ Smartphones beeinhalten verschiedene Sensoren die Daten über die Umgebung erfas
 In der Android Anwendung werden folgende Sensortypen verwendet:
 \begin{itemize}
   \item Lineare Beschleunigungssensoren
-  \item Microfon
+  \item Mikrofon
   \item Annäherungssensor
   \item Gyroskop
 \end{itemize}
 
 \subsection{Lineare Beschleunigungssensoren}
-Beschleunigungssensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
+Beschleunigungs- bzw. Lagesensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
 Eine Übersicht über die Anordungen der drei Axen ist in Grafik \ref{fig:and_axes} zu sehen.
-Die X-Achse verläuft horizontal durch das Display des Smartphones hindruch, die Y-Achse vertikal und die Z-Achse durchschneidet das Smartphone in die Tiefe.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.9\textwidth]{images/android_axes.png}
+  \includegraphics[width=.8\textwidth]{images/android_axes.png}
   \caption{Android-Koordinatensystem}
   \label{fig:and_axes}
 \end{figure}
-
-Die Beschleunigungsdaten werden dabei in einem festen Zeitraum gemessen.
-Hierfür stehen vier Schnelligkeitsstufen in absteigender Frequenz bereit:
+Die X-Achse verläuft horizontal durch das Display des Smartphones hindruch, die Y-Achse vertikal und die Z-Achse durchschneidet das Smartphone in die Tiefe.
+\\\\
+Die Frequenz mit der Messwerte erstellt werden kann manuell angegeben werden.
+Hierfür stehen vier Schnelligkeitsstufen bereit.:
 \begin{itemize}
   \item SENSOR\_DELAY\_FASTEST : Kein Verzögerung. Verwendet die Frequenz des Sensors.
   \item SENSOR\_DELAY\_GAME : Verzögerung um 1ms
   \item SENSOR\_DELAY\_UI : Verzögerung um 2ms
   \item SENSOR\_DELAY\_NORMAL : Verzögerung um 3ms
 \end{itemize}
-Die mit der jeweiligen Taktrate aufgenommenen Beschleunigungssensordaten umfassen jedoch auch die Ergbeschleunigung \texttt{g} in Höhe von $9.81 m/s^2$.
-Diese muss für die bereinigten, realen Werte zuerst noch von den aufgenommenen Werten subtrahiert werden.
-\\
-Hierfür muss zuerst der Gleichanteil der Graviation mittels eines Tiefpassfilters von den gemessenen Werten isoliert werden.
-\\
-Der Algorithmus dafür ist folgendermaßen definiert:
-\\
-Für eine unendliche Folge an isolierten Gravitationswerten g und Beschleunigungssensor-Messwerten e mit index $n \in \mathbb{N} $ gilt:
-\begin{equation}
-  g_n = g_{n-1} \cdot \alpha + (1 - \alpha) \cdot e_n
-\end{equation}
-Die Konstante $\alpha$ wird dabei folgendermaßen berechnet:
-\begin{equation}
-  \alpha = t / (t + \Delta_t )
-\end{equation}
-$t$ ist dabei die Zeitkonstante des Tiefpass-Filters und $\Delta_t$ die Anpassungsrate.
-\\
-Die Berechnung des bereinigten Beschleunigungssensorwerts ist durch einen Hochpass definiert:
-\\\\
-Für eine unendliche Folge an ereinigten Beschleunigungssensor-Messwerte l, isolierten Gravitationswerten g und Beschleunigungssensor-Messwerten e  mit index $n \in \mathbb{N}$ gilt:
-\begin{equation}
-  l_n = e_n - g_n
-\end{equation}
-Die Graviation könnte auch unter Zuhilfenahme des Gyroskops isoliert werden.
-Die wirkenden Kräfte auf die drei Achsen könnten je nach Neigung einzeln bemessen werden.
-Hierfür müsste die Masse des Smartphones jedoch bekannt und gleich verteilt sein.
-Deshalb wird hierfür auf die Pragmatische Hochpass-Tiefpass-Lösung zurückgegriffen.
+Die mit der jeweiligen Frequenz aufgenommenen Beschleunigungssensordaten beeinhalten jedoch auch die Ergbeschleunigung.
+Diese muss für die bereinigten, realen Werte zuerst noch von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
 
 
 \subsection{Angaben für die Nachrichtenformate}
