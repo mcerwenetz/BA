@@ -78,7 +78,7 @@ Diese können aufgerufen werden und geben Sensordaten zurück oder starten Aktio
 
 \chapter{Aufgabenstellungen} \label{chap:Experimente}
 
-\section*{Aufgaben}
+\section{Aufgaben}
 Dieses Kapitel enthält verschiedene Beispielaufgaben die mit dem Framework gelöst werden sollen.
 Die Benutzung der API dazu wird später geschildert.
 
@@ -116,7 +116,7 @@ Diese soll im Textfeld angezeigt werden.
 \textbf{Dreh-Zähler}\\
 Ein Nutzer möchte in einem bestimmten Zeitraum zählen wie oft das Smartphone gedreht wurde.
 
-\section*{API}\label{sec:API}
+\section{API}\label{sec:API}
 Gelöst werden sollen die Aufgaben durch das Aufrufen der API.
 Diese bietet die benötigten Funktionen an.
 Die Aufrufe sind frei miteinander kombinierbar, so dass Aufgaben erweitert werden können.
@@ -171,7 +171,7 @@ Dies kann er so machen.
 Ein Nutzer möchte das Smartphone für eine gewisse Zeitspanne vibrieren lassen.
 \lstinputlisting[]{listings/api/vib.c}
 
-\section*{Android Anwendung}
+\section{Android Anwendung}\label{sec:androidApp}
 Für Ausgaben existiert eine Android Anwendung die verschiedene Interaktionsmöglichkeiten bereitstellt.
 Das Userinterface wird in Grafik \ref{fig:android_ui} gezeigt.
 \\
@@ -186,11 +186,11 @@ Bei der checkbox kann der Haken gesetzt und wieder entfernt werden.
 Nachdem der Zustand geändert wurde wird eine Antwort über den aktuellen Zustand der Checkbox zurückgegeben.
 
 
-\section*{Softwareanforderungen}\label{sec:anforderungen}
+\section{Softwareanforderungen}\label{sec:anforderungen}
 Aus den unter \ref*{sec:API} genannten Funktionen ergeben sich die Anforderungen an das Framework.
 \\
 Es wird unterschieden in Funktionen die Sensordaten auslesen und Funktionen die Aktionen auf dem  auslösen.
-\subsection*{Sensordaten-Funktionen}
+\subsection{Sensordaten-Funktionen}
 Um das optimale Lernergebnis zu erhalten müssen Sensordaten responsiv vorliegen.
 Je schneller Richtungs-, Helligkeits oder Lautstärkedaten vorliegen desto schneller kann im Programm drauf reagiert werden.
 So können Experimente eher begriffen werden, da Auswirkungen in der Realität instantan Auswirkungen auf den vom Schüler geschriebenen Programmablauf haben.
@@ -206,7 +206,7 @@ Ein Funktionsaufruf der Sensordaten abfragt muss dann auf die zentral zwischenge
 So wird der Responszeit erhöht und es liegt immer das aktuellste Sensor-Ergebnis im Zwischenspeicher vor.
 Der Tätigkeitsbereich vom Smartphone umfasst jedoch nicht nur die Messung und Übermittlung der gemessenen Daten.
 
-\subsection*{Auslösende Funktionen}
+\subsection{Auslösende Funktionen}
 Die Anwendung auf dem Smartphone bietet ebenfalls verschiedene UI-Elemente welche aus der Ferne per Funktionsaufruf bedient werden.
 Außerdem werden zeitlich beschränkte Messungen umgesetzt die auf Anfrage gestartet werden sollen.
 Diese Art der Aufrufe benötigt keinen kontunierlichen Strom aus Werten, sondern wird einzeln aufgerufen und geben gegebenenfalls einzeln Werte zurück.
@@ -237,7 +237,7 @@ Der Austausch erfolgt auf mehreren Topics, da manche Nachrichten, wie Steuerbefe
 Auf diesem Topic werden Nachrichten mit der QOS von 2 versandt auf dem für reguläre Sensordaten mit einer QOS von 0.
 % Todo: admin channel? Erster Aufbau auf admin channel mit anschließender negotiation auf welchen channeln gesendet werden soll. Wie hart aufziehen?
 
-section*{Nachrichtenformate}
+\section{Nachrichtenformate}
 Damit der gesamte Funktionsablauf des Frameworks korrekt funktioniert müssen Nachrichten zwischen den einzelenen Komponenten ausgetauscht werden.
 Hierfür wird ein Format definiert dass die in Kapitel \ref{sec:anforderungen} erwähnten Anforderungen sowohl auf Library-, Middleware-, und Smartphone-Seite umsetzt.
 
@@ -294,7 +294,7 @@ Nachfolgendes Listing zeigt beispielsweise den Aufruf die LED einzusschalten.
 Folgende Nachricht beschreibt beispielsweise den übermittelten Sensorwert des accelerometers.
 \lstinputlisting{listings/messages/accell.json}
 
-\section*{Nachrichtenablauf}
+\section{Nachrichtenablauf}
 
 Der Nachrichtenablauf ist in Grafik \ref*{fig:message flow} dargestellt.
 \begin{figure}[htbp]
@@ -319,7 +319,7 @@ In diesem Fall wird eine rpc\_response-Nachricht mit versendet.
 
 
 
-\section*{Verwendete Technologien}
+\section{Verwendete Technologien}
 In diesem Kapitel werden die Technologien und Protokolle beschrieben die beim Nachrichtenaustausch zwischen Library, Middleware und Smartphone zum Einsatz kommen.
 \\
 Der Fokus liegt auf Serialisierung und Transport.
@@ -327,7 +327,7 @@ Da im gesamten Prozess zwischen den drei Einheiten unterschiedliche Programmiers
 \\
 Beim Transport liegt die Anforderung vor allem auf einer schnellen Ausführung, da sich Sensordaten schnell ändern und ein Lerneffekt am Besten eintritt wenn keine hohen Latenzen bei der Übertragung auftreten.
 
-\subsection*{JSON}
+\subsection{JSON}
 JSON ist eine Abkürzung für JavaScript Object Notation.
 Es handelt sich um ein Nachrichten-Austausch-Format \cite{json}
 \\\\
@@ -340,7 +340,7 @@ JSON wird außerdem von vielen Programmiersprachen wie Python und Java nativ unt
 Da die Bibliotheken programmiersprachenunabhäng bereitgestellt werden sollen bietet sich JSON als gemeinsame Notation hervorrangend an.
 Da es in C keinen eingebauten JSON Parser gibt wird hier auf den cJSON \cite{cjson} zurückgegriffen.
 
-\subsection*{MQTT}
+\subsection{MQTT}
 MQTT steht für Message Queuing Telemetry Transport und ist ein Client-Server Protokoll das auf TPC basiert.
 Es kommt häufig mei Machine-to-Machine Interaktionen zum Einsatz.
 Dies umfasst Lösungen im IoT-, Smarthome und Automatisierungstechnik-Bereich.
@@ -372,11 +372,137 @@ Damit die verlangte Güte sichergestellt wird müssen Sender und Empfänger mit 
 Wird ein Topic mit einer geringeren Güte abboniert als die Güte der publizierten Nachricht wird die Nachricht mit der Güte des Abbonenten übertragen.
 Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wurde als dieses Topic abboniert wurde wird die Übertragung mit der Güte-Stufe des publizierenden Clients übertragen.
 
-\subsection*{UDP}
+\subsection{UDP}
 UDP ist ein verbindungsloses Netzwerkprotokoll, dass auf der Transportschicht des TCP/IP-Stack zum Einsatz kommt.
 
 
-\section*{Server-Anwendung}
+\section{Android Anwendung}
+Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
+Sie besteht aus einer Haupt-Activity deren außerlicher Aufbau in Kapitel \ref{sec:androidApp} beschrieben ist. 
+\\
+In der Haupt-Activity wird ein Service gestartet und gebunden.
+Der Service baut eine Verbindung zu einem MQTT Server auf.
+Dort verbindet er sich den beiden Topics. 
+Die Activity bindet beim Start den MQTT-Service ein.
+Stellt ein Client über die Bibliothek auf einem Computer eine Anfrage wird dieser Aufruf, wie z.B. eine Ausgabe auf einem Textfeld an das Smartphones,  zuerst zur Middleware geleitet.
+Diese leitet die Anfrage weiter an das Smartphone, dass dann den jeweiligen Befehl ausführt.
+Dies beeinhaltet vor allem Ausgaben, sowie Eingaben die eine Nutzerinteraktion mit reduziertem Ergebnis.
+Zum Beispiel alle Eingaben die etwas in einem angegebenen Zeitraum messen.
+Falls ein Sensor angefragt wird der auf dem Smartphone nicht existiert wird eine Nachricht mit einer Fehlermeldung zurückgegeben.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.9\textwidth]{images/android_app.png}
+  \caption{Android-App-Aufbau}
+  \label{fig:android_app}
+\end{figure}
+
+\subsection{Kommandos und Ausgaben}
+Für die Ausgabe auf dem Smartphone sind verschiedene Kommandos definiert.
+Diese sind der Tabelle \ref{tab:command_types} zu entnehmen.
+\texttt{CMD-Kürzel} beschreibt die Notation des Kürzels mit dem eine Aktion ausgeführt werden kann.
+Diese wird unter \texttt{Beschreibung} kurz zusammengefasst.
+\texttt{return} gibt an, ob der Aufruf des Requests eine Antwort rücksendet und somit auch, ob ein Aufruf der Funktion in der Library blockiert oder nur sendet.
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|c|c|c|}
+      \hline
+      CMD-Kürzel & Beschreibung & return\\
+      \hline
+      textview & Setzt \texttt{value} als Text im Textvie & False \\
+      button & Setzt Button auf value. Dies kann sein 
+        \tabitem true : setzt die Farbe auf Grün \\
+        \tabitem false : setzt die Farbe auf Rot \\
+        \tabitem toggle : Kehrt die Farbe um \\
+       & False \\
+      \hline
+  \end{tabular}
+  \caption{Kommando-Kürzel mit Beschreibung}
+  \label{tab:command_types}
+\end{table}
+
+
+\section{Sensoren}
+Smartphones beeinhalten verschiedene Sensoren die Daten über die Umgebung erfassen können.
+In der Android Anwendung werden folgende Sensortypen verwendet:
+\begin{itemize}
+  \item Lineare Beschleunigungssensoren
+  \item Microfon
+  \item Annäherungssensor
+  \item Gyroskop
+\end{itemize}
+
+\subsection{Lineare Beschleunigungssensoren}
+Beschleunigungssensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
+Eine Übersicht über die Anordungen der drei Axen ist in Grafik \ref{fig:and_axes} zu sehen.
+Die X-Achse verläuft horizontal durch das Display des Smartphones hindruch, die Y-Achse vertikal und die Z-Achse durchschneidet das Smartphone in die Tiefe.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.9\textwidth]{images/android_axes.png}
+  \caption{Android-Koordinatensystem}
+  \label{fig:and_axes}
+\end{figure}
+
+Die Beschleunigungsdaten werden dabei in einem festen Zeitraum gemessen.
+Hierfür stehen vier Schnelligkeitsstufen in absteigender Frequenz bereit:
+\begin{itemize}
+  \item SENSOR\_DELAY\_FASTEST : Kein Verzögerung. Verwendet die Frequenz des Sensors.
+  \item SENSOR\_DELAY\_GAME : Verzögerung um 1ms
+  \item SENSOR\_DELAY\_UI : Verzögerung um 2ms
+  \item SENSOR\_DELAY\_NORMAL : Verzögerung um 3ms
+\end{itemize}
+Die mit der jeweiligen Taktrate aufgenommenen Beschleunigungssensordaten umfassen jedoch auch die Ergbeschleunigung \texttt{g} in Höhe von $9.81 m/s^2$.
+Diese muss für die bereinigten, realen Werte zuerst noch von den aufgenommenen Werten subtrahiert werden.
+\\
+Hierfür muss zuerst der Gleichanteil der Graviation mittels eines Tiefpassfilters von den gemessenen Werten isoliert werden.
+\\
+Der Algorithmus dafür ist folgendermaßen definiert:
+\\
+Für eine unendliche Folge an isolierten Gravitationswerten g und Beschleunigungssensor-Messwerten e mit index $n \in \mathbb{N} $ gilt:
+\begin{equation}
+  g_n = g_{n-1} \cdot \alpha + (1 - \alpha) \cdot e_n
+\end{equation}
+Die Konstante $\alpha$ wird dabei folgendermaßen berechnet:
+\begin{equation}
+  \alpha = t / (t + \Delta_t )
+\end{equation}
+$t$ ist dabei die Zeitkonstante des Tiefpass-Filters und $\Delta_t$ die Anpassungsrate.
+\\
+Die Berechnung des bereinigten Beschleunigungssensorwerts ist durch einen Hochpass definiert:
+\\\\
+Für eine unendliche Folge an ereinigten Beschleunigungssensor-Messwerte l, isolierten Gravitationswerten g und Beschleunigungssensor-Messwerten e  mit index $n \in \mathbb{N}$ gilt:
+\begin{equation}
+  l_n = e_n - g_n
+\end{equation}
+Die Graviation könnte auch unter Zuhilfenahme des Gyroskops isoliert werden.
+Die wirkenden Kräfte auf die drei Achsen könnten je nach Neigung einzeln bemessen werden.
+Hierfür müsste die Masse des Smartphones jedoch bekannt und gleich verteilt sein.
+Deshalb wird hierfür auf die Pragmatische Hochpass-Tiefpass-Lösung zurückgegriffen.
+
+
+\subsection{Angaben für die Nachrichtenformate}
+Alle Sensordaten besitzen ein festgelegtes Kürzel zur Standardisierung des Nachrichtenverkehrs.
+Sie dienen vor allem der Adressierung der jeweiligen Daten in der Middleware und in der Library.
+\\
+Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden. 
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|c|c|c}
+      \hline
+      TYPE-Kürzel & Beschreibung \\
+      \hline
+      accell\_x & Beschleunigungssensor für die X-Richtung \\
+      \hline
+      accell\_y & Beschleunigungssensor für die Y-Richtung \\
+      \hline
+      accell\_z & Beschleunigungssensor für die Z-Richtung \\
+      \hline
+
+  \end{tabular}
+  \caption{Sensor-Kürzel mit Beschreibung}
+  \label{tab:sensor_types}
+\end{table}
+
+\section{Server-Anwendung}
 
 Für Vermittlung zwischen den Komponenten fungiert eine Server-Anwendung.
 Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen Seite vom Client aus und MQTT-Anfragen vom Smartphone auf der anderen Seite.
@@ -407,7 +533,7 @@ Die Bandbreiten sind dadurch sehr hoch und die Latenzen gering.
 \\
 Um die Latenzen und die damit verbundenen unterschiedlichen Auftrittszeitpunkte von Anfragen zu berücksichten, sowie eine möglichst effiziente Abarbeitung der selbiger zu ermöglichen wird eien paralelle Algorithmusstruktur verwendet.
 
-\subsection*{Interner Aufbau}
+\subsection{Interner Aufbau}
 Die Serveranwendung mit dem Namen server.py ist aufgeteilt in einen Datenverwaltungsteil, DataHandler, und eine MQTT Anbindung, MQTTHandlerThread.
 Da die Sensorwerte des Smartphoens vorrätig gehalten werden, wird außerdem eine Datenklasse für diese, SensorDB, intern gehalten.
 Eine Übersicht über die Komponenten ist Abbildung \ref{fig:serverUml} zu entnehmen.
@@ -459,149 +585,23 @@ Der MQTTHandlerThread entnimmt Sie und sendet Sie per MQTT ab.
 Ist Request hingegen ein SensorRequest, also eine Anfrage auf die ein Sensorwert geantwortet werden soll wird der nachgefragte Sensorwert über die Klasse SensorDB entnommen und in die Udp\_answer\_queue eingetragen.
 Der AnswerQueueWorker entnimmt die Anfrage und sendet Sie per udp an die Library zurück.
 \\\\
+Zusammenfassend erfüllen die Komponenten folgende Aufgaben.
+Der MQTTHandlerThread nimmt Nachrichten direkt per MQTT an und gibt die Anfrage weiter.
+Außerdem sendet er Nachrichten per MQTT, falls welche anfallen.
+\\
+Der MQTTRequestHandler kümmert sich um das Verfahren von MQTT Requests.
+\\
+Der UDPRequestQueue Worker nimmt wie der MQTTHandlerThread Anfragen die per UDP übermittelt wurden an und gibt Sie zur Behandlung entsprechend weiter.
+Er sendet jedoch im Gegensatz keine Responses zurück.
+\\
+Hierfür gibt es den AnswerQueueWorker, dessen einzige Aufgabe es ist Antworten per UDP zurück zu übermitteln.
+\\\\
 Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues des queue-Moduls\cite{python_queue} der cpython Implementierung.
 Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
 
+\chapter{Fazit}
 
-
-
-
-
-\section*{Android Anwendung}
-Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
-Sie besteht aus einer Haupt-Activity deren außerlicher Aufbau in \ref{chap:intro} beschrieben ist. 
-\\
-In der Haupt-Activity wird ein Service gestartet und gebunden.
-Der Service baut eine Verbindung zu einem MQTT Server auf.
-Dort verbindet er sich den beiden Topics. 
-Die Activity bindet beim Start den MQTT-Service ein.
-Stellt ein Client über die Bibliothek auf einem Computer eine Anfrage wird dieser Aufruf, wie z.B. eine Ausgabe auf einem Textfeld an das Smartphones,  zuerst zur Middleware geleitet.
-Diese leitet die Anfrage weiter an das Smartphone, dass dann den jeweiligen Befehl ausführt.
-Dies beeinhaltet vor allem Ausgaben, sowie Eingaben die eine Nutzerinteraktion mit reduziertem Ergebnis.
-Zum Beispiel alle Eingaben die etwas in einem angegebenen Zeitraum messen.
-Falls ein Sensor angefragt wird der auf dem Smartphone nicht existiert wird eine Nachricht mit einer Fehlermeldung zurückgegeben.
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.9\textwidth]{images/android_app.png}
-  \caption{Android-App-Aufbau}
-  \label{fig:android_app}
-\end{figure}
-
-\subsection*{Kommandos und Ausgaben}
-Für die Ausgabe auf dem Smartphone sind verschiedene Kommandos definiert.
-Diese sind der Tabelle \ref{tab:command_types} zu entnehmen.
-\texttt{CMD-Kürzel} beschreibt die Notation des Kürzels mit dem eine Aktion ausgeführt werden kann.
-Diese wird unter \texttt{Beschreibung} kurz zusammengefasst.
-\texttt{return} gibt an, ob der Aufruf des Requests eine Antwort rücksendet und somit auch, ob ein Aufruf der Funktion in der Library blockiert oder nur sendet.
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{|c|c|c|}
-      \hline
-      CMD-Kürzel & Beschreibung & return\\
-      \hline
-      textview & Setzt \texttt{value} als Text im Textvie & False \\
-      button & Setzt Button auf value. Dies kann sein 
-        \tabitem true : setzt die Farbe auf Grün \\
-        \tabitem false : setzt die Farbe auf Rot \\
-        \tabitem toggle : Kehrt die Farbe um \\
-       & False \\
-      \hline
-  \end{tabular}
-  \caption{Kommando-Kürzel mit Beschreibung}
-  \label{tab:command_types}
-\end{table}
-
-
-\section*{Sensoren}
-Smartphones beeinhalten verschiedene Sensoren die Daten über die Umgebung erfassen können.
-In der Android Anwendung werden folgende Sensortypen verwendet:
-\begin{itemize}
-  \item Lineare Beschleunigungssensoren
-  \item Microfon
-  \item Annäherungssensor
-  \item Gyroskop
-\end{itemize}
-
-\subsection*{Lineare Beschleunigungssensoren}
-Beschleunigungssensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
-Eine Übersicht über die Anordungen der drei Axen ist in Grafik \ref{fig:and_axes} zu sehen.
-Die X-Achse verläuft horizontal durch das Display des Smartphones hindruch, die Y-Achse vertikal und die Z-Achse durchschneidet das Smartphone in die Tiefe.
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.9\textwidth]{images/android_axes.png}
-  \caption{Android-Koordinatensystem}
-  \label{fig:and_axes}
-\end{figure}
-
-Die Beschleunigungsdaten werden dabei in einem festen Zeitraum gemessen.
-Hierfür stehen vier Schnelligkeitsstufen in absteigender Frequenz bereit:
-\begin{itemize}
-  \item SENSOR\_DELAY\_FASTEST : Kein Verzögerung. Verwendet die Frequenz des Sensors.
-  \item SENSOR\_DELAY\_GAME : Verzögerung um 1ms
-  \item SENSOR\_DELAY\_UI : Verzögerung um 2ms
-  \item SENSOR\_DELAY\_NORMAL : Verzögerung um 3ms
-\end{itemize}
-Die mit der jeweiligen Taktrate aufgenommenen Beschleunigungssensordaten umfassen jedoch auch die Ergbeschleunigung \texttt{g} in Höhe von $9.81 m/s^2$.
-Diese muss für die bereinigten, realen Werte zuerst noch von den aufgenommenen Werten subtrahiert werden.
-\\
-Hierfür muss zuerst der Gleichanteil der Graviation mittels eines Tiefpassfilters von den gemessenen Werten isoliert werden.
-\\
-Der Algorithmus dafür ist folgendermaßen definiert:
-\\
-Für eine unendliche Folge an isolierten Gravitationswerten g und Beschleunigungssensor-Messwerten e mit index $n \in \mathbb{N} $ gilt:
-\begin{equation}
-  g_n = g_{n-1} \cdot \alpha + (1 - \alpha) \cdot e_n
-\end{equation}
-Die Konstante $\alpha$ wird dabei folgendermaßen berechnet:
-\begin{equation}
-  \alpha = t / (t + \Delta_t )
-\end{equation}
-$t$ ist dabei die Zeitkonstante des Tiefpass-Filters und $\Delta_t$ die Anpassungsrate.
-\\
-Die Berechnung des bereinigten Beschleunigungssensorwerts ist durch einen Hochpass definiert:
-\\\\
-Für eine unendliche Folge an ereinigten Beschleunigungssensor-Messwerte l, isolierten Gravitationswerten g und Beschleunigungssensor-Messwerten e  mit index $n \in \mathbb{N}$ gilt:
-\begin{equation}
-  l_n = e_n - g_n
-\end{equation}
-Die Graviation könnte auch unter Zuhilfenahme des Gyroskops isoliert werden.
-Die wirkenden Kräfte auf die drei Achsen könnten je nach Neigung einzeln bemessen werden.
-Hierfür müsste die Masse des Smartphones jedoch bekannt und gleich verteilt sein.
-Deshalb wird hierfür auf die Pragmatische Hochpass-Tiefpass-Lösung zurückgegriffen.
-
-
-\subsection*{Angaben für die Nachrichtenformate}
-Alle Sensordaten besitzen ein festgelegtes Kürzel zur Standardisierung des Nachrichtenverkehrs.
-Sie dienen vor allem der Adressierung der jeweiligen Daten in der Middleware und in der Library.
-\\
-Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden. 
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{|c|c|c}
-      \hline
-      TYPE-Kürzel & Beschreibung \\
-      \hline
-      accell\_x & Beschleunigungssensor für die X-Richtung \\
-      \hline
-      accell\_y & Beschleunigungssensor für die Y-Richtung \\
-      \hline
-      accell\_z & Beschleunigungssensor für die Z-Richtung \\
-      \hline
-
-  \end{tabular}
-  \caption{Sensor-Kürzel mit Beschreibung}
-  \label{tab:sensor_types}
-\end{table}
-
-
-
-
-
-
-
-
-
-\chapter*{Fazit}
+\chapter{Quellen}
 
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
