@@ -29,14 +29,14 @@ für die didaktische Unterstützung von Programmiervorlesungen}
 \include{vorspann} % Titelseite, Erklärungen, etc.
 
 \begin{abstract}
-  Programmierenlernen fällt besonders am Anfang schwer.
-  Embeddedprojekte erlauben mit vergleichsweise wenig Aufwand einen gelungen Einstieg mit effektiver Lernerfahrung.
-  Solche Projekte benötigen allerdings viel Peripherie und Hardware.
-  Diese benötigt wiederrum eine nicht niedrigschwellige Erfahrung zum Beispiel im Umgang mit Microcontrollern.
-  Smartphones haben diese Nachteile nicht, bieten allerdings trotzdem einen hohen Umfang an Sensoren.
-  \\
-  In dieser Arbeit wird ein Framework erstellt, dass das Smartphone nutzt um mit dem Microcontroller kleine Softwareprojekte umzusetzen.
-  Kleine Aufgabenstellungen mit Musterlösungen werden ausgearbeitet und mitgereicht.
+Programmierenlernen fällt besonders am Anfang schwer.
+Embeddedprojekte erlauben mit vergleichsweise wenig Aufwand einen gelungen Einstieg mit effektiver Lernerfahrung.
+Solche Projekte benötigen allerdings viel Peripherie und Hardware.
+Diese benötigt wiederrum eine nicht niedrigschwellige Erfahrung zum Beispiel im Umgang mit Microcontrollern.
+Smartphones haben diese Nachteile nicht, bieten allerdings trotzdem einen hohen Umfang an Sensoren.
+\\
+Ziel dieser Arbeit ist die Entwicklung eines Frameworks, dass das Smartphone, dessen Sensoren sowie Ein- und Ausgabemöglichkeiten nutzt um kleine Softwareprojekte umzusetzen.
+Zur Unterstützung werden zudem kleine Aufgabenstellungen ausgearbeitet um Lehrimpulse zu setzen.
 \end{abstract}
 
 \tableofcontents
@@ -57,25 +57,37 @@ Sie lernen spielerisch kleine Programme zu entwickleln und verstehen die ihnen b
 Microcontroller sind jedoch auch mit Anschaffungskosten verbunden und für kleine Anwendungen, welche Sensoren verwenden, wird viel zusätzliches Material wie zum Beispiel Breadboards, Verbindungskabel und Erweiterungsboards benötigt.
 Moderne Smartphones bieten hier Abhilfe da Sie meistens mit verschiedenen Sensoren bespickt sind, wie zum Beispiel: Kompass, GPS, Microphon oder Kamera.
 Viele Kinder besitzen bereits mit 10 Jahren \cite{bitkom_smartphones} ein Smartphone. 
+\\\\
+Im Rahmen dieser Arbeit wurde ein Framework entwickelt, dass das Smartphone von Anwendern einbindet um Sie beim Programmierenlernen zu unterstützen.
+Es heißt SmartBit und orientiert sich an bereits bestehenden Schulungsprojekten wie dem Arduino oder BBC Microbit.
 \\
-Im Rahmen dieser Arbeit soll ein Framework entwickelt werden, dass das Smartphone von Anwendern einbindet um Sie beim Programmierenlernen zu unterstützen.
-Dieses orientiert sich ganz an bereits bestehenden Schulungsprojekten wie dem Arduino oder BBC Microbit.
-Schüler und Studenten lösen Aufgaben, lesen Sensordaten aus oder starten Messungen oder Aktionen auf dem Smartphone.
+Moderne Smartphones sind mit einer Vielzahl an Sensoren ausgestattet.
+Diese umfassen zum Beispiel Lage- und Gyrosokopsensoren, jedoch auch Magnetfeld-, Näherungs oder Luftdrucksensoren.
+Diese können von Schülern oder Studenten ausgelesen werden um so zum Beispiel auf Smartphonerotationen, Lageänderungen, usw. reagieren zu können.
+So können abhängige Ausgaben angezeigt werden.
+Die direkte Nutzung eines haptischen, physischen Geräts in kombination mit statischem Code fördert die Einbindung in die Aufgabe.
 \\
-Das Framework besteht aus einer programmiersprachenunabhängigen Library, einer Server-Anwendung und einer mobilen Anwendung für Android Smartphones.
+Schüler und Studenten lösen vorgefertigte Aufgaben in denen Sie Sensordaten auslesen, oder Messungen bzw. Aktionen auf dem Smartphone starten müssen.
+Dieses Interaktive Element soll die Lernerfahrung optimieren.
+Eine Studie von Martinha Piteria und Carlos Costa analysierte 2013 am Polytechnischen Institut Setubal in Portugal die Lernerfahrung von 64 Studierenden.\cite{learning_computer_programming}
+Praktische Lernsituationen wie Labore oder praktischen Lehrstunden während der Vorlesung.
+\\
+Dieser positive Lerneffekt soll durch die Aufgabenstellungen ausgenutzt werden.
+\\
+\\
+Das Framework besteht aus einer programmiersprachenunabhängigen Bibliothek, einer Server-Anwendung und einer mobilen Anwendung für Android Smartphones.
 \\
 Die Library stellt Funktionsaufrufe bereit.
-Diese können aufgerufen werden und geben Sensordaten zurück oder starten Aktion 
-% \subsection*{Android-App}
-% Die Anwendung besteht aus einem Textfeld, einer Ausgabe-LED, einer Signal LED für Nutzereingaben und zwei Buttons.
-% Auf dem Textfeld können verschiedene Ausgaben präsentiert werden.
-% Die Ausgbale LED kann vom Computer aus an und ausgeschaltet werden.
-% Die Signal-LED dient dazu dem Nutzer zu signalisieren, ob sich das Smartphone gerade in einem Aufnahmeprozess befindet.
-% Die Buttons werden verwendet um auf dem PC Steuerbefehle auszuführen.
-% \\
-% Neben den Ein- und Ausgabemöglichkeiten im UI-Screen kann zur Eingabe auch noch das Microphon und das accelerometer genutzt werden, sofern vorhanden.
-% Als Ausgabemöglichkeiten kommen der Vibrationsmotor sowie der Lautsprecher des Smartphones zum Einsatz.
-
+Diese können aufgerufen werden und geben Sensordaten zurück oder starten Aktionen in der Smartphone-Anwendung.
+\\
+Die Serveranwendung dient als Vermittlungseinheit zwischen Smartphone und Bibliothek.
+Aufbau und Funktionsweise werden in Kapitel \ref{sec:server_arch} erläutert.
+\\
+Das Smartphone dient als Interaktionsobjekt.
+Hierfür wurde eine Android-Anwendung entwickelt.
+Sie stellt Ausgabemöglichkeiten beispielsweise über ein Textfeld oder Vibration zur Verfügung.
+Zudem misst Sie kontinuierlich Sensordaten und übermittelt diese.
+Der konkrete Aufbau der Anwendung wird in \ref{sec:androidApp} erläutert.
 \chapter{Aufgabenstellungen} \label{chap:Experimente}
 
 \section{Aufgaben}
@@ -281,11 +293,6 @@ Dieser wird von der Middleware in eine interne Datenstruktur eingetragen.
 Sie lösen Aktionen auf dem Smartphone aus wie zum Beispiel das anschalten der LED, oder das Starten von Messungen.
 Sie werden von der Middleware per MQTT an das Smartphone weitergereicht.
 Die Übermittlung erfolgt jedoch über ein seperates Topic mit einem Quality of Service Wert von 2 um eine garantierte Übertragung zu gewährleisten.
-Das Smartphone hat dieses TOPIC ebenfalls mit einer QOS von 2 abboniert.
-eine Liste der Tabelle \ref{tab:command_types} zu entnehmen.
-
-
-
 
 rpc\_requests und response beeinhalten außerdem mindestens ein \texttt{command}-Feld und ein \texttt{value}-Feld.
 
@@ -297,7 +304,7 @@ Folgende Nachricht beschreibt beispielsweise den übermittelten Sensorwert des a
 
 \section{Nachrichtenablauf}
 
-Der Nachrichtenablauf ist in Grafik \ref*{fig:message flow} dargestellt.
+Der Nachrichtenablauf ist in Abbildung \ref{fig:message flow} dargestellt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.9\textwidth]{images/message_flow.png}
@@ -402,12 +409,7 @@ Diese leitet die Anfrage weiter an das Smartphone, dass dann den jeweiligen Befe
 Dies beeinhaltet vor allem Ausgaben, sowie Eingaben die eine Nutzerinteraktion mit reduziertem Ergebnis.
 Zum Beispiel alle Eingaben die etwas in einem angegebenen Zeitraum messen.
 Falls ein Sensor angefragt wird der auf dem Smartphone nicht existiert wird eine Nachricht mit einer Fehlermeldung zurückgegeben.
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.9\textwidth]{images/android_app.png}
-  \caption{Android-App-Aufbau}
-  \label{fig:android_app}
-\end{figure}
+
 
 \subsection{Kommandos und Ausgaben}
 Für die Ausgabe auf dem Smartphone sind verschiedene Kommandos definiert.
@@ -415,23 +417,7 @@ Diese sind der Tabelle \ref{tab:command_types} zu entnehmen.
 \texttt{CMD-Kürzel} beschreibt die Notation des Kürzels mit dem eine Aktion ausgeführt werden kann.
 Diese wird unter \texttt{Beschreibung} kurz zusammengefasst.
 \texttt{return} gibt an, ob der Aufruf des Requests eine Antwort rücksendet und somit auch, ob ein Aufruf der Funktion in der Library blockiert oder nur sendet.
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{|c|c|c|}
-      \hline
-      CMD-Kürzel & Beschreibung & return\\
-      \hline
-      textview & Setzt \texttt{value} als Text im Textvie & False \\
-      button & Setzt Button auf value. Dies kann sein 
-        \tabitem true : setzt die Farbe auf Grün \\
-        \tabitem false : setzt die Farbe auf Rot \\
-        \tabitem toggle : Kehrt die Farbe um \\
-       & False \\
-      \hline
-  \end{tabular}
-  \caption{Kommando-Kürzel mit Beschreibung}
-  \label{tab:command_types}
-\end{table}
+
 
 
 \section{Sensoren}
@@ -478,11 +464,19 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
       \hline
       TYPE-Kürzel & Beschreibung \\
       \hline
-      accell\_x & Beschleunigungssensor für die X-Richtung \\
+      accell\_x & Lagesensor für die X-Richtung \\
       \hline
-      accell\_y & Beschleunigungssensor für die Y-Richtung \\
+      accell\_y & Lagesensor für die Y-Richtung \\
       \hline
-      accell\_z & Beschleunigungssensor für die Z-Richtung \\
+      accell\_z & Lagesensor für die Z-Richtung \\
+      \hline
+       gyro\_x & Gyroskopsensor für die X-Richtung \\
+      \hline
+      gyro\_y & Gyroskopsensor für die Y-Richtung \\
+      \hline
+      gyro\_z & Gyroskopsensor für die Z-Richtung \\
+      \hline
+      prox & Näherungssensor \\
       \hline
 
   \end{tabular}
@@ -490,7 +484,7 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
   \label{tab:sensor_types}
 \end{table}
 
-\section{Server-Anwendung}
+\section{Server-Anwendung}\label{sec:server_arch}
 
 Für Vermittlung zwischen den Komponenten fungiert eine Server-Anwendung.
 Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen Seite vom Client aus und MQTT-Anfragen vom Smartphone auf der anderen Seite.
