@@ -150,7 +150,7 @@ class Phone():
         sensor_message = JsonMessagesWrapper.get_sensor_request(sensor_name)
         self._sendMessage(message=str(sensor_message))
         request= json.loads(sensor_message)
-        result = self._wait_on_result(request=request)
+        result = self._wait_on_result()
         return result
         # result_sensor_type=result["sensor_type"]
         # request_sensor_type=request["sensor_type"]

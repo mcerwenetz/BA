@@ -6,10 +6,11 @@ import json
 
 p = Phone()
 # p.vibrate(5000)
-erg = p.write_text("something else")
-erg = json.loads(erg)
-erg = erg["value"]
-print(erg)
+print(p.get_x_accello())
+#erg = p.write_text("something else")
+#erg = json.loads(erg)
+#erg = erg["value"]
+#print(erg)
 # val = 10
 # while True:
 #     val = p._get_sensor("prox")
