@@ -132,11 +132,11 @@ class Phone():
 
         threading.Thread(target=_toogle_button, args=(self, )).start()
 
-    def vibrate(self, time : str):
+    def vibrate(self, time : int):
         "vibrates phone for time miliseconds"
 
         def _vibrate(self):
-            rpc_message = JsonMessagesWrapper.get_rpc_request(command="vibrate", value=time)
+            rpc_message = JsonMessagesWrapper.get_rpc_request(command="vibrate", value=str(time))
             self._sendMessage(rpc_message)
 
         threading.Thread(target=_vibrate, args=(self, )).start()
@@ -144,6 +144,9 @@ class Phone():
 
     def get_x_accello(self):
         return self._get_sensor("accell_x")
+
+    def get_proxy(self):
+        return self._get_sensor("prox")
 
 
     def _get_sensor(self, sensor_name):
@@ -167,6 +170,8 @@ class Phone():
         """
         try:
             data = str(self.sock.recvfrom(1024)[0], encoding="utf-8")
+            data = json.loads(data)
+            data = data["value"]
         except TimeoutError:
             print("Timeout was reached")
             return
