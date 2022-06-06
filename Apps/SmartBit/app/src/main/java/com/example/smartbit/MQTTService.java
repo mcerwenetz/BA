@@ -192,7 +192,7 @@ public class MQTTService extends Service {
         if (command.equals("textview")) {
             this.rootActivity.setTextView(value);
         }
-        if (command.equals("button")) {
+        if (command.equals("button_toggle")) {
             this.rootActivity.toogleButton();
         }
         if (command.equals("vibrate")) {
