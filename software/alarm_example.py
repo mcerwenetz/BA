@@ -7,5 +7,9 @@ while True:
     prox_val = float(p.get_proxy())
     if prox_val == 0.0:
         p.write_text("ALARM")
-        p.vibrate(1000)
-        sleep(0.5)
+        for _ in range(5):
+            p.vibrate(1000)
+            p.toggle_button()
+            sleep(0.2)
+    sleep(0.5)
+    

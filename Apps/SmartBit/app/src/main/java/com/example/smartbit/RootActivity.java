@@ -21,6 +21,7 @@ import com.example.smartbit.SensorEventListener.AccellerometerEventListener;
 import com.example.smartbit.SensorEventListener.GyroSensorEventListener;
 import com.example.smartbit.SensorEventListener.ProximityEventListener;
 import com.example.smartbit.SensorEventListener.SmartBitEventListenerContainer;
+import com.google.android.material.button.MaterialButton;
 
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -30,7 +31,7 @@ public class RootActivity extends AppCompatActivity {
     final static String TAG = RootActivity.class.getCanonicalName();
     private MQTTService mqttService;
     private boolean mqttServiceBound;
-    private Button action_led;
+    private MaterialButton action_led;
     private ImageView recording_led;
     private Button button_a;
     private Button button_b;
@@ -84,7 +85,7 @@ public class RootActivity extends AppCompatActivity {
         }
     }
 
-    public void setAction_led(String activated) {
+    public void setActionLed(String activated) {
         runOnUiThread(
                 () -> {
                     if (Boolean.valueOf(activated) == true) {
@@ -119,7 +120,7 @@ public class RootActivity extends AppCompatActivity {
         tv_output_text = findViewById(R.id.tv);
         button_a = findViewById(R.id.button_a);
         button_b = findViewById(R.id.button_b);
-        action_led.setBackgroundColor(Color.RED);
+        action_led.setBackgroundColor(Color.GREEN);
         recording_led.setImageAlpha(50);
     }
 
