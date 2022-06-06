@@ -170,7 +170,7 @@ class SensorDB():
         self.sensor_vals = {}
 
         for sensor_val in all_sensors.values():
-            self.sensor_vals[sensor_val] = 0
+            self.sensor_vals[sensor_val] = "5"
 
         self.lock = threading.Lock()
 
@@ -285,6 +285,7 @@ class DataHandler():
                     result = self.json_message_wrapper.get_sensor_response(sensor_type=request["sensor_type"], value=result)
                     result = json.dumps(result)
                     self.answer_queue.put(result)
+                    self.logger.info(result)
             else:
                 continue
 

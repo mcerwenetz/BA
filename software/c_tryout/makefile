@@ -1,7 +1,10 @@
 CC=gcc
 CFLAGS=-g -Wall -fsanitize=address
 
-all: tryout.exe cJSON.exe
+all: clib
+
+clib : clib.c
+	$(CC) $(CFLAGS) tryout.c -o tryout.exe -lws2_32
 
 tryout.exe : tryout.c
 	$(CC) $(CFLAGS) tryout.c -o tryout.exe -lws2_32
