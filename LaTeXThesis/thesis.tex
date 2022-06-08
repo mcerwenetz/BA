@@ -35,20 +35,21 @@ Als Verbindungstechnologien kommen UDP und MQTT zum Einsatz.
 \tableofcontents
 
 \chapter{Einführung} \label{chap:intro}
-MINT-Berufe leiden hierzulande unter einem akuten Fachkräftemangel.
-Das Institut der deutschen Wirtschaft ermittelte für April 2021 ein Unterangebot von 145.100 Personen \cite{mint_jahresreport} in 36 MINT-Berufskategorien. 
-Digitalisierungs-Projekte geraten dadurch ins Stocken.
+Microcontroller bieten eine einfache Einstiegsmöglichkeit zum Programmierenlernen.
+Spielerisch können kleine Projekte realisiert werden die durch physische Äußerungen Entwickler einladen sich an Problemen auszuporbieren.
+Diese Eigenschaften sind insbesondere bei Projekten mit wenig Vorwissen für Lernwillige wie Schüler oder Erstemester-Studierende sinnvoll.
+Gelerntes kann kann direkt angewendet werden und Änderungen an Algorithmen sind auch schnell in der Verhaltensweise der Hardware erkennbar.
+In Microcontroller integrierte Sensoren bilden die Brücke zwischen 
 \\
-Nicht zuletzt er auch ein Kräftemangel in der Softwareentwicklung.
-Es fehlen Programmiererinnen und Programmierer.
-Softwareentwicklung ist gerade in der Lernphase nicht trivial und abstrakt.
-Unlebendige Übungsaufgaben die beispielsweise Konsolenein- und ausgaben realisieren schrecken zukünftige Programmierinnen und Programmierer eher ab als sie zu ermutigen.
+Microcontroller sind jedoch auch mit Anschaffungskosten verbunden.
+Zudem sind nebensächliche Materialen wie Breadboards, Verbindungskabel und Erweiterungsboards auch oft nicht mitgeliefert oder benötigen zusätzliches Hintergrundwissen.
+Dies stellt eine Einstiegshürde dar.
 \\
-Microcontroller sind bereits eine große Hilfe, da hier spielerisch kleine Projekte realisiert werden können.
-So können schon früh in Schulen Kinder an die Programmierung herangerführt werden.
-Sie lernen spielerisch kleine Programme zu entwickleln und verstehen die ihnen beigebrachten Abläufe durch schnelle Anwendung.
-Microcontroller sind jedoch auch mit Anschaffungskosten verbunden und für kleine Anwendungen, welche Sensoren verwenden, wird viel zusätzliches Material wie zum Beispiel Breadboards, Verbindungskabel und Erweiterungsboards benötigt.
-Moderne Smartphones bieten hier Abhilfe da Sie meistens mit verschiedenen Sensoren bespickt sind, wie zum Beispiel: Kompass, GPS, Microphon oder Kamera.
+Durch moderne Smartphones lässt sich dieses Problem jedoch umgehen.
+Sie sind wie die meisten Microcontroller bereits mit zahlreichen Sensoren wie Lagesensoren, Gyroskop oder Näherungssensor ausgestattet.
+Diese sind zwar für die komfortable Alltagsnutzung des Geräts konzipiert, können jedoch ganz regulärt in Anwendungen dediziert angesteuert und ausgelesen werden.
+\\
+Ein weiterer Vorteil von Smartphones als Senso liegt in der Verfügbarkeit
 Viele Kinder besitzen bereits mit 10 Jahren \cite{bitkom_smartphones} ein Smartphone. 
 \\\\
 Im Rahmen dieser Arbeit wurde ein Framework entwickelt, dass das Smartphone von Anwendern einbindet um Sie beim Programmierenlernen zu unterstützen.
@@ -126,7 +127,7 @@ Gelöst werden sollen die Aufgaben durch das Aufrufen der API.
 Diese bietet die benötigten Funktionen an.
 Die Aufrufe sind frei miteinander kombinierbar, so dass Aufgaben erweitert werden können.
 
-\subsection*{Eingaben}
+\section*{Eingaben}
 
 \textbf{Auslesen der accelerometer-Daten}\\
 Ein User will den Wert der X, Y und Z Koordinaten des Smartphones wissen.
@@ -155,7 +156,7 @@ Der Aufruf sieht folgendermaßen aus.
 \lstinputlisting{listings/api/numofspikes.c}
 
 
-\subsection*{Ausgaben}\label{subsec:Ausgaben}
+\section*{Ausgaben}\label{subsec:Ausgaben}
 
 \textbf{Text-Ausgabe}\\
 Um auf dem Smartphone einen beliebigen Text anzuzeigen.
@@ -196,7 +197,7 @@ Neben den sichtbaren Elementen kann die Anwendung das Smartphone außerdem vibri
 Aus den unter \ref*{sec:API} genannten Funktionen ergeben sich die Anforderungen an das Framework.
 \\
 Es wird unterschieden in Funktionen die Sensordaten auslesen und Funktionen die Aktionen auf dem  auslösen.
-\subsection{Sensordaten-Funktionen}
+\section{Sensordaten-Funktionen}
 Um das optimale Lernergebnis zu erhalten müssen Sensordaten responsiv vorliegen.
 Je schneller Richtungs-, Helligkeits oder Lautstärkedaten vorliegen desto schneller kann im Programm drauf reagiert werden.
 So können Experimente eher begriffen werden, da Auswirkungen in der Realität instantan Auswirkungen auf den vom Schüler geschriebenen Programmablauf haben.
@@ -212,7 +213,7 @@ Ein Funktionsaufruf der Sensordaten abfragt muss dann auf die zentral zwischenge
 So wird der Responszeit erhöht und es liegt immer das aktuellste Sensor-Ergebnis im Zwischenspeicher vor.
 Der Tätigkeitsbereich vom Smartphone umfasst jedoch nicht nur die Messung und Übermittlung der gemessenen Daten.
 
-\subsection{Auslösende Funktionen}
+\section{Auslösende Funktionen}
 Die Anwendung auf dem Smartphone bietet ebenfalls verschiedene UI-Elemente welche aus der Ferne per Funktionsaufruf bedient werden.
 Außerdem werden zeitlich beschränkte Messungen umgesetzt die auf Anfrage gestartet werden sollen.
 Diese Art der Aufrufe benötigt keinen kontunierlichen Strom aus Werten, sondern wird einzeln aufgerufen und geben gegebenenfalls einzeln Werte zurück.
@@ -328,7 +329,7 @@ Da im gesamten Prozess zwischen den drei Einheiten unterschiedliche Programmiers
 \\
 Beim Transport liegt die Anforderung vor allem auf einer schnellen Ausführung, da sich Sensordaten schnell ändern und ein Lerneffekt am Besten eintritt wenn keine hohen Latenzen bei der Übertragung auftreten.
 
-\subsection{JSON}
+\section{JSON}
 JSON ist eine Abkürzung für JavaScript Object Notation.
 Es handelt sich um ein Nachrichten-Austausch-Format \cite{json}
 \\\\
@@ -341,7 +342,7 @@ JSON wird außerdem von vielen Programmiersprachen wie Python und Java nativ unt
 Da die Bibliotheken programmiersprachenunabhäng bereitgestellt werden sollen bietet sich JSON als gemeinsame Notation hervorrangend an.
 Da es in C keinen eingebauten JSON Parser gibt wird hier auf den cJSON \cite{cjson} zurückgegriffen.
 
-\subsection{MQTT}
+\section{MQTT}
 MQTT steht für Message Queuing Telemetry Transport und ist ein Client-Server Protokoll das auf TPC basiert.
 Es kommt häufig mei Machine-to-Machine Interaktionen zum Einsatz.
 Dies umfasst Lösungen im IoT-, Smarthome und Automatisierungstechnik-Bereich.
@@ -373,7 +374,7 @@ Damit die verlangte Güte sichergestellt wird müssen Sender und Empfänger mit 
 Wird ein Topic mit einer geringeren Güte abboniert als die Güte der publizierten Nachricht wird die Nachricht mit der Güte des Abbonenten übertragen.
 Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wurde als dieses Topic abboniert wurde wird die Übertragung mit der Güte-Stufe des publizierenden Clients übertragen.
 
-\subsection{UDP}
+\section{UDP}
 UDP ist ein verbindungsloses Netzwerkprotokoll, dass auf der Transportschicht des TCP/IP-Stack zum Einsatz kommt.
 
 
@@ -415,7 +416,7 @@ In der Android Anwendung werden folgende Sensortypen verwendet:
   \item Gyroskop
 \end{itemize}
 
-\subsection{Lineare Beschleunigungssensoren}
+\section{Lineare Beschleunigungssensoren}
 Beschleunigungs- bzw. Lagesensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
 Eine Übersicht über die Anordungen der drei Axen ist in Grafik \ref{fig:and_axes} zu sehen.
 \begin{figure}[htbp]
@@ -438,7 +439,7 @@ Die mit der jeweiligen Frequenz aufgenommenen Beschleunigungssensordaten beeinha
 Diese muss für die bereinigten, realen Werte zuerst noch von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
 
 
-\subsection{Angaben für die Nachrichtenformate}
+\section{Angaben für die Nachrichtenformate}
 Alle Sensordaten besitzen ein festgelegtes Kürzel zur Standardisierung des Nachrichtenverkehrs.
 Sie dienen vor allem der Adressierung der jeweiligen Daten in der Middleware und in der Library.
 \\
@@ -579,9 +580,11 @@ Für's Empfangen muss der Socket binded sein.
 Die Serveranwendung ist auf dem Port 5006 erreichbar.
 Antworten erwarten die Bibliotheken auf dem Port 5005.
 \chapter{Evaluation}
+\blindtext
 
 
 \chapter{Fazit}
+\blindtext
 
 \chapter{Quellen}
 
