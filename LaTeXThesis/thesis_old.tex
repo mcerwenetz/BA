@@ -15,10 +15,12 @@
 \newcommand{\thesisofwas}{of Science}
 \newcommand{\studiengang}{Technische Informatik}
 % \newcommand{\studiengang}{Medizintechnik}
-\newcommand{\titel}{Smartphones als Sensorbox}
+\newcommand{\titel}{Entwicklung eines Frameworks zur Darstellung von 
+Smartphone-Sensordaten 
+für die didaktische Unterstützung von Programmiervorlesungen}
 \newcommand{\kurztitel}{Template Abschlussarbeit}
 \newcommand{\autor}{Marius Cerwenetz}
-\newcommand{\datum}{08. Juli 2022} % Abgabedatum
+\newcommand{\datum}{XX. Juli 2022} % Abgabedatum
 \newcommand{\ort}{Mannheim}
 \newcommand{\referent}{Prof.\ Dr.\ Peter Barth}
 \newcommand{\korreferent}{Prof.\ Dr.\ Jens-Matthias Bohli}
@@ -27,9 +29,14 @@
 \include{vorspann} % Titelseite, Erklärungen, etc.
 
 \begin{abstract}
-In dieser Arbeit wurde ein Framework erstellt um Smartphonesensoren über eine Programmierumgebung auszulesen und Ausgaben auf dem Smartphone auszuführen.
-Hierfür wurde eine Android-Anwendung, eine Kontrollanwendung und drei Softwarebibliotheken in dem Sprachen C, Java und Python implementiert.
-Als Verbindungstechnologien kommen UDP und MQTT zum Einsatz.
+Programmierenlernen fällt besonders am Anfang schwer.
+Embeddedprojekte erlauben mit vergleichsweise wenig Aufwand einen gelungen Einstieg mit effektiver Lernerfahrung.
+Solche Projekte benötigen allerdings viel Peripherie und Hardware.
+Diese benötigt wiederrum eine nicht niedrigschwellige Erfahrung zum Beispiel im Umgang mit Microcontrollern.
+Smartphones haben diese Nachteile nicht, bieten allerdings trotzdem einen hohen Umfang an Sensoren.
+\\
+Ziel dieser Arbeit ist die Entwicklung eines Frameworks, dass das Smartphone, dessen Sensoren sowie Ein- und Ausgabemöglichkeiten nutzt um kleine Softwareprojekte umzusetzen.
+Zur Unterstützung werden zudem kleine Aufgabenstellungen ausgearbeitet um Lehrimpulse zu setzen.
 \end{abstract}
 
 \tableofcontents
@@ -376,13 +383,20 @@ Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wurde als di
 \subsection{UDP}
 UDP ist ein verbindungsloses Netzwerkprotokoll, dass auf der Transportschicht des TCP/IP-Stack zum Einsatz kommt.
 
+\section{Bibliotheken}
+Die Bibliotheken bilden die Einstiegsstelle für Nutzer um die Anwendung fernzusteuern oder Sensorwerte abzufragen.
+Funktionsaufrufe liegen jeweils in den Sprachen C, Java und Python vor.
+Daten werden wie in Kapitel \ref{chap:architektur} in Abbildung \ref{fig:design} gezeigt per UDP an eine Serveranwendung gesendet.
+Diese sendet die Daten dann nach gegebenenfalls per MQTT an das Smartphone weiter, oder wieder per UDP zurück.
+\\
+Die Bibliotheken senden und empfangen alle jeweils Daten per UDP.
+Hierfür werden Sockets benötigt.
+Für's Empfangen muss der Socket binded sein.
+Die Serveranwendung ist auf dem Port 5006 erreichbar.
+Antworten erwarten die Bibliotheken auf dem Port 5005.
 
 
-
-
-
-
-\chapter{Android Anwendung}
+\section{Android Anwendung}
 Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
 Sie besteht aus einer Haupt-Activity deren außerlicher Aufbau in Kapitel \ref{sec:androidApp} beschrieben ist. 
 \\
@@ -397,12 +411,13 @@ Zum Beispiel alle Eingaben die etwas in einem angegebenen Zeitraum messen.
 Falls ein Sensor angefragt wird der auf dem Smartphone nicht existiert wird eine Nachricht mit einer Fehlermeldung zurückgegeben.
 
 
-\section{Kommandos und Ausgaben}
+\subsection{Kommandos und Ausgaben}
 Für die Ausgabe auf dem Smartphone sind verschiedene Kommandos definiert.
 Diese sind der Tabelle \ref{tab:command_types} zu entnehmen.
 \texttt{CMD-Kürzel} beschreibt die Notation des Kürzels mit dem eine Aktion ausgeführt werden kann.
 Diese wird unter \texttt{Beschreibung} kurz zusammengefasst.
 \texttt{return} gibt an, ob der Aufruf des Requests eine Antwort rücksendet und somit auch, ob ein Aufruf der Funktion in der Library blockiert oder nur sendet.
+
 
 
 \section{Sensoren}
@@ -469,8 +484,7 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
   \label{tab:sensor_types}
 \end{table}
 
-
-\chapter{Kontrollanwendung}
+\section{Server-Anwendung}\label{sec:server_arch}
 
 Für Vermittlung zwischen den Komponenten fungiert eine Server-Anwendung.
 Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen Seite vom Client aus und MQTT-Anfragen vom Smartphone auf der anderen Seite.
@@ -481,7 +495,7 @@ Der Server ist unter der localhost-Adresse 127.0.0.1 auf dem Port 5006 erreichba
 Für die MQTT-Verbindung kommt dabei die unter OpenSource-Liznenz stehende MQTT-Library Paho der Eclipse-Foundation zum Einsatz. \cite{paho}
 
 
-\section{Anforderungen}
+\subsection{Anforderungen}
 Aus den Anforderungen ergeben sich folgende Aufgaben die der Server umsetzen muss:
 \begin{itemize}
 \item Sensoranfragen schnell beantworten
@@ -501,7 +515,7 @@ Die Bandbreiten sind dadurch sehr hoch und die Latenzen gering.
 \\
 Um die Latenzen und die damit verbundenen unterschiedlichen Auftrittszeitpunkte von Anfragen zu berücksichten, sowie eine möglichst effiziente Abarbeitung der selbiger zu ermöglichen wird eien paralelle Algorithmusstruktur verwendet.
 
-\section{Interner Aufbau}
+\subsection{Interner Aufbau}
 Die Serveranwendung mit dem Namen server.py ist aufgeteilt in einen Datenverwaltungsteil, DataHandler, und eine MQTT Anbindung, MQTTHandlerThread.
 Da die Sensorwerte des Smartphoens vorrätig gehalten werden, wird außerdem eine Datenklasse für diese, SensorDB, intern gehalten.
 Eine Übersicht über die Komponenten ist Abbildung \ref{fig:serverUml} zu entnehmen.
@@ -566,20 +580,6 @@ Hierfür gibt es den AnswerQueueWorker, dessen einzige Aufgabe es ist Antworten 
 \\\\
 Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues des queue-Moduls\cite{python_queue} der cpython Implementierung.
 Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
-
-\chapter{Programmierumgebung}
-Die Bibliotheken bilden die Einstiegsstelle für Nutzer um die Anwendung fernzusteuern oder Sensorwerte abzufragen.
-Funktionsaufrufe liegen jeweils in den Sprachen C, Java und Python vor.
-Daten werden wie in Kapitel \ref{chap:architektur} in Abbildung \ref{fig:design} gezeigt per UDP an eine Serveranwendung gesendet.
-Diese sendet die Daten dann nach gegebenenfalls per MQTT an das Smartphone weiter, oder wieder per UDP zurück.
-\\
-Die Bibliotheken senden und empfangen alle jeweils Daten per UDP.
-Hierfür werden Sockets benötigt.
-Für's Empfangen muss der Socket binded sein.
-Die Serveranwendung ist auf dem Port 5006 erreichbar.
-Antworten erwarten die Bibliotheken auf dem Port 5005.
-\chapter{Evaluation}
-
 
 \chapter{Fazit}
 
