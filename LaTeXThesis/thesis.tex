@@ -83,128 +83,131 @@ Durch Ihre eingesetzten Sensoren können Sie zuverlässig Umgebungseigenschaften
 Sie haben eine höhere Prozessorenleistung, so dass auch rechenintensivere Aufgaben ausgelagert werden können.
 Durch die Entwicklungsmöglichkeiten von Mobilen Anwendungen sind der Kreativität der Ausgabemöglichkeiten keine Grenzen gesetzt.
 Neben üblichen Übertragungsschnittstellen wie USB bieten Sie häufig auch eine W-LAN und Bluetooth-Funktion die eine Ansteuerung über unterschiedliche Technologien einfach macht und autonomere, den Umgebungsansprüchen angepasste Nutzungsszenarien ermöglicht.
-
-\chapter{Smartphones als Aktor und Sensor} \label{chap:Experimente}
-Problematisch ist allerdings deren Einbindung in bestehende Programmierumgebungen.
+\\
+Eine Einbindung von Smartphones mit Bordmitteln ist in den meisten Prgrammierumgebungen jedoch nicht vorgesehen.
 Smartphones und Entwicklungsumgebungen bieten meist keine direkte Möglichkeit der Kopplung.
 Auch gibt es Seitens der Smartphone-Betriebssystemhersteller keine standardisierten Ausgabemöglichkeiten.
 Moderne Smartphone-Betriebssysteme bauen sich modular aus mobilen Anwendungen auf, so dass das Betriebssystem keine direkten Ausgabemöglichkeiten besitzt.
 Visuelle und haptische Ausgaben sind nur über mobile Anwendungen möglich.
 \\
-Das zentrale Thema besteht darin eine Smartphone-Anwendung für visuelle Ausgaben und Sensorwerte zu entwickeln und Schnittstellen in Programmierumgebungen zu schaffen die die Nutzungsmöglichkeiten des Smartphones in Programmierprozesse einbindet.
-Möglich wird dies durch Softwarebibliotheken die Funktionsaufrufe bereitstellen, welche die Aktionen auf dem Smartphone auslösen.
-Dieses reagiert auf die empfangen Anfragen und führt die entsprechenden Kommandos aus.
+Das zentrale Thema besteht darin eine Smartphone-Anwendung für visuelle Ausgaben und Sensorwerte zu entwickeln und Schnittstellen in Programmierumgebungen zu schaffen, die die Nutzungsmöglichkeiten des Smartphones in Programmierprozesse einbinden.
+Möglich wird dies durch Softwarebibliotheken die Funktionsaufrufe bereitstellen, welche Aktionen auf dem Smartphone auslösen.
+Das Smartphone reagiert auf die empfangen Anfragen und führt die entsprechenden Kommandos aus.
 Das Framework besteht aus einer programmiersprachenunabhängigen Bibliothek, einer Server-Anwendung und einer mobilen Anwendung für Android Smartphones.
+Neben den technisch Details und Funktionsweisen werden in dieser Arbeit außerdem Beispielaufgaben gereich mit den angehende Programmiererinnen oder Programmierern gereicht.
+Diese sind in Kapitel \ref{chap:Experimente} zu finden.
+In Kapitel \ref{chap:architektur} werden die verwendeten Komponenten vorgestellt und Designentscheidungen innerhalb des Entwicklungsprozesses erläutert.
+Die einzelnen Komponenten werden anschließend in Kapitel \ref{chap:app}, Kapitel \ref{chap:server_software} und Kapitel \ref{chap:libs} im Detail erklärt.
+Zum Schluss werden die Ergebnisse in Kapitel \ref{chap:eval} vorgestellt und in Kapitel \ref{chap:fazit} diskutiert.
 
 
-\section{Aufgaben}
-Dieses Kapitel enthält verschiedene Beispielaufgaben die mit dem Framework gelöst werden sollen.
-Die Benutzung der API dazu wird später geschildert.
-
-
-\textbf{Disco}\\
-Die LED muss ganz schnell blinken.
-% Ablauf: \verb|led_on, sleep, led_off ...|
+\chapter{Smartphones als Aktor und Sensor} \label{chap:Experimente}
+Smartphones sind in sich geschlossene technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB-Port, WLAN und Bluetooth meistens keine weiteren Schnittstellen bieten um externe Hardware und Schaltungen anzuschließen und Fernzusteuern.
+Microcontroller-Schaltungen zum Programmierenlernen bieten meistens mehrere Ausgabemöglichkeiten wie LEDs, Lautsprecher oder Piepser.
+Smartphones bestechen hier durch den Vorteil der virtuellen Darstellung auf dem Display.
+Gewohnte Ausgabeelmente können dadurch virtualisiert werden.
+Die Funktionen sind hier außerdem nicht nur von Mehrzweck-Ausgaben wie LED-Grids begrenzt die zum Beispiel für die Textanzeige oder Bildanzeige verwendet werden können.
+Spezifische Zweckgebundene Elemente wie Textfelder, Textausgaben oder Bildausgaben in der App können beliebig kombiniert werden.
+Darüber hinaus ist die Anordnung der jeweiligen Elemente frei, so dass das Layout anders als bei Microcontrollern auch im Nachhinein noch geändert werden kann, was den Entwicklungsprozess deutlich beschleunigt und flexibler macht.
 \\
-
-\textbf{Diebstahl-Alarm}\\
-Wenn nach dem Telefon gegriffen wird soll die LED blinken.
-Wenn man sich davon entfernt soll sie wieder aus sein.
+Moderne Smartphones bieten außerdem eine manigfaltige Menge an unterschiedlichen Sensoren.
+Android bietet für die Verwendung Lage-, Temperatur-, Schwerkraft-, Licht-, Magnetfeld, Luftfeuchtigkeitssensoren und noch einige Weitere \cite{sensoren_android}.
+Moderne Flaggschiff-Smartphones bieten viele dieser Sensortypen auch an.
+Die Vielfalt übersteigt meistens die 
 \\
-
-\textbf{Würfeln}\\
-Das Smartphone wird geschüttelt.
-Ein random Zahlenwert wird zurückgegeben.
-Je nachdem welches Ergebnis zurückkommt soll ein Wert auf dem Display angezeigt werden.
+Ein Nachteil liegt in der Ansteuerung von mechanischen Bauteilen wie Motoren.
+Diese werden meistens durch eine elektrische Verbindung zwischen Bauteil und Controller realisiert.
+Smartphones bieten diese Art der Ansteuerung nicht, da Hardwareschnittstellen wie GPIO-Pins nicht zur Verfügung stehen.
 \\
-% Ablauf: \verb|get_random(), displayText|
+Nichtsdestotrotz bieten Smartpones eine Menge Einsatzmöglichkeiten um einfache Programmierbeispiele auszuprobieren.
+In diesem Kapitel werden in Abschnitt \ref{sec:activities} Beispielaufgaben für Programmiererinnen und Programmierer vorgestellt die Sie mit dem Framework lösbar sind.
+Durchführbar ist dies durch verschiedene Ansteuerungen aus der Programmierumgebung der Entwickler.
+Die einzelnen Ansteuerungen und Kommandos werden in Abschnitt \ref{sec:API} vorgestellt und erläutert.
+Die Angebotenen Funktionalitäten stellen Anforderungen and das Projekt auf die in Abschnitt \ref{sec:anforderungen} eingegangen wird.
 
-\textbf{Klatsch-Zähler}\\
-Der Anwender möchte wissen wie oft in einem bestimmten Zeitraum geklatscht wurde.
-Ein Methodenaufruf startet in der Androidanwendung eine Activity, die innerhalb des im Argument genannten Zeitraums die Anzahl der maximalen Lautstärkeamplituden des Mikrophons misst und die Anzahl zurückgibt.
-Diese soll im Textfeld angezeigt werden.
-\begin{figure}[htbp]
+\section{Beispielprogrammieraufgaben}\label{sec:activities}
+Praxisnahe Programmieraufgaben sollen angehende Softwareentwickler an Probleme heranführen.
+Sie sollen nicht zu kompliziert, jedoch auch nicht zu trivial sein.
+Unterschiedliche Schwierigkeitsklassen helfen ihnen sich selbst an Aufgaben heranzutasten.
+Da die Aufgaben außerdem interaktiv gestaltet sein müssen sind Sie immer mit einem Äußeren Einfluss verbunden, auf den reagiert werden muss.
+\\
+Eine Liste der Aufgaben ist Tabelle \ref{tab:excercises} zu entnehmen.
+\begin{table}[htbp]
   \centering
-  \includegraphics[width=.9\textwidth]{images/count_claps.png}
-  \caption{Klatsch-Zähler}
-  \label{fig:clap_count}
-\end{figure}
-% Vorgehen: \verb|num_of_spikes|
+  \begin{tabular}{|l|c|c|c|}
+      \hline
+      Name der Aufgabe & Sensoren & Ausgaben & Schwierigkeit \\
+      \hline
+      Disco & - & Led & + \\
+      \hline
+      Würfeln & Lagesensor & Textfeld &+ \\
+      \hline
+      Diebstahl-Alarm & Näherungssensor & Textfeld, Led, Vibration & ++ \\
+      \hline
+      Klatsch-Zähler & Mikrofon & Textfeld & ++ \\
+      \hline
+      Dreh-Zähler & lagesensor & Textfeld & +++ \\
+      \hline
+  \end{tabular}
+  \caption{Aufgaben}
+  \label{tab:excercises}
+\end{table}
+Beschrieben wird der Name der Aufgabe, die benötigten Sensoren, die benötigten Ausgaben sowie der geschätzte Schwierigkeitsgrad.
+Letzerer ist in drei größen gegliedert:
+Einfach (+), Mittel(++) und Schwer (+++).
+\\\\
+In der Aufgabe \textit{Disco} soll eine virtuelle LED alle 500 ms die von der Farbe grün auf die Farbe rot wechseln.
+Die Aufgabe benötigt keine Sensoren, da die LED nicht auf eine Eingabe seitens des Programmierers warten soll.
+Sie soll immer blinken.
+Die Ausgabe der farbig blinkenden LED wird über eine virtuelle LED auf dem Display des Smartphones realisiert.
+Der Schwierigkeitsgrad ist als einfach einzustufen, da hier weder Sensoren benötigt werden, noch sonstige Abhängigkeiten innerhalb des Codes zu berücksichtigen sind.
+\\\\
+In der Aufgabe \textit{Würfeln} soll gemessen werden, ob ein Smartphone geschüttelt wurde.
+Ist dies der Fall soll eine Zufallszahl generiert werden.
+Anschließend soll diese auf dem Smartphone ausgegeben werden.
+Verwendet wird dabei der Lagesensor, der Beschleunigungen in drei Achsenrichtungen misst.
+Als Ausgabe muss für die Zufallszahl das Textfeld verwendet werden.
+Die Schwierigkeit wird hier auch auf Einfach eingeschätzt, da lediglich ein Sensor und eine Ausgabe verwendet wird.
+Auch der Algorithmus ist nicht von vielen Abhängigkeiten geprägt.
+\\\\
+In der Aufgabe \textit{Diebstahl-Alarm} soll überprüft werden, ob der Näherungssensor eine Annäherung gemessen hat.
+Wenn dies der Fall ist soll der Text \glqq ALARM\grqq{} auf dem Smartphone ausgegeben werden.
+Das Smartphone soll fünf mal für die Zeit von 1000ms vibrieren.
+Die Farbe der virtuellen LED soll wie in Aufgabe \textit{Disco} alle 500ms die Farbe wechseln.
+Dies soll einen Diebstahl-Alarm simulieren bei der sich jemand mit der Hand dem Smartphone nähert.
 \\
+Hier wird lediglich der Näherungssensor verwendet um eine Näherung zu detektieren.
+Die Ausgabe des Alarm-Textes soll auf einem Textfeld dargestellt werden.
+Außerdem sollen die Vibrationsmotoren des Smartphones, die sonst beispielsweise für Benachrichtigungen verwendet werden, benutzt werden um ein haptisches Feedback zu liefern.
+Der Schwierigkeitsgrad der Aufgabe ist als \textit{Mittel} eingestuft, weil die Aufgabe zu unterschiedlichen Zeit, unterschiedlich lang auf mehreren Ausgabemöglichkeiten erfolgen muss.
+Außerdem ist die Ausgabe an die Bedingung einer Näherung an das Smartphone gebunden.
+\\\\
+Bei der Aufgabenstellung \textit{Klatsch-Zähler} muss für einen definierten Zeitraum die Anzahl der Klatscher gemessen werden.
+Programmierer starten also ein Programm und klatschen vor dem Smartphone in die Hände.
+Die Anzahl der Klatscher soll dann gemessen und auf dem Display des Smartphones ausgegeben werden.
+Verwendet wird dafür lediglich das Mikrofon und das Textfeld des Smartphones.
+die Schwierigkeit ist hier ebenfalls auf \textit{Mittel} gesetzt, da die Klatscher auf den Sensor nicht immer die gleiche intensivität haben.
+Programmierer müssen also erproben, wann es sich wirklich um ein Händeklatschen handelt und wann einfach nur Hintergrundgeräusche zu hören sind.
+\\\\
+Bei der Letzen Aufgabe \textit{Drehzähler} soll der Programmierer das Smartphone innerhalb eines eigens definierten Zeitraums drehen und anhand der zurückgegeben Werte die Anzahl der Drehungen ermitteln.
+Diese soll anschließend im Textfeld auf dem Smartphone ausgegeben werden.
+Zur Verwenung kommen hier ebenfalls der Lagesensor als Sensoreingabe und das Textfeld als Ausgabe.
+Die Aufgabe ist als \textit{Schwer} bewertet, da hier Wiederholungen in einer Werteabfolge erkannt werden müssen.
+Diese sind jedoch nicht immer exakt gleich.
+So muss auch erprobt werden wie sich eine Umdrehung überhaupt in den Werten äußert und wie Drehungen optimal erkannt werden können.
+\\\\
+Die Aufgaben können natürlich nach Belieben kombiniert werden.
+\textit{Disco} ist beispielsweise schon in \textit{Diebstahl-Alarm} integriert.
+Denkbar wäre auch beim \textit{Wüfeln} den \textit{Klatschzähler} für die generierung der Zufallszahl zu verwenden.
+Der Diebstahlalarm kann auch bei einer ungeraden Anzahl an Drehungen des Drehzählers gestartet werden.
+\\
+Dadurch werden Programmierern Konzepte wie Schleifen oder Bedingungen nah gebracht.
+Zum Beispiel könnte die LED blinken wenn eine gewisse Umdrehungsanzahl erreicht wurde um While-Schleifen zu erläutern.
 
-\textbf{Dreh-Zähler}\\
-Ein Nutzer möchte in einem bestimmten Zeitraum zählen wie oft das Smartphone gedreht wurde.
-
-\section{API}\label{sec:API}
+\section{Funktionsaufrufe}\label{sec:API}
 Gelöst werden sollen die Aufgaben durch das Aufrufen der API.
 Diese bietet die benötigten Funktionen an.
 Die Aufrufe sind frei miteinander kombinierbar, so dass Aufgaben erweitert werden können.
-
-\section*{Eingaben}
-
-\textbf{Auslesen der accelerometer-Daten}\\
-Ein User will den Wert der X, Y und Z Koordinaten des Smartphones wissen.
-So kann er bspw. feststellen, ob das Smartphone gerade nach unten, oben oder horizontal bewegt wurde.
-Kippbewegungen werden nicht detektiert.
-\lstinputlisting[]{listings/api/acc.c}
-
-\textbf{Lautstärkepegelmessung}\\
-Ein User möchte den aktuellen Lautstärkepegel messen.
-\lstinputlisting{listings/api/vol.c}
-
-\textbf{Annäherungssensor-Messung}\\
-Ein User möchte wissen, ob ein Objekt unmittelbar vor den Annäherungssensor steht.
-Der Aufruf erfolgt folgendermaßen.
-\lstinputlisting{listings/api/proxy.c}
-
-\textbf{Amplituden-Spike-Messung mit Zeitraum}\\
-Ein User möchte wissen, wie oft die Lautstärke innerhalb eines angegebenen Zeitraums t ein gewisses Limit überstiegen hat.
-Der Aufruf könnte dabei folgendermaßen laufen.
-\lstinputlisting{listings/api/numofspikes.c}
-
-
-\textbf{Umdrehungsmessung mit Zeitraum}\\
-Ein User möchte wissen, wie oft das Smartphone innerhalb eines angegebenen Zeitraums t gedreht wurde.
-Der Aufruf sieht folgendermaßen aus.
-\lstinputlisting{listings/api/numofspikes.c}
-
-
-\section*{Ausgaben}\label{subsec:Ausgaben}
-
-\textbf{Text-Ausgabe}\\
-Um auf dem Smartphone einen beliebigen Text anzuzeigen.
-Dies kann er zum Beispiel wie im folgenden Beispielcode machen.
-\lstinputlisting[]{listings/api/display.c}
-
-\textbf{LED leuchten lassen}\\
-Ein User möchte eine "LED" auf dem Display ansteuern.
-Dies kann er so machen.
-\lstinputlisting[]{listings/api/led.c}
-
-\textbf{LED toggeln}\\
-Ein User möchte den Zustand einer LED auf dem Display auf "aus" stellen wenn Sie an war und auf "an" wenn Sie aus war.
-Dies kann er so machen.
-\lstinputlisting[]{listings/api/led.c}
-
-\textbf{Vibrationsauslöser}\\
-Ein Nutzer möchte das Smartphone für eine gewisse Zeitspanne vibrieren lassen.
-\lstinputlisting[]{listings/api/vib.c}
-
-\section{Android Anwendung}\label{sec:androidApp}
-Für Ausgaben auf dem Smartphone existiert die Android Anwendung Smartbit, die verschiedene Interaktionsmöglichkeiten bereitstellt.
-Das Userinterface wird in Abbildung \ref{fig:androidUI} gezeigt.
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.6\textwidth]{images/android_app_ui}
-  \caption{Userinterface Android Anwendung}
-  \label{fig:androidUI}
-\end{figure}
-\\
-Die Anwendung besteht aus zwei Leds, den beiden Punkten im oberen rechten Eck.
-Ein Textfeld in der Mitte kann zur Ausgabe von Text verwendet werden.
-Die beiden Buttons können gedrückt werden.
-Neben den sichtbaren Elementen kann die Anwendung das Smartphone außerdem vibrieren lassen.
-
 
 \section{Softwareanforderungen}\label{sec:anforderungen}
 Aus den unter \ref*{sec:API} genannten Funktionen ergeben sich die Anforderungen an das Framework.
@@ -396,7 +399,7 @@ UDP ist ein verbindungsloses Netzwerkprotokoll, dass auf der Transportschicht de
 
 
 
-\chapter{Android Anwendung}
+\chapter{Android Anwendung}\label{chap:app}
 Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
 Sie besteht aus einer Haupt-Activity deren außerlicher Aufbau in Kapitel \ref{sec:androidApp} beschrieben ist. 
 \\
@@ -484,7 +487,7 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
 \end{table}
 
 
-\chapter{Kontrollanwendung}
+\chapter{Kontrollanwendung}\label{chap:server_software}
 
 Für Vermittlung zwischen den Komponenten fungiert eine Server-Anwendung.
 Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen Seite vom Client aus und MQTT-Anfragen vom Smartphone auf der anderen Seite.
@@ -581,7 +584,7 @@ Hierfür gibt es den AnswerQueueWorker, dessen einzige Aufgabe es ist Antworten 
 Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues des queue-Moduls\cite{python_queue} der cpython Implementierung.
 Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
 
-\chapter{Programmierumgebung}
+\chapter{Programmierumgebung}\label{chap:libs}
 Die Bibliotheken bilden die Einstiegsstelle für Nutzer um die Anwendung fernzusteuern oder Sensorwerte abzufragen.
 Funktionsaufrufe liegen jeweils in den Sprachen C, Java und Python vor.
 Daten werden wie in Kapitel \ref{chap:architektur} in Abbildung \ref{fig:design} gezeigt per UDP an eine Serveranwendung gesendet.
@@ -592,14 +595,28 @@ Hierfür werden Sockets benötigt.
 Für's Empfangen muss der Socket binded sein.
 Die Serveranwendung ist auf dem Port 5006 erreichbar.
 Antworten erwarten die Bibliotheken auf dem Port 5005.
-\chapter{Evaluation}
+\chapter{Evaluation}\label{chap:eval}
+\section{Android Anwendung}\label{sec:androidApp}
+Für Ausgaben auf dem Smartphone existiert die Android Anwendung Smartbit, die verschiedene Interaktionsmöglichkeiten bereitstellt.
+Das Userinterface wird in Abbildung \ref{fig:androidUI} gezeigt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.6\textwidth]{images/android_app_ui}
+  \caption{Userinterface Android Anwendung}
+  \label{fig:androidUI}
+\end{figure}
+\\
+Die Anwendung besteht aus zwei Leds, den beiden Punkten im oberen rechten Eck.
+Ein Textfeld in der Mitte kann zur Ausgabe von Text verwendet werden.
+Die beiden Buttons können gedrückt werden.
+Neben den sichtbaren Elementen kann die Anwendung das Smartphone außerdem vibrieren lassen.
+
+
+
+\chapter{Fazit}\label{chap:fazit}
 \blindtext
 
-
-\chapter{Fazit}
-\blindtext
-
-\chapter{Quellen}
+\chapter{Quellen}\label{chap:source}
 
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
