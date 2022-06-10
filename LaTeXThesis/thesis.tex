@@ -205,9 +205,37 @@ Dadurch werden Programmierern Konzepte wie Schleifen oder Bedingungen nah gebrac
 Zum Beispiel könnte die LED blinken wenn eine gewisse Umdrehungsanzahl erreicht wurde um While-Schleifen zu erläutern.
 
 \section{Funktionsaufrufe}\label{sec:API}
-Gelöst werden sollen die Aufgaben durch das Aufrufen der API.
-Diese bietet die benötigten Funktionen an.
-Die Aufrufe sind frei miteinander kombinierbar, so dass Aufgaben erweitert werden können.
+Das Framwork stellt verschiedene Ein- und Ausgabemöglichkeiten bereit welche im Folgenden genauer vorgestellt werden.
+Aufrufe erfolgen aus einer Programmierumgebung heraus.
+Software-Bibliotheken ermöglichen das Einbinden in bestehenden Code.
+Die Aufrufe sind standardisiert und werden in Tabelle \ref{tab:calls} aufgestellt.
+Eine vollständige Liste aller Funktionsaufrufe und deren Verwendung ist im Anhang aufgeführt.
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|l|c|c|c|}
+      \hline
+      Name & Aktor & Sensor & Rückgabewert\\
+      \hline
+	  get\_x\_accel & Nein & Ja & Ja \\
+      \hline
+		get\_proxy & Nein & Ja & Ja \\
+      \hline
+		get\_x\_gyro & Nein & Ja & Ja \\
+      \hline
+      write\_text & Ja & Nein & Nein \\
+      \hline
+      toggle\_led & Ja & Nein & Nein \\
+      \hline  
+      vibrate & Ja & Nein & Nein \\
+      \hline
+      \end{tabular}
+  \caption{Aufgaben}
+  \label{tab:calls}
+\end{table}
+In der Spalte Name sind die definierten Aufrufs-Namen zu finden.
+Bei den Spalten Aktor und Sensor wird definiert, ob der Aufruf eine Ausgabe erzeugt oder einen Sensorwert misst.
+Manche Aufrufe geben auch Werte zurück. Dies ist in der Spalte Rückgabewert zu sehen.
+\\\\
 
 \section{Softwareanforderungen}\label{sec:anforderungen}
 Aus den unter \ref*{sec:API} genannten Funktionen ergeben sich die Anforderungen an das Framework.
