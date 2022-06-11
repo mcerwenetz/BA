@@ -135,7 +135,7 @@ Eine Liste der Aufgaben ist Tabelle \ref{tab:excercises} zu entnehmen.
   \centering
   \begin{tabular}{|l|c|c|c|}
       \hline
-      Name der Aufgabe & Sensoren & Ausgaben & Schwierigkeit \\
+      \textbf{Name der Aufgabe} & \textbf{Sensoren} & \textbf{Ausgaben} & \textbf{Schwierigkeit} \\
       \hline
       Disco & - & Led & + \\
       \hline
@@ -254,82 +254,114 @@ Die erwähnten Anforderungen werden in der Architektur berücksichtigt.
 Sie bilden gewissermaßen den Rahmen für den Aufbau des Frameworks.
 Rahmenbedingungen die die Einzelheten der Komponenten allgemein definieren, die jedoch auch das Zusammenspiel und die Koordination festsetzen.
 Diese sind insbesondere für über die Arbeit hinausgehende Erweiterungs-, Skalierungs-, Orchestrierungs- und Automatisierungsmöglichkeiten hilfreich.
-Eine längerfristige, aufbauende Entwicklung am Framework soll möglichst bequem und kompfortabel möglich sein.
+Eine längerfristige, aufbauende Entwicklung des Frameworks soll möglichst bequem und kompfortabel möglich sein.
 
 \chapter{Architektur} \label{chap:architektur}
-Der Aufbau des Frameworks besteht aus einer mobilen Anwendung für Android-Smartphones, Bibliothek in der Programmiersprache C und einer Middleware die den Austausch Koordiniert.
+Die im vorigen Kapitel behandelten Softwareanforderungen und Einschränkungen bestimmen den Aufbau des Frameworks um den es in diesem Kapitel geht.
+Insgesamt besteht das Framework aus einer mobilen Anwendung für Android-Smartphones, einer programmiersprachenunabhängigen Bibliothek für Sensoranfragen und Ausgabe-Kommandos und einem Kontrollprogramm das den Nachrichtenaustausch koordiniert.
 Der Aufbau ist in Abbildung \ref{fig:design} dargestellt.
 \begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.9\textwidth]{images/design.png}
-  \caption{System-Aufbau}
-  \label{fig:design}
+\centering
+% \includegraphics[width=.9\textwidth]{zeichnung.eps}
+\includegraphics[width=\textwidth]{images/framework.pdf}
+\caption{System-Aufbau}
+\label{fig:design}
 \end{figure}
-Clientseitig erfolgen sämtliche Aufrufe die Sensordaten abgreifen oder Steueranfragen senden immer erst per UDP über die Middleware.
+Das Framework arbeitet in drei Bereichen: Auf dem lokalen PC, auf einem Server und auf dem Smartphone.
+Auf dem lokalen PC platziert sind sowohl das Kontrollprogramm, die Bibliothek welche die Aufrufe beinhaltet und das vom Entwickler geschriebene Programm.
+Programm und Bibliothek bilden zusammen die Programmierumgebung von der aus der Entwickler die volle Funktionalität des Frameworks nutzen kann, indem er in seinem Programm die Bibliothek einbindet.
+Diese bildet ein standardisiertes Interface für Funktionsaufrufe.
+Startet ein Entwickler einen Aufruf der Bibliothek, kommuniziert diese ihn per UDP dem Kontrollprogramm.
 \\
-Die Middleware sammelt, sobald sich eine Android-Anwendung bei ihr anmeldet, gewisse Sensordaten und speichert Sie intern zwischen, damit Sie schnell vorrätig vorliegen.
-Die Speicherung erfolgt in einem seperaten Thread, der die letzten Zustände der Sensordaten hält.
-Werden Sensordaten abgerufen werden Sie aus der Liste entfernt.
-Sind noch keine Daten vorhanden, oder wird ein Sensor angefragt der im Smartphone nicht existent ist, wird ein Fehlercode zwischengespeichert.
-Die Verfügbarkeit der jeweiligen Sensoren wird beim Start der Anwendung ermittelt.
+Das Kontrollprogramm erfüllt drei Aufgaben: Die Beantwortung von Sensoranfragen der Bibliothek, dem Zwischenspeichern von Sensorwerten als Puffer und dem Weiterleiten von Ausgabe-Kommandos auf das Smartphone.
+Bibliotheksaufrufe werden also per UDP an das Programm gestellt.
+Bei Sensoranfragen nimmt dieses Sie an und liefert ebenfalls über UDP den zuletzt zwischengespeicherten Wert zurück.
+Damit dieser auch vorliegt werden von der Smartphone App kontinuierlich, periodisch Sensordaten-Aktualisierungen per MQTT an das Kontrollprogramm gesendet.
+Das Kontrollprogramm wiederum sendet Ausgabe-Kommandos per MQTT an die Smartphone-App.
 \\
-Steueraufrufe werden beim Aufruf über ein seperates Topic versandt.
-Der Austausch erfolgt auf mehreren Topics, da manche Nachrichten, wie Steuerbefehle wie in \ref{subsec:Ausgaben} erwähnt, mit einem höheren QOS-Level versendet werden müssen als im Moment existente Sensordaten die nur eine kurzzeitige Relevanz besitzen und deren Zustellung nicht obligatorisch ist.
-Auf diesem Topic werden Nachrichten mit der QOS von 2 versandt auf dem für reguläre Sensordaten mit einer QOS von 0.
-% Todo: admin channel? Erster Aufbau auf admin channel mit anschließender negotiation auf welchen channeln gesendet werden soll. Wie hart aufziehen?
-
+Die Smartphone-Anwendung beginnt zum Start mit der Sensor-Messdatenerhebung welche Sie wie geschildert an die Kontrollanwendung sendet.
+Daneben erwartet Sie Ausgabekommandos der Bibliothek, welche Sie bei Eingang ausführt.
+\\
+Als Vermittlung zwischen Kontrollprogramm und Smartphone-App dient ein MQTT-Broker.
+Dieser nimmt Nachrichten beider Kommunikationspartner an und kontrolliert die Zustellung.
+\\
+Neben der korrekten Funktiosweise der einzelnen Entitäten hat der Austausch von Nachrichten im Framework große Relevanz.
+So müssen Inhalt und Aufbau definiert sein, damit die inneren Algorithmen der Komponenten korrekt arbeiten können.
 \section{Nachrichtenformate}
-Damit der gesamte Funktionsablauf des Frameworks korrekt funktioniert müssen Nachrichten zwischen den einzelenen Komponenten ausgetauscht werden.
-Hierfür wird ein Format definiert dass die in Kapitel \ref{sec:anforderungen} erwähnten Anforderungen sowohl auf Library-, Middleware-, und Smartphone-Seite umsetzt.
-
-Die Nachrichten werden im JSON-Format übertragen.
-Jede Nachricht beeinhaltet mindestens die Angabe eines Nachrichtenformat-Typs.
-Für die Aufrufe wurden folgende Nachrichtenformate definiert:
-\begin{enumerate}
-  \item sensor\_request
-  \item sensor\_update\_request
-  \item rpc\_request
-  \item rpc\_response
-\end{enumerate}
-Die Nachrichtenformate werden als Vorlagen in einer zentralen Datei abgelegt.
-Diese werden in der Library, Middleware und auf dem Smartphone eingelesen, damit Sie nur einer Stelle definiert werden müssen, wie in \ref*{fig:all_json} dargestellt.
-Neben den Nachrichtenformaten werden hier auch weitere Konfigurations-Konstanten wie Commands für rpc\_requests, Namen der Sensordaten und Namen der MQTT Topics spezifiziert spezifiziert.
-
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.9\textwidth]{images/all_json.png}
-  \caption{Zentrale Konfigurationsdatei}
-  \label{fig:all_json}
-\end{figure}
-
-
-\textbf{sensor\_requests} werden vom Endanwender-PC per UDP an die Middleware gesendet.
-Sie beeinhalten neben dem Typ das Feld \texttt{sensor\_type}.
-Dieses definiert den Sensortyp für den eine Anfrage generiert wurde.
-Eine Übersicht ist in Listing \href{lst:sensor_request} zu finden.
+Ein einheitliches Kommunikationsformat ist für den Nachrichtenaustausch unabdingbar.
+Der ausgearbeitete Standard definiert Nachrichten in einem Klartextformat.
+Als Darstellungsform wird JSON verwendet.
 \\
-Im Listing wurde der Platzhalter \texttt{TYPE} für alle möglichen Sensortypen angegeben.
-Eine vollständige Aufschlüsselung ist in Tabelle \ref{tab:sensor_types} zu finden.
-\lstinputlisting[label={lst:sensor_request}, caption={sensor\_request}, captionpos=b]{listings/messages/sensor_request.json}
-
-\textbf{sensor\_update\_requests} werden von Smartphone über MQTT an die Middleware versandt.
-Sie umfassen ebenfalls wie \texttt{sensor\_requests} das Feld \texttt{sensor\_type}, jedoch zusätzlich auch das Feld \texttt{value} in dem der gemessene Sensorwert gespeichert wird.
-Dieser wird von der Middleware in eine interne Datenstruktur eingetragen.
-
-\textbf{rpc\_requests} werden vom Endanwender-PC per UDP an die Middleware gesendet.
-Sie lösen Aktionen auf dem Smartphone aus wie zum Beispiel das anschalten der LED, oder das Starten von Messungen.
-Sie werden von der Middleware per MQTT an das Smartphone weitergereicht.
-Die Übermittlung erfolgt jedoch über ein seperates Topic mit einem Quality of Service Wert von 2 um eine garantierte Übertragung zu gewährleisten.
-
-rpc\_requests und response beeinhalten außerdem mindestens ein \texttt{command}-Feld und ein \texttt{value}-Feld.
-
-Nachfolgendes Listing zeigt beispielsweise den Aufruf die LED einzusschalten.
-
-\lstinputlisting[]{listings/messages/led.json}
-Folgende Nachricht beschreibt beispielsweise den übermittelten Sensorwert des accelerometers.
-\lstinputlisting{listings/messages/accell.json}
-
+Die Nachrichtenformate werden als Vorlagen in einer zentralen Datei abgelegt.
+Diese werden in der Bibliothek, dem Kontrollprogramm und in der Smartphone-App abgespeichert und eingelesen.
+So ist zentral definiert welche Nachrichten es gibt, welche Felder und Datenformate Sie beeinhalten.
+Neben diesen Daten sind zusätzlich noch Bezeichnungen über die nutzbaren Sensoren, sowie den ausführbaren Ausgabe-Kommandos enthalten.
+\\
+Jede Nachricht weist mindestens die Angabe eines Nachrichtenformat-Typs auf.
+Diese sind der Tabelle \ref{tab:message_types} zu entnehmen.
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|l|p{30mm}|c|c|}
+      \hline
+      \textbf{Nachrichtentyp} & \textbf{Quelle} & \textbf{Ziel} & \textbf{Netzwerkprotokoll}\\
+      \hline
+		sensor\_request & Bibliothek & Kontrollprogramm & UDP\\
+       \hline
+       sensor\_response & Kontrollprogramm & Bibliothek & UDP\\
+       \hline
+		update\_request & Smartphone & Kontrollprogramm & MQTT\\
+       \hline
+		rpc\_request & Bibliothek, Kontrollprogramm & Smartphone & UDP/MQTT\\
+       \hline
+		rpc\_response & Smartphone, Kontrollprogramm & Bibliothek & UDP/MQTT\\ 
+       \hline
+  \end{tabular}
+  \caption{Nachrichten-Typen}
+  \label{tab:message_types}
+\end{table}
+Die Spalte \textit{Nachrichtentyp} beschreibt die Bezeichnung des Nachrichtentypes.
+Zu Übersicht sind noch \textit{Quelle} und \textit{Ziel} der Nachrichten beschrieben.
+Außerdem aufgeführt ist das verwendete Netzwerkprotokoll zur Übermittlung.
+\\\\
+\textit{Sensor\_request}s werden von der Bibliothek an das Kontrollprogramm gesendet.
+Ihr Verwendungszweck besteht darin, einen zwischengespeicherten Sensorwert abzufragen.
+Daher beeinhaltet Sie neben dem Typ-Bezeichner auch noch das Feld \texttt{sensor\_type}.
+Nach Eingang ermittelt das Kontrollprogramm den gewünschten Sensorwert und gibt das Ergebnis zurück.
+\\
+Eine solche Antwort erfolgt im Nachrichtenformat \textit{sensor\_response}.
+Diese beeinhaltet den vom Kontrollprogramm erschlossenen Sensordaten-Wert, \texttt{sensor\_value}, als String.
+Sie wird von der Bibliothek entgegengenommen und als float an das aufrufende Programm des Entwicklers zurückgegeben.
+Da Aufrufe von der Bibliothek immer blockierend im Call-Response-Schema aufgerufen werden kann es nicht passieren, dass sich responses überholen und die Sensorwerte eines anderen Sensors für den angefragten Sensorwert eingetragen werden.
+Deshalb ist die Angabe des gültigen Sensor-Typs für sensor\_responses nicht nötig.
+\\
+Damit Sensorwerte vorhanden sind muss die Smartphone-App der Kontrollanwendung kontinuierlich gemessene Sensorwerte übermitteln, damit diese in den internen Puffer eingespeichert werden können um bei erhöhten Latenzen Zwischenwerte liefern zu können.
+Dies geschieht durch den Nachrichtentyp \textit{update\_request}.
+Geltungsgegenstand ist diese Nachricht für alle Art von Sensoren.
+Übermittelt wird daher sowohl der Sensor-Typ, als auch der gemessene Sensor-Wert um ihn für die Kontrollanwendung schnell zuordenbar zu machen und Sie in den internen Datenpuffer eintragen zu können.
+\\\\
+Neben den Sensordaten betreffenden Nachrichten existieren auch Ausgabe-Kommandos um Ausgaben in der Smartphone-App umzusetzen.
+Unterscheidbar sind solche Anfragen die lediglich ausgeführt werden sollen und solche , die einen Rückgabewert erwarten.
+Für erstere gibt es den Nachreichtentyp \textit{rpc\_request}.
+RPC steht für Remote Procedure Call und bezeichnet Funktionsaufrufe die auf einem Client aufgerufen, jedoch auf einem Server ausgeführt werden.
+Die Bezeichnung entspricht so nicht dem Konzept, da die die Smartphone-App in diesem Fall die Rolle des Servers einnähme.
+Die Voraussetzung einer Client-Server-Anwendung ist nicht gegeben.
+Vielmehr tauschen hier gleichwertige Kommunikationspartner Daten aus.
+Die Bezeichnung wurde eher unter dem Fokus auf die entfernte Ausführung gewählt.
+\\
+Der Nachrichtentyp enthält die Felder \texttt{command} und \texttt{value}.
+Ersters beeinhaltet eines der spezifizierten Ausgabe-Kommandos.
+Das Zweite beschreibt die Größe des Parameters für das Ausgabekommando.
+Es ist fast immer befüllt.
+Vereinzelt gibt es jedoch auch Kommandos die keinen Parameter benötigen.
+Dann bleibt dieses Feld leer.
+Die Nachricht wird von der Bibliothek, aufgrund eines Aufrufs des Programmes des Entwicklers erst per UDP an die Kontrollanwendung und von dort aus per MQTT an das Smartphone gesendet.
+Die Smartphone-App überprüft bei Eingang den Aufruf und setzt die gewünschte Ausgabe entsprechend um.
+\\
+Manche Kommandos führen nicht nur Ausgaben aus, sondern erheben zusätzlich noch einen Rückgabewert.
+Damit dieser vom Smartphone zurück an die Bibliothek gesendet werden kann gibt es das Nachrichtenformat \textit{rpc\_response}.
+Dieses wird erst per MQTT an das Kontrollprogramm und von dort aus per UDP an die Bibliothek gesendet.
+Wie bei sensor\_responses können sich die Antworten nicht gegenseitig überholen, was die Übertragung des zugrundeliegenden Ausgabe-Kommandos überflüssig macht.
+Nur der ermittelte Wert des Kommandos ist relevant und wird in der Nachricht übermittelt.
 \section{Nachrichtenablauf}
 
 Der Nachrichtenablauf ist in Abbildung \ref{fig:message flow} dargestellt.
@@ -353,25 +385,37 @@ Blau dargestellt ist ein rpc\_request, dass ein Command auf dem Smartphone ausf�
 Lila dargestellt sind rpc\_requests die ein Command ausführen dass einen Rückgabewert erwartet, wie es beispielsweise bei zeitlich getakteten Messungen der Fall ist. 
 In diesem Fall wird eine rpc\_response-Nachricht mit versendet.
 
-
-
-\section{Verwendete Technologien}\label{sec:net_tech}
-In diesem Kapitel werden die Technologien und Protokolle beschrieben die beim Nachrichtenaustausch zwischen Library, Middleware und Smartphone zum Einsatz kommen.
+\section{MQTT}
+MQTT steht für Message Queuing Telemetry Transport und ist ein Client-Server Protokoll das auf TPC basiert.
+Es kommt häufig mei Machine-to-Machine Interaktionen zum Einsatz.
+Dies umfasst Lösungen im IoT-, Smarthome und Automatisierungstechnik-Bereich.
+Durch den platzsparenden Header von 2 Bytes und einer maximalen Nachrichtengröße von ca. 260 MB ist es gleichzeitig ein leichtgewichtiges jedoch auch flexibles Protokoll zum Nachrichtenaustausch.
 \\
-Der Fokus liegt auf Serialisierung und Transport.
-Da im gesamten Prozess zwischen den drei Einheiten unterschiedliche Programmiersprachen auf verschiedenen Plattformen zum Einsatz kommen müssen sämtliche Protokolle und Notationen von möglichst vielen Programmiersprachen unterstztützt werden.
+Für den Nachrichtenaustausch registrieren sich Clients an einem Broker, dem MQTT-Server, an ein oder mehrere Topics.
+Auf diesen Topics können dann Nachrichten gesendet und empfangen werden.
+Topics können hierarchisch geschichtet werden.
+Subtopics können dann pro ebene oder rekursiv für alle Subtopics abboniert werden.
+Dieses Feature ist jedoch für die Entwicklung nicht weiter von Belang.
+Nachrichten werden von Clients an den Broker gesendet.
+Dieser hält den Nachrichteninhalt intern für das jeweilige Topic.
 \\
-Beim Transport liegt die Anforderung vor allem auf einer schnellen Ausführung, da sich Sensordaten schnell ändern und ein Lerneffekt am Besten eintritt wenn keine hohen Latenzen bei der Übertragung auftreten.
-
-
-
-
-
-
-
-
-
-
+Alle Clients besitzen einen Identifier, so dass empfangene Nachrichten zurückgeführt werden können.
+Somit sind auch Topic-Interne Filter möglich nur Nachrichten von bestimmten Clients zu empfangen.
+\\
+Nachrichten können mit einer Quality of Service (QoS), einer Übertragungsgüte, übertragen werden.
+Insgesamt gibt es drei Stufen: 0, 1 und 2.
+Je höher die QoS-Stufe desto höher die Latenz der Übertragung.
+\\
+Bei einer QoS von 0 werden Daten einfach übertragen ohne sicherzugehen, dass die Nachricht auch wirklich beim Broker ankommt. 
+Bei QoS 1 wird eine Nachricht so lange auf einem Topic gesendet bis der Broker den Empfang einmal bestätigt.
+Es kann jedoch auch passieren, dass der Broker die Nachricht mehrmals empfängt und nur einmal bestätigt.
+Bei QoS 2 wird die Nachricht einmal an den Broker gesendet.
+Dieser muss dann den Empfang der Nachricht einmal bestätigen.
+Erst dann gilt die Nachricht als Empfangen.
+\\
+Damit die verlangte Güte sichergestellt wird müssen Sender und Empfänger mit der gleichen Güte senden bzw. ein Topic mit der gleichen Güte-Stufe abbonieren.
+Wird ein Topic mit einer geringeren Güte abboniert als die Güte der publizierten Nachricht wird die Nachricht mit der Güte des Abbonenten übertragen.
+Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wurde als dieses Topic abboniert wurde wird die Übertragung mit der Güte-Stufe des publizierenden Clients übertragen.
 \chapter{Android Anwendung}\label{chap:app}
 Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
 Sie besteht aus einer Haupt-Activity deren außerlicher Aufbau in Kapitel \ref{sec:androidApp} beschrieben ist. 
@@ -458,37 +502,6 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
   \caption{Sensor-Kürzel mit Beschreibung}
   \label{tab:sensor_types}
 \end{table}
-\section{MQTT}
-MQTT steht für Message Queuing Telemetry Transport und ist ein Client-Server Protokoll das auf TPC basiert.
-Es kommt häufig mei Machine-to-Machine Interaktionen zum Einsatz.
-Dies umfasst Lösungen im IoT-, Smarthome und Automatisierungstechnik-Bereich.
-Durch den platzsparenden Header von 2 Bytes und einer maximalen Nachrichtengröße von ca. 260 MB ist es gleichzeitig ein leichtgewichtiges jedoch auch flexibles Protokoll zum Nachrichtenaustausch.
-\\
-Für den Nachrichtenaustausch registrieren sich Clients an einem Broker, dem MQTT-Server, an ein oder mehrere Topics.
-Auf diesen Topics können dann Nachrichten gesendet und empfangen werden.
-Topics können hierarchisch geschichtet werden.
-Subtopics können dann pro ebene oder rekursiv für alle Subtopics abboniert werden.
-Dieses Feature ist jedoch für die Entwicklung nicht weiter von Belang.
-Nachrichten werden von Clients an den Broker gesendet.
-Dieser hält den Nachrichteninhalt intern für das jeweilige Topic.
-\\
-Alle Clients besitzen einen Identifier, so dass empfangene Nachrichten zurückgeführt werden können.
-Somit sind auch Topic-Interne Filter möglich nur Nachrichten von bestimmten Clients zu empfangen.
-\\
-Nachrichten können mit einer Quality of Service (QoS), einer Übertragungsgüte, übertragen werden.
-Insgesamt gibt es drei Stufen: 0, 1 und 2.
-Je höher die QoS-Stufe desto höher die Latenz der Übertragung.
-\\
-Bei einer QoS von 0 werden Daten einfach übertragen ohne sicherzugehen, dass die Nachricht auch wirklich beim Broker ankommt. 
-Bei QoS 1 wird eine Nachricht so lange auf einem Topic gesendet bis der Broker den Empfang einmal bestätigt.
-Es kann jedoch auch passieren, dass der Broker die Nachricht mehrmals empfängt und nur einmal bestätigt.
-Bei QoS 2 wird die Nachricht einmal an den Broker gesendet.
-Dieser muss dann den Empfang der Nachricht einmal bestätigen.
-Erst dann gilt die Nachricht als Empfangen.
-\\
-Damit die verlangte Güte sichergestellt wird müssen Sender und Empfänger mit der gleichen Güte senden bzw. ein Topic mit der gleichen Güte-Stufe abbonieren.
-Wird ein Topic mit einer geringeren Güte abboniert als die Güte der publizierten Nachricht wird die Nachricht mit der Güte des Abbonenten übertragen.
-Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wurde als dieses Topic abboniert wurde wird die Übertragung mit der Güte-Stufe des publizierenden Clients übertragen.
 
 
 \chapter{Kontrollanwendung}\label{chap:server_software}
@@ -619,6 +632,9 @@ Nachteil: Ständiges Senden reduziert den Akku.
 
 \section{Programmierumgebung}
 Nachteil: JSON
+
+\section{Kontrollanwendung}
+MQTT QOS 2 zu langsam.
 
 
 
