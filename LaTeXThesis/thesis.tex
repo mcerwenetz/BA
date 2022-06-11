@@ -338,6 +338,19 @@ Damit Sensorwerte vorhanden sind muss die Smartphone-App der Kontrollanwendung k
 Dies geschieht durch den Nachrichtentyp \textit{update\_request}.
 Geltungsgegenstand ist diese Nachricht für alle Art von Sensoren.
 Übermittelt wird daher sowohl der Sensor-Typ, als auch der gemessene Sensor-Wert um ihn für die Kontrollanwendung schnell zuordenbar zu machen und Sie in den internen Datenpuffer eintragen zu können.
+\\
+Der gesamte Ablauf für Sensoranfragen ist in Abbildung \ref{fig:message_flow_requests} zusammengefasst dargestellt.
+\begin{figure}[htbp]
+\centering
+% \includegraphics[width=.9\textwidth]{zeichnung.eps}
+\includegraphics[width=.9\textwidth]{images/message_flow_sensor.pdf}
+\caption{Nachrichtenablauf der Sensordatenübermittlung}
+\label{fig:message_flow_requests}
+\end{figure}
+Zu sehen sind die drei Komponenten Bibliothek, Kontrollprogramm und App auf dem Smartphone.
+Die Bibliothek sendet sensor\_requests per UDP an das Kontrollprogramm.
+Dieses antwortet über UDP mit einer sensor\_response.
+Währenddessen sendet die App auf dem Smartphone kontinuierlich update\_requests um neue Messergebnisse der Sensorwerte einzuspeichern.
 \\\\
 Neben den Sensordaten betreffenden Nachrichten existieren auch Ausgabe-Kommandos um Ausgaben in der Smartphone-App umzusetzen.
 Unterscheidbar sind solche Anfragen die lediglich ausgeführt werden sollen und solche , die einen Rückgabewert erwarten.
@@ -362,29 +375,21 @@ Damit dieser vom Smartphone zurück an die Bibliothek gesendet werden kann gibt 
 Dieses wird erst per MQTT an das Kontrollprogramm und von dort aus per UDP an die Bibliothek gesendet.
 Wie bei sensor\_responses können sich die Antworten nicht gegenseitig überholen, was die Übertragung des zugrundeliegenden Ausgabe-Kommandos überflüssig macht.
 Nur der ermittelte Wert des Kommandos ist relevant und wird in der Nachricht übermittelt.
-\section{Nachrichtenablauf}
-
-Der Nachrichtenablauf ist in Abbildung \ref{fig:message flow} dargestellt.
+\\
+Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} nochmal übersichtlich zusammengefasst.
 \begin{figure}[htbp]
-  \centering
-  \includegraphics[width=.9\textwidth]{images/message_flow.png}
-  \caption{Nachrichtenablauf}
-  \label{fig:message flow}
+\centering
+% \includegraphics[width=.9\textwidth]{zeichnung.eps}
+\includegraphics[width=.9\textwidth]{images/message_flow_rpc.pdf}
+\caption{Nachrichtenablauf der RPC-Anfragen}
+\label{fig:message_flow_rpc}
 \end{figure}
-\\
-Grau dargestellt ist hier die periodische aktualisierung der Sensordaten durch sensor\_update\_requests.
-Diese werden mit einer auf dem Smartphone definierten Taktung an die Middleware übertragen
-Die Middleware trägt die neuen Daten dann in der internen Datenbank ein.
-\\
-Grün dargestellt ist der Ablauf eines sensor\_requests.
-Aus der Library heraus werden sensor\_requests gesendet.
-Die Middleware, die die aktuellen Sensorwerte vorhält sendet dann als Antwort den Sensorwert als einzelnen Wert, also nicht im JSON-Format zurück.
-\\
-Blau dargestellt ist ein rpc\_request, dass ein Command auf dem Smartphone ausführt, dass keinen Rückgabewert zurückliefert. Änlich wie bei sensor\_update\_requests handelt es sich hier um fire-and-forget-requests.
-\\
-Lila dargestellt sind rpc\_requests die ein Command ausführen dass einen Rückgabewert erwartet, wie es beispielsweise bei zeitlich getakteten Messungen der Fall ist. 
-In diesem Fall wird eine rpc\_response-Nachricht mit versendet.
-
+Zu sehen sind die drei Komponenten Bibliothek, Kontrollprogramm und App auf dem Smartphone.
+Die Bibliothek sendet rpc\_requests per UDP an das Kontrollprogramm.
+Dieses leitet die Nachricht per MQTT direkt weiter an die App.
+Dort wird das gewünschte Kommando ausgeführt.
+Fällt ein Rückgabewert an, wird eine rpc\_response generiert und per MQTT zurück gesendet.
+Die Kontrollanwendung leitet die Nachricht dann per UDP weiter an die Bibliothek.
 \section{MQTT}
 MQTT steht für Message Queuing Telemetry Transport und ist ein Client-Server Protokoll das auf TPC basiert.
 Es kommt häufig mei Machine-to-Machine Interaktionen zum Einsatz.
@@ -451,7 +456,7 @@ In der Android Anwendung werden folgende Sensortypen verwendet:
 
 \section{Lineare Beschleunigungssensoren}
 Beschleunigungs- bzw. Lagesensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
-Eine Übersicht über die Anordungen der drei Axen ist in Grafik \ref{fig:and_axes} zu sehen.
+Eine Übersicht über die Anordungen der drei Axen ist in Abbildung \ref{fig:and_axes} zu sehen.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.8\textwidth]{images/android_axes.png}
@@ -551,7 +556,7 @@ DataHandler wiederrum teilt sich nochmal auf in vier seperate Funktionen, die al
 Die Funktionsweise und Zwecke dieser Threads wird im Folgenden an zwei Beispielen erläutert.
 Für das erste Beispiel wird Abbildung \ref{fig:serverMqttReqPath} betrachtet.
 Zu sehen ist ein MQTT-Request, also eine Anfragen des Smartphones, dass über MQTT an den Server gesendet wird.
-Schnittstellen zu MQTT sind in der Grafik grün, Schnittstellen zur Library per UDP, sind blau markiert.
+Schnittstellen zu MQTT sind in der Abbildung grün, Schnittstellen zur Library per UDP, sind blau markiert.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.8\textwidth]{images/MqttRequestServerPath}
@@ -570,7 +575,7 @@ Der AnswerQueue Worker wartet, ähnlich wie der MQTT Request Handler, bis eine n
 
 Das zweite Beispiel befasst sich mit dem Ablauf eines UDP-Requests, also einer Anfrage die mithilfe der Library gesendet wurde.
 Der Ablauf ist in Abbildung \ref{fig:serverUDPReqPath} dargestellt.
-Wie auch schon in der letzten Grafik sind alle Schnittstellen zum Smartphone grün und alle Schnittstellen zur Library blau markiert.
+Wie auch schon in der letzten Abbildung sind alle Schnittstellen zum Smartphone grün und alle Schnittstellen zur Library blau markiert.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.8\textwidth]{images/UDPRequestServerPath}
