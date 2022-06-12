@@ -390,37 +390,90 @@ Dieses leitet die Nachricht per MQTT direkt weiter an die App.
 Dort wird das gewünschte Kommando ausgeführt.
 Fällt ein Rückgabewert an, wird eine rpc\_response generiert und per MQTT zurück gesendet.
 Die Kontrollanwendung leitet die Nachricht dann per UDP weiter an die Bibliothek.
+\\\\
+Die erstellten Nachrichtenformate decken alle Nutzungszenarien vollständig ab.
+Sie bilden ein solides, effizientes Grundgerüst mit Möglichkeit zur Erweiterung.
+Diese werden auch vom Serialisierungsformat JSON unterstützt.
+Neue Kommandos mit größeren Parameterwerten sind simpel umzusetzen.
+Neben Text könnten beispielsweise auch Binärdaten wie Bilder oder Sound-Dateien übertragen werden.
+Limitiert werden Sie nur von den darunterliegenden Protokollen UDP und MQTT.
+
 \section{MQTT}
-MQTT steht für Message Queuing Telemetry Transport und ist ein Client-Server Protokoll das auf TPC basiert.
-Es kommt häufig mei Machine-to-Machine Interaktionen zum Einsatz.
-Dies umfasst Lösungen im IoT-, Smarthome und Automatisierungstechnik-Bereich.
+MQTT steht für Message Queuing Telemetry Transport und ist ein Client-Server Protokoll, das auf TCP basiert.
+Eingesetzt wird es häufig bei Machine-to-Machine Interaktionen, also Lösungen im IoT-, Smarthome und Automatisierungstechnik-Bereich.
 Durch den platzsparenden Header von 2 Bytes und einer maximalen Nachrichtengröße von ca. 260 MB ist es gleichzeitig ein leichtgewichtiges jedoch auch flexibles Protokoll zum Nachrichtenaustausch.
+Nachrichten können verschlüsselt übertragen werden.
+TLS fungiert dabei auf dem Transportweg als Verschlüsslungsprotokoll.
+\\\\
+Der Nachrichtenaustausch erfolgt nach dem Observer-Pattern.
+Als Publizierungs- und Empfangsplattform dienen hier sogenannte Topics.
+Sie funktionieren wie ein Posteingang, dienen allerdings auch der Kategorisierung und Trennung von unterschiedlichen Nachrichten-Kontexten.
+Topics können hierarchisch in Topics und Sub-Topics geschichtet werden.
+Clients können beim Senden einer Nachricht angeben, auf welchen Topics Sie die Nachricht publizieren möchten.
+Clients die die Nachricht empfangen möchten müssen das gewünschte Topic vorab abbonieren.
+Neben dem Abbonieren von einzelnen Topics, gegebenenfalls Subtopics, können über Eltern-Topics auch deren Subtopics aggregiert abboniert werden.
 \\
-Für den Nachrichtenaustausch registrieren sich Clients an einem Broker, dem MQTT-Server, an ein oder mehrere Topics.
-Auf diesen Topics können dann Nachrichten gesendet und empfangen werden.
-Topics können hierarchisch geschichtet werden.
-Subtopics können dann pro ebene oder rekursiv für alle Subtopics abboniert werden.
-Dieses Feature ist jedoch für die Entwicklung nicht weiter von Belang.
-Nachrichten werden von Clients an den Broker gesendet.
-Dieser hält den Nachrichteninhalt intern für das jeweilige Topic.
+Als Vermittlungsstelle dient ein MQTT-Broker.
+Dieser bildet die Server-Seite im Client-Server-Konzept.
+Senden Clients Nachrichten an ein Topic werden diese vom Broker entgegengenommen und an die abbonierten Clients zugestellt.
+Clients können sowohl Sender als auch Empfänger sein.
+Das Empfangen der eigenen gesendeten Nachrichten ist möglich.
 \\
-Alle Clients besitzen einen Identifier, so dass empfangene Nachrichten zurückgeführt werden können.
-Somit sind auch Topic-Interne Filter möglich nur Nachrichten von bestimmten Clients zu empfangen.
+Alle Clients besitzen darüber hinaus einen Namen, so, dass empfangene Nachrichten auf den Sender zurückgeführt werden können.
+Topic-Interne Filter sind ebenfalls möglich, um beispielsweise nur Nachrichten von bestimmten Clients zu empfangen.
 \\
 Nachrichten können mit einer Quality of Service (QoS), einer Übertragungsgüte, übertragen werden.
-Insgesamt gibt es drei Stufen: 0, 1 und 2.
-Je höher die QoS-Stufe desto höher die Latenz der Übertragung.
+Sie gelten sowohl auf dem Weg vom Broker zu einem abbonierendem Client als auch von einem sendenden Client zum Broker.
+Topics können also mit einer Güte abboniert und Nachrichten mit einer Güte gesendet werden.
+Diese sind in Tabelle \ref{tab:qos} dargestellt.
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|c|c|}
+      \hline
+      \textbf{QOS-Level} & \textbf{Zustellprinzip} \\
+      \hline
+      0 & At most once \\
+		\hline
+      1 & At least once \\
+      \hline
+      2 & Exactly once\\
+      \hline
+  \end{tabular}
+  \caption{Aufgaben}
+  \label{tab:qos}
+\end{table}
+Aufgeführt ist die Übertragungsgüteklasse und das dazugehörige Zustellprinzip.
+Letzteres beschreibt die Übertragungsgarantie für Empfänger.
 \\
-Bei einer QoS von 0 werden Daten einfach übertragen ohne sicherzugehen, dass die Nachricht auch wirklich beim Broker ankommt. 
-Bei QoS 1 wird eine Nachricht so lange auf einem Topic gesendet bis der Broker den Empfang einmal bestätigt.
-Es kann jedoch auch passieren, dass der Broker die Nachricht mehrmals empfängt und nur einmal bestätigt.
-Bei QoS 2 wird die Nachricht einmal an den Broker gesendet.
-Dieser muss dann den Empfang der Nachricht einmal bestätigen.
-Erst dann gilt die Nachricht als Empfangen.
+Insgesamt gibt es drei Güteklassen: 0, 1 und 2.
+Je höher die QoS-Stufe desto höher die Übertragungsgüte.
+Im Gegenzug steigt mit der Übertragungsgüte allerdings auch die Latenz der Übertragung.
+\\\\
+QoS-Stufe 0 ist die geringste Gütestufe.
+Hier werden Nachrichtern einmal übertragen.
+Es wird nicht sichergestellt, dass die Nachricht schlussendlich zugestellt wird. 
+Der Sender überträgt die Nachricht nur einmal an den Broker und dieser Sie auch nur einmal an den Empfänger.
+Es gibt keine Übertragungsbestätigung an keiner Zwischenstation.
+Deshalb kann ist die Garantie lediglich dass die Nachricht im besten Falle einmal zugestellt wird.
 \\
-Damit die verlangte Güte sichergestellt wird müssen Sender und Empfänger mit der gleichen Güte senden bzw. ein Topic mit der gleichen Güte-Stufe abbonieren.
-Wird ein Topic mit einer geringeren Güte abboniert als die Güte der publizierten Nachricht wird die Nachricht mit der Güte des Abbonenten übertragen.
-Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wurde als dieses Topic abboniert wurde wird die Übertragung mit der Güte-Stufe des publizierenden Clients übertragen.
+Bei der QoS Stufe 1 muss zwischen Sender und Empfänger unterschiden werden.
+Sender senden die Nachricht immer wieder, bis Sie eine Bestätigung vom Broker bekommen.
+Dieser sendet Sie immer wieder an den Empfänger bis dieser den Eingang einmal bestätigt.
+Es kann durch die wiederholte Sendung jedoch vorkommen, dass eine Nachricht mehrmals gesendet wird.
+Deshalb ist die Garantie hier lediglich \textit{mindestens einmal}, da nicht sichergestellt werden kann ob eine Nachricht mehrmals eingegangen ist.
+\\
+QoS 2 ist die höchste Gütestufe.
+Sender übertragen die Nachricht einmal an den Broker und warten dann auf die Bestätigung, senden also nicht fortwährend die gleiche Nachricht bis Sie einmal bestätigt wird.
+Der Broker sendet Sie dann einmal an alle abbonierten Clients und wartet auf die Bestätigung.
+Nachteilig ist hier vor allem die hohe Wartezeit sowie das Fehlschlagen einer Übertragung, sollte das Timeout auslaufen.
+Dafür kann der einmalige Empfang der Nachricht garantiert bestätigt werden.
+\\\\
+Wie eingangs erwähnt ist die Übertragungsgüte sowohl von sendenden Clients, als auch von abbonierenden Client individuell einstellbar.
+Damit die verlangte Güte sichergestellt werden kann müssen Sender und Empfänger mit der gleichen Güte senden bzw. ein Topic mit der gleichen Güte-Stufe abbonieren.
+Wird ein Topic mit einer geringeren Güte abboniert, als die Nachricht versendet wird, wird die Nachricht mit der geringeren Güte des Abbonenten übertragen.
+Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wird, als Clients das Topic abboniert haben, wird die Übertragung mit der geringeren Güte-Stufe des publizierenden Clients übertragen.
+Insgesamt gilt: Unterscheiden sich Sender- und Abbonenten-Güteklassen geschieht die Übertragung mit der geringeren Güteklasse.
+
 \chapter{Android Anwendung}\label{chap:app}
 Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
 Sie besteht aus einer Haupt-Activity deren außerlicher Aufbau in Kapitel \ref{sec:androidApp} beschrieben ist. 
