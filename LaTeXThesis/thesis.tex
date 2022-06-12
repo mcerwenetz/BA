@@ -472,30 +472,81 @@ Wie eingangs erwähnt ist die Übertragungsgüte sowohl von sendenden Clients, a
 Damit die verlangte Güte sichergestellt werden kann müssen Sender und Empfänger mit der gleichen Güte senden bzw. ein Topic mit der gleichen Güte-Stufe abbonieren.
 Wird ein Topic mit einer geringeren Güte abboniert, als die Nachricht versendet wird, wird die Nachricht mit der geringeren Güte des Abbonenten übertragen.
 Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wird, als Clients das Topic abboniert haben, wird die Übertragung mit der geringeren Güte-Stufe des publizierenden Clients übertragen.
-Insgesamt gilt: Unterscheiden sich Sender- und Abbonenten-Güteklassen geschieht die Übertragung mit der geringeren Güteklasse.
+Zusammenfassend gilt: Unterscheiden sich Sender- und Abbonenten-Güteklassen geschieht die Übertragung mit der geringeren Güteklasse.
 
 \chapter{Android Anwendung}\label{chap:app}
-Die Android-Anwendung läuft auf dem Smartphone des Anwenders.
-Sie besteht aus einer Haupt-Activity deren außerlicher Aufbau in Kapitel \ref{sec:androidApp} beschrieben ist. 
+Die Android-Anwendung ist eine der drei zentralen Bestandteile des Frameworks.
+Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
+Für diese bietet Sie unterschiedliche UI-Elemente in einer Activity, der RootActivity ein.
+Sie ist zentrale UI Schnittstelle für sämtliche Formen der Ausgaben.
+Diese sind: eine Signal-Led und ein Textfeld.
+Neben UI Elementen gibt es zusätzlich noch die haptische Ausgabe der Vibration.
 \\
-In der Haupt-Activity wird ein Service gestartet und gebunden.
+Für die Grundfunktionalität benötigt die Kontrollanwendung des Frameworks Sensordaten welche Anschließend versendet werden müssen.
+Versandt werden die Nachrichten über einen Service, der im Hintergrund ausgeführt wird, dem MQTT-Service.
+Die Sensordatenerhebung funktioniert über sogenannte SensorEventListener.
+Sie starten Sensormessprozesse und überwachen diese auf neue Werte.
+In einem solchen Fall senden Sie über den MQTT-Service update\_requests an das Kontrollprogramm.
+Die Anwendung versendet neben dieser Nachrichtenart auch noch rpc\_response-Nachrichten.
+Erstellt werden diese von der Klasse JsonMessageWrapper.
+
+
+\section{Funktionsablauf}
+Die Erhebung der Messwerte erfolgt zum Start der Anwendung.
+Ein Ablaufplan ist in Abbildung \ref{fig:app_flow} zu sehen.
+Asynchrone Schritte sind mit einem \textit{A} markiert.
+\\\\
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[height=0.8\textheight]{images/app_ablauf.png}
+  \caption{Ablaufdiagramm Android Anwendung}
+  \label{fig:app_flow}
+\end{figure}
+In der Root-Activity werden zuerst alle UI-Elemente eingebunden um Sie über Kommandos zu manipulieren.
+Anschließend werden Konfigurationsdaten eingelesen.
+Insgesamt gibt es zwei Konfigurationsdateien: config.json und protocol.json.
+In Ersterem ist zum Beispiel der Hostname des MQTT-Brokers, der Port oder das Topic definiert.
+Diese Daten sind für die Übermittlung der Nachrichten per MQTT wichtig.
+In protocol.json wird die Form der für das Smartphone relevanten Nachrichtenformate update\_request und rpc\_response definiert.
+Außerden sind dort die unterstützten Sensoren und Ausgabekommandos beschrieben.
+Relevant werden diese bei der Entscheidungsfindung bei Eingang eines rpc\_requests, wenn determiniert werden muss welche Aktion die Nachricht beeinhaltet.
+\\
+Nach dem Einlesen der Konfigurationen wird der zur Kommunikation verwendete MQTT Service eingebunden.
+Dies geschieht asynchron.
+Über eine ServiceConnection wird beim erfolgreichen einbinden über eine Callback-Methode der weitere Verlauf definiert.
+Die Root-Activity speichert dann die Referenz auf den Service und der Service die Referenz auf die Root-Activity.
+Grund für dieses gegenseitige Einbinden ist, dass Nachrichten im MQTT Service in einem seperaten Thread behandelt werden.
+Bei RPC-Requests müssen jedoch UI-Elemente verändert werden können.
+Dies ist ohne weiteres nicht aus dem Service heraus möglich.
+Mit einer Referenz auf die Activity kann der Service UI-Ändernde Funtionen auf der Activity ausrufen.
+Android unterbindet jedoch UI-Manipulationen durch Threads die nicht der UI-Thread sind.
+Dieses Problem wird durch die Methode \textit{runOnUiThread} umgangen, welche die Änderung in der Ausführungswarteschlange des UIThreads einreiht.
 Der Service baut eine Verbindung zu einem MQTT Server auf.
-Dort verbindet er sich den beiden Topics. 
-Die Activity bindet beim Start den MQTT-Service ein.
-Stellt ein Client über die Bibliothek auf einem Computer eine Anfrage wird dieser Aufruf, wie z.B. eine Ausgabe auf einem Textfeld an das Smartphones,  zuerst zur Middleware geleitet.
-Diese leitet die Anfrage weiter an das Smartphone, dass dann den jeweiligen Befehl ausführt.
-Dies beeinhaltet vor allem Ausgaben, sowie Eingaben die eine Nutzerinteraktion mit reduziertem Ergebnis.
-Zum Beispiel alle Eingaben die etwas in einem angegebenen Zeitraum messen.
-Falls ein Sensor angefragt wird der auf dem Smartphone nicht existiert wird eine Nachricht mit einer Fehlermeldung zurückgegeben.
-
-
-\section{Kommandos und Ausgaben}
-Für die Ausgabe auf dem Smartphone sind verschiedene Kommandos definiert.
-Diese sind der Tabelle \ref{tab:command_types} zu entnehmen.
-\texttt{CMD-Kürzel} beschreibt die Notation des Kürzels mit dem eine Aktion ausgeführt werden kann.
-Diese wird unter \texttt{Beschreibung} kurz zusammengefasst.
-\texttt{return} gibt an, ob der Aufruf des Requests eine Antwort rücksendet und somit auch, ob ein Aufruf der Funktion in der Library blockiert oder nur sendet.
-
+\\
+Beim Einbinden des MQTT Servers stellt dieser eine Verbindung zu einem in config.json definierten MQTT-Broker und Topic her.
+\\
+Ist der Service final eingebunden können die Sensormessprozesse gestartet werden, da Messdaten nun zuverlässig gesendet werden können.
+Verschiedene SensorEventListener werden nun gestartet und zentral in einem SensorEventListenerContainer gesammelt gespeichert und die Messprozesse jeweils angestoßen.
+Somit ist die Startroutine der Mobilen Anwendung abgeschlossen.
+Auf Nachrichten wird nun nur noch im MQTT-Service in einem MessageListener mit entsprechendem Callback reagiert.
+\\\\
+Die Funktionsweise der Sensordatenübertragung wird in Abbildung \ref{fig:sensor_event_listener} nocheinmal zusammenfassend dargestellt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.9\textwidth]{images/sensor_event_listener.png}
+  \caption{Ablaufdiagramm SensorEventListener}
+  \label{fig:sensor_event_listener}
+\end{figure}
+Die Klasse \textit{SmartBitEventListenerContainer} beeinhaltet SensorEventListener für alle Arten von untertstützten Sensoren.
+Der Container dient lediglich der Datenhaltung.
+Aufgabe der SensorEventListener ist es auf Sensorwert-Änderungen zu reagieren und eine entsprechende Callback-Funktion aufzurufen.
+In dieser werden dann über statische Methoden der Klasse \textit{JSONMessageWrapper} update\_requests generiert und der gemessene Wert eingesetzt.
+Die so generierte Nachricht wird anschließend über den gebundenen MQTT-Service an das vorher definierte Topic versendet.
+\\\\
+Die Anwendung ist nun betriebsbereit und beginnt bereits erste Nachrichten an die Kontrollanwendung zu senden.
+Übermittelt werden die Sensordaten an den Broker mit einer QOS-Stufe von 0.
+Verluste von update\_requests sind unproblematisch, da es je nach Taktung sehr schnell neue Sensorwerte gibt die übertragen werden können.
+Eine exakte Zustellung ist hier nicht notwendig und verlangsamt eher den Übertragungsprozess.
 
 \section{Sensoren}
 Smartphones beeinhalten verschiedene Sensoren die Daten über die Umgebung erfassen können.
@@ -507,12 +558,11 @@ In der Android Anwendung werden folgende Sensortypen verwendet:
   \item Gyroskop
 \end{itemize}
 
-\section{Lineare Beschleunigungssensoren}
 Beschleunigungs- bzw. Lagesensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
 Eine Übersicht über die Anordungen der drei Axen ist in Abbildung \ref{fig:and_axes} zu sehen.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.8\textwidth]{images/android_axes.png}
+  \includegraphics[width=.7\textwidth]{images/android_axes.png}
   \caption{Android-Koordinatensystem}
   \label{fig:and_axes}
 \end{figure}
@@ -528,8 +578,6 @@ Hierfür stehen vier Schnelligkeitsstufen bereit.:
 \end{itemize}
 Die mit der jeweiligen Frequenz aufgenommenen Beschleunigungssensordaten beeinhalten jedoch auch die Ergbeschleunigung.
 Diese muss für die bereinigten, realen Werte zuerst noch von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
-
-
 \section{Angaben für die Nachrichtenformate}
 Alle Sensordaten besitzen ein festgelegtes Kürzel zur Standardisierung des Nachrichtenverkehrs.
 Sie dienen vor allem der Adressierung der jeweiligen Daten in der Middleware und in der Library.
@@ -560,6 +608,18 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
   \caption{Sensor-Kürzel mit Beschreibung}
   \label{tab:sensor_types}
 \end{table}
+
+
+\section{Kommandos und Ausgaben}
+Für die Ausgabe auf dem Smartphone sind verschiedene Kommandos definiert.
+Diese sind der Tabelle \ref{tab:command_types} zu entnehmen.
+\texttt{CMD-Kürzel} beschreibt die Notation des Kürzels mit dem eine Aktion ausgeführt werden kann.
+Diese wird unter \texttt{Beschreibung} kurz zusammengefasst.
+\texttt{return} gibt an, ob der Aufruf des Requests eine Antwort rücksendet und somit auch, ob ein Aufruf der Funktion in der Library blockiert oder nur sendet.
+
+
+
+
 
 
 \chapter{Kontrollanwendung}\label{chap:server_software}
@@ -673,7 +733,7 @@ Antworten erwarten die Bibliotheken auf dem Port 5005.
 \chapter{Evaluation}\label{chap:eval}
 \section{Android Anwendung}\label{sec:androidApp}
 Für Ausgaben auf dem Smartphone existiert die Android Anwendung Smartbit, die verschiedene Interaktionsmöglichkeiten bereitstellt.
-Das Userinterface wird in Abbildung \ref{fig:androidUI} gezeigt.
+Das Userinterface ist in Abbildung \ref{fig:androidUI} dargestellt..
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.6\textwidth]{images/android_app_ui}
@@ -681,22 +741,36 @@ Das Userinterface wird in Abbildung \ref{fig:androidUI} gezeigt.
   \label{fig:androidUI}
 \end{figure}
 \\
-Die Anwendung besteht aus zwei Leds, den beiden Punkten im oberen rechten Eck.
+Die Anwendung besteht aus zwei Leds, einer Signal- und einer Funktions-LED
 Ein Textfeld in der Mitte kann zur Ausgabe von Text verwendet werden.
 Die beiden Buttons können gedrückt werden.
 Neben den sichtbaren Elementen kann die Anwendung das Smartphone außerdem vibrieren lassen.
+\\
+Die Signal-LED wird für die Ausgabe verwendet.
+Aufgabe der Funktions-Led ist die Anzeige eines aktuell ausgeführten Kommandos aufgrund eines rpc\_request.
+Leuchtet die LED rot wird gerade ein Vorgang abgearbeitet.
+Anschließend verblasst Sie wieder um einen Leerlauf anzuzeigen.
+Dieses Designelement wurde zusätzlich implementiert, da gerade sich wiederholende Vorgänge, sowie haptische Vorgänge wie das Vibrieren kein optisches Signal aussenden.
+Hält der Anwender das Smartphone beispielsweise nicht in der Hand oder liegt es nicht auf einer harten Oberfläche auf der die Vibration hörbar ist, ist das Vibrieren nicht wahrnehmbar.
 
-Nachteil: Ständiges Senden reduziert den Akku.
+\section{Kontrollanwendung}
+\blindtext
 
 \section{Programmierumgebung}
-Nachteil: JSON
+\blindtext
+
+\chapter{Fazit}\label{chap:fazit}
+\section{Android Anwendung}
 
 \section{Kontrollanwendung}
 MQTT QOS 2 zu langsam.
+\blindtext
 
+\section{Programmierumgebung}
+Nachteil: JSON
+\blindtext
 
-
-\chapter{Fazit}\label{chap:fazit}
+\section{Ausblick}
 \blindtext
 
 \chapter{Quellen}\label{chap:source}
