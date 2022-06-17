@@ -33,8 +33,8 @@ public class RootActivity extends AppCompatActivity {
     private boolean mqttServiceBound;
     private MaterialButton action_led;
     private ImageView recording_led;
-    private Button button_a;
-    private Button button_b;
+    public Button button_a;
+    public Button button_b;
     private TextView tv_output_text;
     private boolean ButtonToggleBool = true;
     private SensorManager sensorManager;

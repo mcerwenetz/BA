@@ -148,20 +148,19 @@ class Phone():
     def get_proxy(self):
         return self._get_sensor("prox")
 
+    def get_button(self):
+        rpc_message = JsonMessagesWrapper.get_rpc_request(command="which_button", value="")
+        self._sendMessage(rpc_message)
+        result = self._wait_on_result()
+        return result
+
+
 
     def _get_sensor(self, sensor_name):
         sensor_message = JsonMessagesWrapper.get_sensor_request(sensor_name)
         self._sendMessage(message=str(sensor_message))
-        request= json.loads(sensor_message)
         result = self._wait_on_result()
         return result
-        # result_sensor_type=result["sensor_type"]
-        # request_sensor_type=request["sensor_type"]
-        # if result_sensor_type  == request_sensor_type:
-        #     return result
-        # else:
-        #     raise Exception(f"""Sensortypes mismatch: wanted: {request_sensor_type}, 
-        #         got {result_sensor_type}""")
 
 
     def _wait_on_result(self) -> dict:

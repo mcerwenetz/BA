@@ -29,7 +29,8 @@
         "write_text": "write_text",
         "button": "button",
         "button_toggle": "button_toggle",
-        "vibrate": "vibrate"
+        "vibrate": "vibrate",
+        "which_button": "which_button"
     },
     "sensors": {
         "accell_x": "accell_x",

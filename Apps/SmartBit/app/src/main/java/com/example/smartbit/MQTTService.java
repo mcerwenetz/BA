@@ -13,9 +13,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -211,6 +216,20 @@ public class MQTTService extends Service {
             sendRpcAnswer(rpc_answer);
             Log.v(TAG, "answer sent");
         }
+        if(command.equals("which_button")){
+            Object lock = new Object();
+            BigButtonOnClickListener bboclA = new BigButtonOnClickListener(command, "A",this, jsonMessageWrapper, lock);
+            this.rootActivity.button_a.setOnClickListener(bboclA);
+            BigButtonOnClickListener bboclB = new BigButtonOnClickListener(command, "B",this, jsonMessageWrapper, lock);
+            this.rootActivity.button_b.setOnClickListener(bboclB);
+            synchronized (lock){
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }}
+
         rootActivity.toggle_recording();
     }
 

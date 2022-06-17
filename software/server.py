@@ -279,13 +279,13 @@ class DataHandler():
                     self.logger.info("rpc request: %s" % str(request))
                     self.mqtt_sender_queue.put(json.dumps(request))
                 elif request_type == MessageTypes.SENSOR_REQUEST:
-                    self.logger.info("sensor request: %s" % request)
+                    # self.logger.info("sensor request: %s" % request)
                     sensor_key = request["sensor_type"]
                     result = self.data_structure.get(sensor_key)
                     result = self.json_message_wrapper.get_sensor_response(sensor_type=request["sensor_type"], value=result)
                     result = json.dumps(result)
                     self.answer_queue.put(result)
-                    self.logger.info(result)
+                    # self.logger.info(result)
             else:
                 continue
 
