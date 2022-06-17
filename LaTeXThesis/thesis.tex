@@ -93,8 +93,9 @@ Für die Verwendung werden angehenden Programmiereren Beispielaufgaben gereicht.
 Sie stellen Anforderungen an die Umsetzung der Lösung.
 Diese Rahmenbedingungen sowie die Aufgaben sind in Kapitel \ref{chap:Experimente} zu finden.
 Die drei Komponenten Smartphone-App, Kontrollanwendung und Programmierumgebung werden
-in Kapitel \ref{chap:architektur} vorgestellt.
-Außerdem wird das Zusammenspiel und der Nachrichtenaustausch erklärt.
+in Kapitel \ref{chap:architektur} vorgestellt und das Zusammenspiel der Komponenten erläutert.
+Die dafür benötigten Nachrichtenformate werden in Kapitel \ref{chap:message_formats} gezeigt.
+Zweck und Ablauf der Nachrichten-Typen wird erklärt und der Nachrichtenaustausch exemplarisch veranschaulicht.
 Kapitel \ref{chap:app} behandelt die Funktionsweise und den Aufbau der Android App im Detail.
 Die App tauscht Nachrichten mit der Programmierumgebung aus.
 Als zwischenvermittlung fungiert dasbei das zentrale Kontrollprogramm was in \ref{chap:server_software} erklärt wird.
@@ -129,7 +130,7 @@ Eine zusätzliche Angabe des Schwierigkeitsgrads unterstützt Anfänger bei der 
 Die Liste der Aufgaben ist in Tabelle \ref{tab:excercises} zu finden.
 \begin{table}[htbp]
   \centering
-  \begin{tabular}{|l|c|c|c|}
+  \begin{tabular}{|l|c|p{2cm}|c|}
       \hline
       \textbf{Name der Aufgabe} & \textbf{Benötigte Sensoren} & \textbf{Verwendete Ausgaben} & \textbf{Schwierigkeitsgrad} \\
       \hline
@@ -190,69 +191,51 @@ Die Aufgabe ist als \textit{Schwer} bewertet, da hier Wiederholungen in einer We
 Diese sind jedoch nicht immer exakt gleich.
 So muss auch ausprobiert werden, wie sich eine Umdrehung in den Messwerten äußert und wie Drehungen optimal erkannt werden können.
 
-Die Aufgaben können natürlich nach Belieben kombiniert werden.
-\textit{Disco} ist beispielsweise schon in \textit{Diebstahl-Alarm} integriert.
-Denkbar wäre auch beim \textit{Wüfeln} den \textit{Klatschzähler} für die generierung der Zufallszahl zu verwenden.
-Der Diebstahlalarm kann auch bei einer ungeraden Anzahl an Drehungen des Drehzählers gestartet werden.
+\section{Anforderungen}\label{sec:anforderungen}
+Damit die im vorherigen Abschnitt erläuterten Beispielprogrammieraufgaben umgesetzt werden können müssen verschiedene Anforderungen an die Lösung erfüllt werden.
+Geringe Latenzen sind der Sensordatenübermittlung nötig um eine schnelle Reaktion der Programme auf Messergebnisse realisieren.
+Aus diesem Grund müssen die Aufgabenbereiche der Lösung auf drei Einsatzorte seperiert werden.
+Die Komponenten müssen über Datensparsame Protokolle miteinander kommunizieren um die Latenzen verringern.
 
-Dadurch werden Programmierern Konzepte wie Schleifen oder Bedingungen nah gebracht.
-Zum Beispiel könnte die LED blinken wenn eine gewisse Umdrehungsanzahl erreicht wurde um das Konzept einer While-Schleifen zu erläutern.
+Funktionen die aufgerufen werden um Sensormessdaten zu erhalten müssen ihre Rückgabewerte simpel gestalten.
+Serialisierte Formate erfordern zusätzliches Hintergrundwissen.
+Um auf die Ergebnisse zurückgreifen zu können müssten weitere Bibliotheken zum Parsen eingesetzt werden.
+Das erschwert die Umsetzung der Aufgaben.
+Zwar muss die Smartphone-App nicht nur Sensordaten übermitteln, sondern auch Ausgaben ermöglichen, jedoch sind diese wiederum abhängig von den Sensormessergebnissen.
+Ein ungehindertes Übermitteln dieser Sensormessdaten hat daher Vorrang.
 
-\section{Softwareanforderungen}\label{sec:anforderungen}
-Die im vorherigen Kapitel erläuterten Beispielprogrammieraufgaben stellen Anforderungen an das Framework, die die weiteren Design- und Architekturentscheidung in der Konzeption bestimmen.
-Ziel ist es die Programmierumgebung möglichst nahtlos an das Smartphone heranzubringen.
-Nutzern soll nach Möglichkeit nicht gewahr sein, dass die Entscheidungsstrukturen von Algorithmen auf dem Smartphone in der lokalen Programmierumgebung ablaufen.
-Die zugrundeliegende Komplexität in der Benutzung soll reduziert werden um Eintrittsbarrieren zu beschränken.
-Funktionsaufrufe sollen möglichst einfach und verständlich gehalten werden.
-Asnychrone Konzepte wie Futures oder Tasks werden nicht umgesetzt.
-Dise stellten weitere Voraussetzungen an Programmierer und brächten eine zusätzliche Komplexitätsebene der Ablaufgestaltung hinzu.
-Rückgabewerte müssen simpel gestaltet sein.
-Eine Ausgabe in serialisierten Formaten wie XML oder JSON erfordert zusätzliches Hintergrundwissen und weitere Bibliotheken sowie zusätzlichen Code der die Umsetzung von Aufgaben eher behindert.
-Dies fördert zudem ein rebungsloses Zusammenspiel von Sensordaten-Abfragen und Kommandos die auf dem Smartphone ausgeführt werden.
-Da die Ausgaben auf dem Smartphone jedoch häufig von einer Änderung der Umgebungsbedingungen abhängen sind die Anforderungen an Sensordaten-abfragende Methoden wichtig.
-\\\\
-Sensordaten müssen sofort angefragt werden können.
-Sie müssen zum Zeitpunkt der Abfrage bereits vorliegen.
+Sensordaten müssen jederzeit angefragt werden können.
+Idealerweise liegen Sie zum Zeitpunkt der Anfrage bereits vor.
 Sensor-Mess-Prozesse dürfen nicht auf eine Anfrage hin gestartet, sondern vorher begonnen werden.
 Je rascher die Werte vorliegen desto schneller kann im Programm drauf reagiert werden.
-Für Anwender äußert sich das in einem reaktionsfähigerem Verhalten der programmierten Anwendung.
-So können Experimente eher begriffen werden, da Auswirkungen in der Realität instantan Auswirkungen auf den vom Schüler oder Studenten entwickelten Programmablauf haben.
-\\
-Neben einer allgemeinen Vereinbarung wann Messprozesse gestartet werden muss natürlich auch berücksichtigt werden, dass die Sensorwerte einen Transportweg durchlaufen.
-Berücksichtigt werden müssen also auch Latenzen zwischen Smartphone und Programmierumgebung.
+So können Experimente eher begriffen werden, da Auswirkungen in der Realität unmittelbar Auswirkungen auf das entwickelte Programm haben.
+
+Neben der Entscheidung, wann Messprozesse auf dem Smartphone gestartet werden muss natürlich auch berücksichtigt werden, dass die Sensorwerte einen Transportweg durchlaufen.
+Der Transportweg beschreibt die Strecke zwischen Smartphone und Programmierumgebung.
 Diese können je nach Mobilfunk- bzw WLAN Standard, Umwelteinflüssen und Geräteanzahl variieren.
 Auch Round-Trip-Time (RTT) spielt eine Rolle.
 Während die Sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt kann Sie bei UMTS auf 300 ms bis 400 ms ansteigen.\cite{network_latencies}
 Um diesen Effekt zu mitigieren müssen Sensorwerte zwischengespeichert werden um einen Puffer aufzubauen auf den in Latenzfällen zugegriffen werden kann.
 Dies bedeutet jedoch auch, dass das Smartphone kontinuierlich in periodischen Abständen Sensorwerte senden muss, damit der Puffer gefüllt ist.
 Liegen die Daten vor, kann der vom Programmierer entwickelte Algorithmus Ausgaben auf dem Smartphone auslösen.
-\\\\
+
 Ausgabe-Kommandos sind zwar ebenfalls von Latenzen betroffen, haben allerdings keine direkte Auswirkung auf die Entscheidungsstruktur eines Programms.
-Sollten Rückgabewerte trotzdem nötig sein und anfallen, sind Sie nicht von häufigen Änderungen betroffen auf die im Zweifelsfall reagiert werden muss, sondern dienen vielmehr der Ausführungs-Verlässlichkeit.
-So kann überprüft werden, ob die Änderungen an den Ausgabemöglichkeiten wirklich stattgefunden haben.
-Die Smartphone-Anwendung muss diese jedoch in erster Line einmal bereitstellen.
-Die Ausgabemöglichkeiten sind in Tabelle \ref{tab:excercises} erwähnt.
-Sie umfassen die Ausgabe über eine LED, ein Texteld und der Vibration des Gerätes.
-\\
+Sollten Rückgabewerte trotzdem nötig sein und anfallen, ändern Sie sich nicht sehr häufig.
+Auf Sie muss seltener reagiert werden.
+Ihr Zweck besteht in einer Ausführungsmeldung, anstatt einer Meldung von Messergebnissen von denen der weitere Programmablauf abhängt.
+Es kann zum Beispiel überprüft werden, ob die Änderungen an den Ausgabemöglichkeiten tasächlich stattgefunden haben.
+
+Neben den kommunikativen Anforderungen und der Sensormessung muss die Smartphone-App auch Ausgaben bereitstellen.
+
+Es muss eine LED geben welche die Farbe wechseln kann.
 Die LED muss muss zwischen zwei Farben wechseln können um ein Änderungen zu signalisieren.
-\\
-Das Textfeld muss alphanumerische Zeichen ausgeben können um sowohl Werte.
-Sowohl die Ausgabe von Zeichen als auch Werten ist optimal.
-Sonderzeichen sollen ebenfalls möglich sein.
-UTF-8 ist als unterstützer Zeichensatz nötig.
-Die Länge soll jedoch beschränkt sein und nur der Ausgabe von einzelnen Werten oder Wörtern dienen, nicht der Ausgabe von ganzen Absätzen.
-\\
+
+Ein Textfeld muss alphanumerische Zeichen ausgeben können um sowohl Zahlenwerte, als auch kurze Texte ausgeben zu können.
+Die Länge muss jedoch beschränkt sein und nur der Ausgabe von einzelnen Werten oder Wörtern dienen, nicht der Ausgabe von ganzen Textabsätzen.
+
 Die Vibrationsausgabe ist eine haptische Ausgabe, keine Optische.
 Für diese muss eine Zeitdauer konfigurierbar sein um Vibrationsmuster konfigurieren zu können.
-\\\\
-Die erwähnten Anforderungen werden in der Architektur berücksichtigt.
-Sie bilden gewissermaßen den Rahmen für den Aufbau des Frameworks.
-Rahmenbedingungen die die Einzelheten der Komponenten allgemein definieren, die jedoch auch das Zusammenspiel und die Koordination festsetzen.
-Diese sind insbesondere für über die Arbeit hinausgehende Erweiterungs-, Skalierungs-, Orchestrierungs- und Automatisierungsmöglichkeiten hilfreich.
-Eine längerfristige, aufbauende Entwicklung des Frameworks soll möglichst bequem und kompfortabel möglich sein.
-
 \chapter{Architektur} \label{chap:architektur}
-Die im vorigen Kapitel behandelten Softwareanforderungen und Einschränkungen bestimmen den Aufbau des Frameworks um den es in diesem Kapitel geht.
 Insgesamt besteht das Framework aus einer mobilen Anwendung für Android-Smartphones, einer programmiersprachenunabhängigen Bibliothek für Sensoranfragen und Ausgabe-Kommandos und einem Kontrollprogramm das den Nachrichtenaustausch koordiniert.
 Der Aufbau ist in Abbildung \ref{fig:design} dargestellt.
 \begin{figure}[htbp]
@@ -262,27 +245,33 @@ Der Aufbau ist in Abbildung \ref{fig:design} dargestellt.
 \caption{System-Aufbau}
 \label{fig:design}
 \end{figure}
-Das Framework arbeitet in drei Bereichen: Auf dem lokalen PC, auf einem Server und auf dem Smartphone.
-Auf dem lokalen PC platziert sind sowohl das Kontrollprogramm, die Bibliothek welche die Aufrufe beinhaltet und das vom Entwickler geschriebene Programm.
-Programm und Bibliothek bilden zusammen die Programmierumgebung von der aus der Entwickler die volle Funktionalität des Frameworks nutzen kann, indem er in seinem Programm die Bibliothek einbindet.
+Die Lösung lässt sich in drei Komponenten aufteilen:
+Einer Programmierumgebung, einem Kontrollprogramm und einer Smartphone-App.
+Die Programmierumgebung bildet sich aus einer Bibliothek von der aus der Entwickler die volle Funktionalität des Frameworks nutzen kann und dem vom Entwickler geschriebenen Programm.
+Auf dem lokalen PC platziert sind sowohl das Kontrollprogramm und die Programmierumgebung.
 Diese bildet ein standardisiertes Interface für Funktionsaufrufe.
 Startet ein Entwickler einen Aufruf der Bibliothek, kommuniziert diese ihn per UDP dem Kontrollprogramm.
-\\
-Das Kontrollprogramm erfüllt drei Aufgaben: Die Beantwortung von Sensoranfragen der Bibliothek, dem Zwischenspeichern von Sensorwerten als Puffer und dem Weiterleiten von Ausgabe-Kommandos auf das Smartphone.
-Bibliotheksaufrufe werden also per UDP an das Programm gestellt.
-Bei Sensoranfragen nimmt dieses Sie an und liefert ebenfalls über UDP den zuletzt zwischengespeicherten Wert zurück.
-Damit dieser auch vorliegt werden von der Smartphone App kontinuierlich, periodisch Sensordaten-Aktualisierungen per MQTT an das Kontrollprogramm gesendet.
-Das Kontrollprogramm wiederum sendet Ausgabe-Kommandos per MQTT an die Smartphone-App.
-\\
-Die Smartphone-Anwendung beginnt zum Start mit der Sensor-Messdatenerhebung welche Sie wie geschildert an die Kontrollanwendung sendet.
-Daneben erwartet Sie Ausgabekommandos der Bibliothek, welche Sie bei Eingang ausführt.
-\\
-Als Vermittlung zwischen Kontrollprogramm und Smartphone-App dient ein MQTT-Broker.
-Dieser nimmt Nachrichten beider Kommunikationspartner an und kontrolliert die Zustellung.
-\\
-Neben der korrekten Funktiosweise der einzelnen Entitäten hat der Austausch von Nachrichten im Framework große Relevanz.
-So müssen Inhalt und Aufbau definiert sein, damit die inneren Algorithmen der Komponenten korrekt arbeiten können.
-\section{Nachrichtenformate}
+Das Kontrollprogramm kommunziert dann weiter über MQTT mit dem Smartphone.
+
+MQTT ist ein Client-Server-Protokoll, das auf TCP basiert.
+Duch seinen platzsparenden Header von 2 Bytes und maximalen Nachtichengröße von 260 MB ist es leichtgewichtig und gleichzeitig flexibel.
+Nachrichten werden an einen MQTT Broker gesendet, der die Nachrichten dann an alle Clients weiterreicht die das Topic auf dem die Nachricht gesendet wurde abboniert haben.
+Die UDP-Kommunikation zwischen Bibliothek und Kontrollprogramm verläuft auf dem lokalen PC über das Loopback-Interface.
+
+Das Kontrollprogramm erfüllt drei Aufgaben: Die Beantwortung von Sensoranfragen der Bibliothek, dem Zwischenspeichern von Sensorwerten in einem Pufferspeicher und dem Weiterleiten von Ausgabe-Kommandos auf das Smartphone.
+
+Bei Sensoranfragen werden von der Bibliothek aus an die Kontrollanwendung gesendet.
+Dieses beantwortet Sie mit dem aktuell vorliegenden Sensorwert.
+Die Sensorwerte werden fortlaufend durch das Smartphone aktualisiert.
+Es sendet fortwährend aktuelle Sensordaten an das Kontrollprogramm.
+Dieses nimmt Sie entgegen und sichert Sie in einem internen Puffer.
+Ausgabe-Anfragen für das Smartphone werden ebenfalls über das Kontrollprogramm an das Smartphone per MQTT gesendet.
+
+Die Smartphone-Anwendung beginnt sobald Sie startet mit der Erhebung der Sensordaten, welche sie anschließend an die Kontrollanwendung sendet.
+Daneben reagiert Sie auf Ausgabeanfragen von der Bibliothek, welche bei Eingang ausführt werden.
+
+
+\chapter{Nachrichtenformate}\label{chap:message_formats}
 Ein einheitliches Kommunikationsformat ist für den Nachrichtenaustausch unabdingbar.
 Der ausgearbeitete Standard definiert Nachrichten in einem Klartextformat.
 Als Darstellungsform wird JSON verwendet.
@@ -393,82 +382,6 @@ Neue Kommandos mit größeren Parameterwerten sind simpel umzusetzen.
 Neben Text könnten beispielsweise auch Binärdaten wie Bilder oder Sound-Dateien übertragen werden.
 Limitiert werden Sie nur von den darunterliegenden Protokollen UDP und MQTT.
 
-\section{MQTT}
-MQTT steht für Message Queuing Telemetry Transport und ist ein Client-Server Protokoll, das auf TCP basiert.
-Eingesetzt wird es häufig bei Machine-to-Machine Interaktionen, also Lösungen im IoT-, Smarthome und Automatisierungstechnik-Bereich.
-Durch den platzsparenden Header von 2 Bytes und einer maximalen Nachrichtengröße von ca. 260 MB ist es gleichzeitig ein leichtgewichtiges jedoch auch flexibles Protokoll zum Nachrichtenaustausch.
-Nachrichten können verschlüsselt übertragen werden.
-TLS fungiert dabei auf dem Transportweg als Verschlüsslungsprotokoll.
-\\\\
-Der Nachrichtenaustausch erfolgt nach dem Observer-Pattern.
-Als Publizierungs- und Empfangsplattform dienen hier sogenannte Topics.
-Sie funktionieren wie ein Posteingang, dienen allerdings auch der Kategorisierung und Trennung von unterschiedlichen Nachrichten-Kontexten.
-Topics können hierarchisch in Topics und Sub-Topics geschichtet werden.
-Clients können beim Senden einer Nachricht angeben, auf welchen Topics Sie die Nachricht publizieren möchten.
-Clients die die Nachricht empfangen möchten müssen das gewünschte Topic vorab abbonieren.
-Neben dem Abbonieren von einzelnen Topics, gegebenenfalls Subtopics, können über Eltern-Topics auch deren Subtopics aggregiert abboniert werden.
-\\
-Als Vermittlungsstelle dient ein MQTT-Broker.
-Dieser bildet die Server-Seite im Client-Server-Konzept.
-Senden Clients Nachrichten an ein Topic werden diese vom Broker entgegengenommen und an die abbonierten Clients zugestellt.
-Clients können sowohl Sender als auch Empfänger sein.
-Das Empfangen der eigenen gesendeten Nachrichten ist möglich.
-\\
-Alle Clients besitzen darüber hinaus einen Namen, so, dass empfangene Nachrichten auf den Sender zurückgeführt werden können.
-Topic-Interne Filter sind ebenfalls möglich, um beispielsweise nur Nachrichten von bestimmten Clients zu empfangen.
-\\
-Nachrichten können mit einer Quality of Service (QoS), einer Übertragungsgüte, übertragen werden.
-Sie gelten sowohl auf dem Weg vom Broker zu einem abbonierendem Client als auch von einem sendenden Client zum Broker.
-Topics können also mit einer Güte abboniert und Nachrichten mit einer Güte gesendet werden.
-Diese sind in Tabelle \ref{tab:qos} dargestellt.
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{|c|c|}
-      \hline
-      \textbf{QOS-Level} & \textbf{Zustellprinzip} \\
-      \hline
-      0 & At most once \\
-		\hline
-      1 & At least once \\
-      \hline
-      2 & Exactly once\\
-      \hline
-  \end{tabular}
-  \caption{Aufgaben}
-  \label{tab:qos}
-\end{table}
-Aufgeführt ist die Übertragungsgüteklasse und das dazugehörige Zustellprinzip.
-Letzteres beschreibt die Übertragungsgarantie für Empfänger.
-\\
-Insgesamt gibt es drei Güteklassen: 0, 1 und 2.
-Je höher die QoS-Stufe desto höher die Übertragungsgüte.
-Im Gegenzug steigt mit der Übertragungsgüte allerdings auch die Latenz der Übertragung.
-\\\\
-QoS-Stufe 0 ist die geringste Gütestufe.
-Hier werden Nachrichtern einmal übertragen.
-Es wird nicht sichergestellt, dass die Nachricht schlussendlich zugestellt wird. 
-Der Sender überträgt die Nachricht nur einmal an den Broker und dieser Sie auch nur einmal an den Empfänger.
-Es gibt keine Übertragungsbestätigung an keiner Zwischenstation.
-Deshalb kann ist die Garantie lediglich dass die Nachricht im besten Falle einmal zugestellt wird.
-\\
-Bei der QoS Stufe 1 muss zwischen Sender und Empfänger unterschiden werden.
-Sender senden die Nachricht immer wieder, bis Sie eine Bestätigung vom Broker bekommen.
-Dieser sendet Sie immer wieder an den Empfänger bis dieser den Eingang einmal bestätigt.
-Es kann durch die wiederholte Sendung jedoch vorkommen, dass eine Nachricht mehrmals gesendet wird.
-Deshalb ist die Garantie hier lediglich \textit{mindestens einmal}, da nicht sichergestellt werden kann ob eine Nachricht mehrmals eingegangen ist.
-\\
-QoS 2 ist die höchste Gütestufe.
-Sender übertragen die Nachricht einmal an den Broker und warten dann auf die Bestätigung, senden also nicht fortwährend die gleiche Nachricht bis Sie einmal bestätigt wird.
-Der Broker sendet Sie dann einmal an alle abbonierten Clients und wartet auf die Bestätigung.
-Nachteilig ist hier vor allem die hohe Wartezeit sowie das Fehlschlagen einer Übertragung, sollte das Timeout auslaufen.
-Dafür kann der einmalige Empfang der Nachricht garantiert bestätigt werden.
-\\\\
-Wie eingangs erwähnt ist die Übertragungsgüte sowohl von sendenden Clients, als auch von abbonierenden Client individuell einstellbar.
-Damit die verlangte Güte sichergestellt werden kann müssen Sender und Empfänger mit der gleichen Güte senden bzw. ein Topic mit der gleichen Güte-Stufe abbonieren.
-Wird ein Topic mit einer geringeren Güte abboniert, als die Nachricht versendet wird, wird die Nachricht mit der geringeren Güte des Abbonenten übertragen.
-Wenn eine Nachricht mit geringerer Güte auf einem Topic publiziert wird, als Clients das Topic abboniert haben, wird die Übertragung mit der geringeren Güte-Stufe des publizierenden Clients übertragen.
-Zusammenfassend gilt: Unterscheiden sich Sender- und Abbonenten-Güteklassen geschieht die Übertragung mit der geringeren Güteklasse.
-
 \chapter{Android Anwendung}\label{chap:app}
 Die Android-Anwendung ist eine der drei zentralen Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
@@ -564,13 +477,25 @@ Eine Übersicht über die Anordungen der drei Axen ist in Abbildung \ref{fig:and
 Die X-Achse verläuft horizontal durch das Display des Smartphones hindruch, die Y-Achse vertikal und die Z-Achse durchschneidet das Smartphone in die Tiefe.
 \\\\
 Die Frequenz mit der Messwerte erstellt werden kann manuell angegeben werden.
-Hierfür stehen vier Schnelligkeitsstufen bereit.:
-\begin{itemize}
-  \item SENSOR\_DELAY\_FASTEST : Kein Verzögerung. Verwendet die Frequenz des Sensors.
-  \item SENSOR\_DELAY\_GAME : Verzögerung um 1ms
-  \item SENSOR\_DELAY\_UI : Verzögerung um 2ms
-  \item SENSOR\_DELAY\_NORMAL : Verzögerung um 3ms
-\end{itemize}
+Hierfür stehen vier Schnelligkeitsstufen bereit.
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|c|p{4cm}|}
+      \hline
+      \textbf{Bezeichnung} & \textbf{Verzögerung} \\
+	  \hline
+      SENSOR\_DELAY\_FASTEST & Keine. Verwendet die Frequenz des Sensors.\\
+      \hline
+      SENSOR\_DELAY\_GAME & 20 ms\\
+      \hline
+      SENSOR\_DELAY\_UI & 60 ms\\
+      \hline
+      SENSOR\_DELAY\_NORMAL & 200 ms\\
+      \hline
+  \end{tabular}
+  \caption{Sensor-Taktgeschwindigkeiten}
+  \label{tab:sensor_speeds}
+\end{table}
 Die mit der jeweiligen Frequenz aufgenommenen Beschleunigungssensordaten beeinhalten jedoch auch die Ergbeschleunigung.
 Diese muss für die bereinigten, realen Werte zuerst noch von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
 \section{Angaben für die Nachrichtenformate}
@@ -580,9 +505,9 @@ Sie dienen vor allem der Adressierung der jeweiligen Daten in der Middleware und
 Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden. 
 \begin{table}[htbp]
   \centering
-  \begin{tabular}{|c|c|c}
+  \begin{tabular}{|c|c|}
       \hline
-      TYPE-Kürzel & Beschreibung \\
+      \textbf{TYPE-Kürzel} & \textbf{Beschreibung} \\
       \hline
       accell\_x & Lagesensor für die X-Richtung \\
       \hline
@@ -598,12 +523,10 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
       \hline
       prox & Näherungssensor \\
       \hline
-
   \end{tabular}
   \caption{Sensor-Kürzel mit Beschreibung}
   \label{tab:sensor_types}
 \end{table}
-
 
 \section{Kommandos und Ausgaben}
 Für die Ausgabe auf dem Smartphone sind verschiedene Kommandos definiert.
