@@ -89,51 +89,49 @@ Möglich wird dies durch Softwarebibliotheken die Funktionsaufrufe bereitstellen
 Das Smartphone reagiert auf die empfangen Anfragen und führt die entsprechenden Kommandos aus.
 Das Framework besteht aus einer programmiersprachenunabhängigen Programmierumgebung, einer Kontroll-Anwendung und einer mobilen Anwendung für Android Smartphones.
 
-Für die Verwedndung werden angehenden Programmiereren Beispielaufgaben gereicht.
-Diese sind in Kapitel \ref{chap:Experimente} zu finden.
+Für die Verwendung werden angehenden Programmiereren Beispielaufgaben gereicht.
+Sie stellen Anforderungen an die Umsetzung der Lösung.
+Diese Rahmenbedingungen sowie die Aufgaben sind in Kapitel \ref{chap:Experimente} zu finden.
 Die drei Komponenten Smartphone-App, Kontrollanwendung und Programmierumgebung werden
 in Kapitel \ref{chap:architektur} vorgestellt.
 Außerdem wird das Zusammenspiel und der Nachrichtenaustausch erklärt.
 Kapitel \ref{chap:app} behandelt die Funktionsweise und den Aufbau der Android App im Detail.
-Die einzelnen Komponenten werden anschließend in Kapitel \ref{chap:app}, Kapitel \ref{chap:server_software} und Kapitel \ref{chap:libs} im Detail erklärt.
-Zum Schluss werden die Ergebnisse in Kapitel \ref{chap:eval} vorgestellt und in Kapitel \ref{chap:fazit} diskutiert.
+Die App tauscht Nachrichten mit der Programmierumgebung aus.
+Als zwischenvermittlung fungiert dasbei das zentrale Kontrollprogramm was in \ref{chap:server_software} erklärt wird.
+Das Kontrollprogram tauscht wiederrum Nachrichten mit der Programmierumgebung aus.
+Angehende Programmierer benötigen Sie um das Smartphone anzusteuern.
+Einbindung, Nutzung, sowie interne Kommunikation zu den anderen zwei Komponenten werden in Kapitel \ref{chap:libs} erklärt.
+Zum Schluss wird in Kapitel \ref{chap:eval} untersucht ob die vorgegebenen Anforderungen erfüllt wurden und ob sich die auftretenden Latenzen in einem tolerablen Bereich befinden.
+Desweiteren wird die Verwendung der Lösung anhand einer Beispielaufgabe vorgestellt.
+Die bei der Entwicklung festgestellten Probleme werden in Kapitel \ref{chap:fazit} diskutiert.
+Erweiterungsmöglichkeiten und Verbesserungen werden diskutiert.
 
-
-\chapter{Smartphones als Aktor und Sensor} \label{chap:Experimente}
-Smartphones sind in sich geschlossene technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB-Port, WLAN und Bluetooth meistens keine weiteren Schnittstellen bieten um externe Hardware und Schaltungen anzuschließen und Fernzusteuern.
+\chapter{Sensorauslesung und Informationsdarstellung auf Smartphones} \label{chap:Experimente}
+Smartphones sind in sich geschlossene technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB-Port, WLAN und Bluetooth keine weiteren Schnittstellen bieten um externe Hardware und Schaltungen anzuschließen und fernzusteuern.
 Microcontroller-Schaltungen zum Programmierenlernen bieten meistens mehrere Ausgabemöglichkeiten wie LEDs, Lautsprecher oder Piepser.
-Smartphones bestechen hier durch den Vorteil der virtuellen Darstellung auf dem Display.
+Smartphones bieten jedoch den Vorteil der virtuellen Darstellung auf dem Display.
 Gewohnte Ausgabeelmente können dadurch virtualisiert werden.
-Die Funktionen sind hier außerdem nicht nur von Mehrzweck-Ausgaben wie LED-Grids begrenzt die zum Beispiel für die Textanzeige oder Bildanzeige verwendet werden können.
-Spezifische Zweckgebundene Elemente wie Textfelder, Textausgaben oder Bildausgaben in der App können beliebig kombiniert werden.
-Darüber hinaus ist die Anordnung der jeweiligen Elemente frei, so dass das Layout anders als bei Microcontrollern auch im Nachhinein noch geändert werden kann, was den Entwicklungsprozess deutlich beschleunigt und flexibler macht.
-\\
-Moderne Smartphones bieten außerdem eine manigfaltige Menge an unterschiedlichen Sensoren.
-Android bietet für die Verwendung Lage-, Temperatur-, Schwerkraft-, Licht-, Magnetfeld, Luftfeuchtigkeitssensoren und noch einige Weitere \cite{sensoren_android}.
-Moderne Flaggschiff-Smartphones bieten viele dieser Sensortypen auch an.
-Die Vielfalt übersteigt meistens die 
-\\
-Ein Nachteil liegt in der Ansteuerung von mechanischen Bauteilen wie Motoren.
-Diese werden meistens durch eine elektrische Verbindung zwischen Bauteil und Controller realisiert.
-Smartphones bieten diese Art der Ansteuerung nicht, da Hardwareschnittstellen wie GPIO-Pins nicht zur Verfügung stehen.
-\\
-Nichtsdestotrotz bieten Smartpones eine Menge Einsatzmöglichkeiten um einfache Programmierbeispiele auszuprobieren.
-In diesem Kapitel werden in Abschnitt \ref{sec:activities} Beispielaufgaben für Programmiererinnen und Programmierer vorgestellt die Sie mit dem Framework lösbar sind.
-Durchführbar ist dies durch verschiedene Ansteuerungen aus der Programmierumgebung der Entwickler.
-Die angebotenen Funktionalitäten stellen Anforderungen and das Projekt auf die in Abschnitt \ref{sec:anforderungen} eingegangen wird.
+Die Funktionen sind hier außerdem nicht nur von Mehrzweck-Ausgaben wie LED-Grids begrenzt die zum Beispiel für die Text- oder Bildanzeige verwendet werden können.
+Spezifische zweckgebundene Elemente wie Textfelder, Textausgaben oder Bildausgaben in der App können beliebig kombiniert werden.
+Darüber hinaus ist die Anordnung der jeweiligen Elemente frei wählbar, so dass das Layout anders als bei Microcontrollern auch im Nachhinein noch geändert werden kann.
+
+In diesem Kapitel werden Beispielaufgaben für Programmiererinnen und Programmierer vorgestellt die Sie mit der entwickelten Lösung absolvieren können.
+Durchführbar sind diese durch verschiedene Ansteuerungen aus der Programmierumgebung.
+Die darin angebotene Funktionalität stellt Anforderungen und Rahmenbedingungen an das Projekt welche ebenfalls behandelt werden.
 
 \section{Beispielprogrammieraufgaben}\label{sec:activities}
-Praxisnahe Programmieraufgaben sollen angehende Softwareentwickler an Probleme heranführen.
-Sie sollen nicht zu kompliziert, jedoch auch nicht zu trivial sein.
-Unterschiedliche Schwierigkeitsklassen helfen ihnen sich selbst an Aufgaben heranzutasten.
-Da die Aufgaben außerdem interaktiv gestaltet sein müssen sind Sie immer mit einem Äußeren Einfluss verbunden, auf den reagiert werden muss.
-\\
-Eine Liste der Aufgaben ist Tabelle \ref{tab:excercises} zu entnehmen.
+Praxisnahe Programmieraufgaben mit interessanten Aufgabestellungen führen angehende Softwareentwickler an die Entwicklung heran.
+Um die Möglichkeiten der entwickelten Lösung zu nutzen wurden fünf Beispiele ausgearbeitet.
+Die Aufgaben sind interaktiv getaltet.
+Auf gemessene physikalische Eigenschaften wird reagiert.
+Auf dem Smartphone werden gegebenfalls Ausgaben getätigt.
+Eine zusätzliche Angabe des Schwierigkeitsgrads unterstützt Anfänger bei der Auswahl.
+Die Liste der Aufgaben ist in Tabelle \ref{tab:excercises} zu finden.
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|l|c|c|c|}
       \hline
-      \textbf{Name der Aufgabe} & \textbf{Sensoren} & \textbf{Ausgaben} & \textbf{Schwierigkeit} \\
+      \textbf{Name der Aufgabe} & \textbf{Benötigte Sensoren} & \textbf{Verwendete Ausgaben} & \textbf{Schwierigkeitsgrad} \\
       \hline
       Disco & - & Led & + \\
       \hline
@@ -146,58 +144,57 @@ Eine Liste der Aufgaben ist Tabelle \ref{tab:excercises} zu entnehmen.
       Dreh-Zähler & lagesensor & Textfeld & +++ \\
       \hline
   \end{tabular}
-  \caption{Aufgaben}
+  \caption{Beispielprogrammieraufgaben}
   \label{tab:excercises}
 \end{table}
-Beschrieben wird der Name der Aufgabe, die benötigten Sensoren, die benötigten Ausgaben sowie der geschätzte Schwierigkeitsgrad.
-Letzerer ist in drei größen gegliedert:
+
+Beschrieben wird der Name der Aufgabe und die darin beötigten Sensoren auf deren Messergebnisse reagiert wird.
+Das Smartphone bietert verschiedene Ausgabemöglichkeiten.
+Nicht alle sind für die Lösung aller Aufgaben passend.
+Daher wird in der dritten Spalte definiert welche Ausgaben verwendet werden soll.
+Zum Schluss wird der Schwierigkeitsgrad der Aufgabe beschrieben.
+Er ist in drei größen gegliedert:
 Einfach (+), Mittel(++) und Schwer (+++).
-\\\\
+
 In der Aufgabe \textit{Disco} soll eine virtuelle LED alle 500 ms die von der Farbe grün auf die Farbe rot wechseln.
-Die Aufgabe benötigt keine Sensoren, da die LED nicht auf eine Eingabe seitens des Programmierers warten soll.
-Sie soll immer blinken.
-Die Ausgabe der farbig blinkenden LED wird über eine virtuelle LED auf dem Display des Smartphones realisiert.
-Der Schwierigkeitsgrad ist als einfach einzustufen, da hier weder Sensoren benötigt werden, noch sonstige Abhängigkeiten innerhalb des Codes zu berücksichtigen sind.
-\\\\
-In der Aufgabe \textit{Würfeln} soll gemessen werden, ob ein Smartphone geschüttelt wurde.
-Ist dies der Fall soll eine Zufallszahl generiert werden.
-Anschließend soll diese auf dem Smartphone ausgegeben werden.
+Die Aufgabe benötigt keine Sensoren, da die LED nicht auf eine Eingabe seitens des Programmierers oder sonstigen Messwert-Änderungen warten soll.
+Der Schwierigkeitsgrad ist als einfach eingestuft, da hier weder Sensoren benötigt werden, noch sonstige Abhängigkeiten die auf Sensormesswerte beruhen innerhalb des Codes zu berücksichtigen sind.
+
+In der Aufgabe \textit{Würfeln} soll erkannt werden, ob ein Smartphone geschüttelt wurde.
 Verwendet wird dabei der Lagesensor, der Beschleunigungen in drei Achsenrichtungen misst.
-Als Ausgabe muss für die Zufallszahl das Textfeld verwendet werden.
-Die Schwierigkeit wird hier auch auf Einfach eingeschätzt, da lediglich ein Sensor und eine Ausgabe verwendet wird.
-Auch der Algorithmus ist nicht von vielen Abhängigkeiten geprägt.
-\\\\
-In der Aufgabe \textit{Diebstahl-Alarm} soll überprüft werden, ob der Näherungssensor eine Annäherung gemessen hat.
-Wenn dies der Fall ist soll der Text \glqq ALARM\grqq{} auf dem Smartphone ausgegeben werden.
-Das Smartphone soll fünf mal für die Zeit von 1000ms vibrieren.
-Die Farbe der virtuellen LED soll wie in Aufgabe \textit{Disco} alle 500ms die Farbe wechseln.
-Dies soll einen Diebstahl-Alarm simulieren bei der sich jemand mit der Hand dem Smartphone nähert.
-\\
-Hier wird lediglich der Näherungssensor verwendet um eine Näherung zu detektieren.
-Die Ausgabe des Alarm-Textes soll auf einem Textfeld dargestellt werden.
-Außerdem sollen die Vibrationsmotoren des Smartphones, die sonst beispielsweise für Benachrichtigungen verwendet werden, benutzt werden um ein haptisches Feedback zu liefern.
-Der Schwierigkeitsgrad der Aufgabe ist als \textit{Mittel} eingestuft, weil die Aufgabe zu unterschiedlichen Zeit, unterschiedlich lang auf mehreren Ausgabemöglichkeiten erfolgen muss.
-Außerdem ist die Ausgabe an die Bedingung einer Näherung an das Smartphone gebunden.
-\\\\
-Bei der Aufgabenstellung \textit{Klatsch-Zähler} muss für einen definierten Zeitraum die Anzahl der Klatscher gemessen werden.
-Programmierer starten also ein Programm und klatschen vor dem Smartphone in die Hände.
-Die Anzahl der Klatscher soll dann gemessen und auf dem Display des Smartphones ausgegeben werden.
-Verwendet wird dafür lediglich das Mikrofon und das Textfeld des Smartphones.
-die Schwierigkeit ist hier ebenfalls auf \textit{Mittel} gesetzt, da die Klatscher auf den Sensor nicht immer die gleiche intensivität haben.
-Programmierer müssen also erproben, wann es sich wirklich um ein Händeklatschen handelt und wann einfach nur Hintergrundgeräusche zu hören sind.
-\\\\
-Bei der Letzen Aufgabe \textit{Drehzähler} soll der Programmierer das Smartphone innerhalb eines eigens definierten Zeitraums drehen und anhand der zurückgegeben Werte die Anzahl der Drehungen ermitteln.
+Wird ein Schütteln erkannt soll auf dem PC eine Zufallszahl generiert werden, welche dann auf dem Smartphone im Textfeld ausgegeben wird.
+Die Schwierigkeit wird hier ebenfalls auf einfach eingeschätzt, da lediglich ein Sensor und eine Ausgabe verwendet wird.
+Zudem muss das Programm nicht auf viele Sensorwerte reagieren.
+
+In der Aufgabe \textit{Diebstahl-Alarm} soll überprüft werden, ob sich jemand dem Smartphone genähert hat um es zu greifen.
+Es wird gemessen ob der Näherungssensor eine Annäherung gemessen hat.
+Ist dies der Fall, soll ein alarmierender Text im Textfeld auf dem Smartphone ausgegeben werden.
+Ebenfalls benötigt wird die Vibrationsfunktion als haptische Feedback.
+Bei einer Näherungs-Detektion soll es fünf mal für die Zeit von 1000ms vibrieren.
+Außerdem soll zur Ausgabe die LED alle 500 ms die Farbe wechseln, so wie in der Aufgabe \textit{Disco}.
+Der Schwierigkeitsgrad der Aufgabe ist als \textit{Mittel} eingestuft, weil die Alarm-Ausgaben unterschiedlich lange gesteuert werden müssen.
+Zudem muss der Alarm-Zustand auch verlassen werden können.
+Berücksichtigt werden muss dann, dass alle Ausgaben wieder ihre ursprünglichen Zustände einnehmen.
+
+Bei der Aufgabenstellung \textit{Klatsch-Zähler} muss für einen definierten Zeitraum die Anzahl der Händeklatscher gemessen werden.
+Programmierer klatschen vor dem Smartphone in die Hände.
+Die Anzahl der Klatscher wird gemessen und auf dem Display des Smartphones ausgegeben.
+Verwendet wird dafür lediglich das Mikrofon zur Eingabe und das Textfeld zur Ausgabe.
+Die Schwierigkeit ist ebenfalls auf \textit{Mittel} angesetzt, da die Klatscher auf den Sensor nicht immer die gleiche intensivität haben.
+Programmierer müssen also ausprobieren, wann es sich wirklich um ein Händeklatschen handelt und wann einfach nur Hintergrundgeräusche zu hören sind.
+
+Bei der letzen Aufgabe \textit{Drehzähler} soll der Programmierer das Device innerhalb eines eigenen definierten Zeitraums drehen und anhand der zurückgegeben Werte die Anzahl der Drehungen ermitteln.
 Diese soll anschließend im Textfeld auf dem Smartphone ausgegeben werden.
 Zur Verwenung kommen hier ebenfalls der Lagesensor als Sensoreingabe und das Textfeld als Ausgabe.
 Die Aufgabe ist als \textit{Schwer} bewertet, da hier Wiederholungen in einer Werteabfolge erkannt werden müssen.
 Diese sind jedoch nicht immer exakt gleich.
-So muss auch erprobt werden wie sich eine Umdrehung überhaupt in den Werten äußert und wie Drehungen optimal erkannt werden können.
-\\\\
+So muss auch ausprobiert werden, wie sich eine Umdrehung in den Messwerten äußert und wie Drehungen optimal erkannt werden können.
+
 Die Aufgaben können natürlich nach Belieben kombiniert werden.
 \textit{Disco} ist beispielsweise schon in \textit{Diebstahl-Alarm} integriert.
 Denkbar wäre auch beim \textit{Wüfeln} den \textit{Klatschzähler} für die generierung der Zufallszahl zu verwenden.
 Der Diebstahlalarm kann auch bei einer ungeraden Anzahl an Drehungen des Drehzählers gestartet werden.
-\\
+
 Dadurch werden Programmierern Konzepte wie Schleifen oder Bedingungen nah gebracht.
 Zum Beispiel könnte die LED blinken wenn eine gewisse Umdrehungsanzahl erreicht wurde um das Konzept einer While-Schleifen zu erläutern.
 
