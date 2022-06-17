@@ -15,7 +15,7 @@
 \newcommand{\thesisofwas}{of Science}
 \newcommand{\studiengang}{Technische Informatik}
 % \newcommand{\studiengang}{Medizintechnik}
-\newcommand{\titel}{Smartphones als Sensorbox}
+\newcommand{\titel}{Smartphonesensoren- und Ausgabemöglichkeiten zum Programmierenlernen}
 \newcommand{\kurztitel}{Template Abschlussarbeit}
 \newcommand{\autor}{Marius Cerwenetz}
 \newcommand{\datum}{08. Juli 2022} % Abgabedatum
@@ -27,73 +27,68 @@
 \include{vorspann} % Titelseite, Erklärungen, etc.
 
 \begin{abstract}
-In dieser Arbeit wurde ein Framework erstellt um Smartphonesensoren über eine Programmierumgebung auszulesen und Ausgaben auf dem Smartphone auszuführen.
+Um Programmieraufgaben möglichst interaktiv zu gestalten eignen sich Projekte mit Microcontrollern besonders gut.
+Smartphones bieten einen vergleichbaren Funktionsumfang und müssen meist nicht zusätzlich beschafft werden.
+In dieser Arbeit wurde eine Softwarelösung erstellt, um Smartphonesensoren über eine Programmierumgebung auszulesen und Ausgaben auf dem Smartphone auszuführen.
 Hierfür wurde eine Android-Anwendung, eine Kontrollanwendung und drei Softwarebibliotheken in dem Sprachen C, Java und Python implementiert.
 Als Verbindungstechnologien kommen UDP und MQTT zum Einsatz.
+Für die Nutzung werden Beispiel-Programmieraufgaben dazugereicht.
+Programmierer schreiben Programme auf dem PC, welche auf Änderungen von Smartphonesensorwerten wie beispielsweise Beschleunigungssensoren reagieren und die Ausgabemöglichkeiten des Smartphones nutzen.
 \end{abstract}
 
 \tableofcontents
 
 \chapter{Einführung} \label{chap:intro}
-Ziel dieser Arbeit ist es ein Framework zu entwickeln, dass Smartphones von Anwendern in eine Programmierumgebung einbindet um Sie beim Programmierenlernen zu unterstützen.
-Hierbei stehen insbesondere die Interaktivität in Form von Sensordatenübermittlung und Ausgaben im Vordergrund.
-\\\
-Viele frische Entwicklerinneren und Entwickler oder Personen die das Programmieren gerade erst entdecken mühen sich zu Anfang mit grundlegenden softwaretechnischen Konzepten, syntaktischen Herausforderungen oder finden sich wieder in semantischen Stromschnellen.
-Rein virtuelle, akademische Übungsaufgaben senken meist die Lernmotivation, abstrahieren gelerntes und lassen Softwareentwicklung fade und dumpf erscheinen.
-Projekte mit Microcontrollern bieten eine praktikablere, einfache, realitätsbezogene Einstiegsmöglichkeit.
-Spielerisch können kleine Projekte realisiert werden die durch physische Äußerungen Entwickler einladen sich an Problemen auszuporbieren.
+Viele Programmiererinnen und Programmiererinnen, die das Programmieren gerade erst entdecken, mühen sich zu Anfang mit Semantik und grundlegenden algorithmischen Konzepten.
+Akademische Übungsaufgaben senken die Lernmotivation, abstrahieren gelerntes und lassen Softwareentwicklung fade und dumpf erscheinen.
+Projekte mit Microcontrollern dagegen bieten eine praktische, fordernde und spielerische Einstiegsmöglichkeit.
+Es werden kleine Projekte realisiert, die durch die Inbezugnahme von Sensoren Programmierer einladen sich an Programmieraufgaben auszuprobieren.
 Diese Eigenschaften sind insbesondere bei Projekten mit wenig Vorwissen für Lernwillige wie Schüler oder Erstemester-Studierende sinnvoll.
-Gelerntes kann direkt angewand werden und Änderungen an Algorithmen sind schnell in der Verhaltensweise der Hardware erkennbar.
+Gelerntes kann direkt angewandt werden und Änderungen an Algorithmen sind schnell in der Verhaltensweise der Hardware erkennbar.
 Praktische Programmieraufgaben bieten für Programmieranfänger den höchsten Lerneffekt bei höchster Motivation.\cite{learning_computer_programming}
-\\
-Die in Microcontroller integrierte Sensoren bilden hierbei den Schlüsselstein zwischen Änderungen in der realen Welt und Auswirkungen im virtuellen Programm.
-Für Nutzer erscheint ein Gerät bedienbar.
-Änderungen der realen Umgebung wirken sich unmittelbar auf den geschriebenen Algorithmus aus.
-Bei einem Fehlverhalten kann dieser angepasst werden, bis das gewünschte Verhalten vorliegt.
-Die ständige Berührung und Formung des Algorithmus mindert Ängste vor Änderungen, schafft Routine und damit ein tieferes Verständnis, Context und Hintergrundwissen für Probleme.
-\\\\
-Projekte mit Microcontrollern sind jedoch auch mit Nachteilen und Einstiegsvoraussetzungen behaftet.
-Ein Arduino-Einstiegskit kostet im internen Arduino-Shop im Juni 2022 87,90 € \cite{arduino_kit}.
+Die in Microcontroller integrierten Sensoren sind zentraler Bestandteil um physische Eigenschaften in der realen Welt zu messen.
+Auf diese Eigenschaften und ihre Änderung kann reagiert werden.
+Dann erscheint ein Gerät für Nutzer bedienbar.
+Im Programm beschriebene Abläufe definieren das Verhalten auf Änderungen dieses Sensorwerte.
+Während der Entwicklung können Messergebnisse jedoch nicht perfekt abgeschätzt werden was zu einem Fehlverhalten führen kann.
+Dann muss das Programm gegebenenfalls angepasst werden, bis das gewünschte Verhalten vorliegt.
+Die ständige Berührung und Weiterentwicklung mindert Ängste vor Änderungen, schafft Routine und damit ein tieferes Verständnis, Kontext und Hintergrundwissen für die Problemstellung.
+
+Microcontroller-Projekte benötigen allerdings teure Einstiegs-Kits.
+Ein Arduino-Development-Board kostet im internen Arduino-Shop über 80,00 € \cite{arduino_kit}.
 Ein Großteil der Kosten entfällt zwar auf den eigentlichen Microcontroller, ein nicht unmittelbarer Teil jedoch auch auf Peripherie wie wie Breadboards, Verbindungskabel und Erweiterungsboards.
 Neben zusätzlich verursachten Kosten setzen Sie außerdem gewisses Hintergrundwissen voraus.
-Für die erstmalige Verwendung von Breadboards muss beispielsweise bekannt sein welche Ports wie verbunden sind, welche Konventionen es für Plus- und Minuspol gibt und welche Bauteile für die Benutzung überhaupt geeignet sind.
-Dies stellt eine Einstiegshürde dar, die die eigentliche interaktive Lernerfahrung herauszögert und Ziele entfernt.
-Einstiegshürden wie dies führen zu einem Motivationsverlust.
-\\\\
-Durch Smartphones lässt sich dieses Problem jedoch umgehen.
-Moderne Fertigungsverfahren der Halbleitertechnik reduzieren die durchschnittliche Chip-Größe enorm.
-Dies betrifft auch Sensoren.
-Bauartbedingte Einschränkungen sind heute nicht mehr so wesentlich wie zu Anfang der Smartphone-Entwicklung.
-Aktuelle Smartphones sind daher bereits mit zahlreichen Sensoren wie Lagesensoren, Gyroskop oder Näherungssensoren ausgestattet.
-Diese sind zwar für die komfortable Alltagsnutzung des Geräts konzipiert, können jedoch ganz regulär in Anwendungen dediziert angesteuert und ausgelesen werden.
-\\
-Die elektrische Komponente konventioneller Microcontroller-Sets erlaubt außerdem einen Fehlgebrauch der im schlimmsten Fall in der Zerstörung von Komponenten enden kann und zusätzliche Kosten verursacht.
-Projekte mit Smartphones reduzieren diese Komplexitätsebene.
-Sämtliche Schaltkreise sind bereits intern verschaltet und durch die Qualitätssicherung der Smartphone-Hersteller von möglichen Hardwarefehlern weitgehendst geschützt.
-\\
-Ein weiterer Vorteil Smartphones statt Microcontroller zu verwenden liegt in der Verfügbarkeit.
+Für die erstmalige Verwendung von Breadboards muss beispielsweise bekannt sein welche Ports wie verbunden sind, welche Konventionen es für Plus- und Minuspole gibt und welche Bauteile für die Benutzung geeignet sind.
+Dies stellt ebenfalls eine Einstiegshürde dar, die die eigentliche interaktive Lernerfahrung herauszögert und Ziele entfernt und die Motivation senkt.
+
+Smartphones dienen hier als Alternative.
+Aktuelle Smartphones sind mit zahlreichen Sensoren wie Lagesensoren, Gyroskop oder Näherungssensoren ausgestattet.
+Sie bieten einen ähnlichen Funktionsumfang wie vergleichbare Microcontroller und sind gleichzeitig noch sicherer.
+Elektrische Bauteile konventioneller Microcontroller-Sets erlaubt einen Fehlgebrauch der im schlimmsten Fall in der Zerstörung von Komponenten enden kann und zusätzliche Kosten verursacht.
+Projekte mit Smartphones reduzieren dieses Risiko dadurch, dass Schaltkreise bereits intern verknüpft und somit von äußerlicher Fehlverwendung geschützt sind.
+
+Ein weiterer Vorteil Smartphones anstatt Microcontroller zu verwenden liegt in der Verfügbarkeit.
 Weltweit besaßen 2022 5,2 Mrd. Menschen ein Smartphone. \cite{smartphone_users}
-Vor allem jüngere Menschen nutzen Smartphones.
-Viele Kinder besitzen bereits mit 10 Jahren \cite{bitkom_smartphones} ein Smartphone.
-Da ein Smartphone üblicherweise nicht nur für Programmieraufgaben, sondern auch für den Alltag verwendet wird, sind die Anschaffungskosten hier auch nicht auf einen einzigen Zweck gebunden.
-\\\\
-Zusammenfassend lässt sich konstatieren, dass Smartphones eine Alternative zu herkömmlichen Microcontroller-Sets darstellen.
-Sie verursachen weniger Kosten und sind meistens schon in Gebrauch.
-Durch Ihre eingesetzten Sensoren können Sie zuverlässig Umgebungseigenschaften quantisieren.
-Sie haben eine höhere Prozessorenleistung, so dass auch rechenintensivere Aufgaben ausgelagert werden können.
-Durch die Entwicklungsmöglichkeiten von Mobilen Anwendungen sind der Kreativität der Ausgabemöglichkeiten keine Grenzen gesetzt.
-Neben üblichen Übertragungsschnittstellen wie USB bieten Sie häufig auch eine W-LAN und Bluetooth-Funktion die eine Ansteuerung über unterschiedliche Technologien einfach macht und autonomere, den Umgebungsansprüchen angepasste Nutzungsszenarien ermöglicht.
-\\
-Eine Einbindung von Smartphones mit Bordmitteln ist in den meisten Prgrammierumgebungen jedoch nicht vorgesehen.
-Smartphones und Entwicklungsumgebungen bieten meist keine direkte Möglichkeit der Kopplung.
+Viele Kinder besitzen bereits mit 10 Jahren \cite{bitkom_smartphones} eins.
+Da ein Smartphone üblicherweise nicht nur für Programmieraufgaben, sondern auch für den Alltag verwendet wird, sind Smartphones bereits in Besitz.
+
+Smartphones sind eine Alternative zu herkömmlichen Microcontroller-Sets.
+Sie verursachen weniger Kosten und sind meistens bereits in Gebrauch.
+Durch Ihre eingesetzten Sensoren können Sie zuverlässig Umgebungseigenschaften messen.
+Neben Übertragungsschnittstellen wie USB sind ist auch W-LAN eine Verbindungsmöglichkeit.
+Da vereinfacht die Ansteuerung.
+Kabel werden nicht benötigt und die Geräte sind Batteriebetrieben, was autonome Lösungen ermöglicht.
+
+Eine Einbindung von Smartphones ist in den meisten Prgrammierumgebungen jedoch nicht möglich.
 Auch gibt es Seitens der Smartphone-Betriebssystemhersteller keine standardisierten Ausgabemöglichkeiten.
 Moderne Smartphone-Betriebssysteme bauen sich modular aus mobilen Anwendungen auf, so dass das Betriebssystem keine direkten Ausgabemöglichkeiten besitzt.
 Visuelle und haptische Ausgaben sind nur über mobile Anwendungen möglich.
-\\
-Das zentrale Thema besteht darin eine Smartphone-Anwendung für visuelle Ausgaben und Sensorwerte zu entwickeln und Schnittstellen in Programmierumgebungen zu schaffen, die die Nutzungsmöglichkeiten des Smartphones in Programmierprozesse einbinden.
+
+Ziel der Arbeit ist es eine Smartphone-Anwendung für visuelle Ausgaben und Sensorwerte zu entwickeln und Schnittstellen in Programmierumgebungen zu schaffen, die die Nutzungsmöglichkeiten des Smartphones in Programmierprozesse einbinden.
 Möglich wird dies durch Softwarebibliotheken die Funktionsaufrufe bereitstellen, welche Aktionen auf dem Smartphone auslösen.
 Das Smartphone reagiert auf die empfangen Anfragen und führt die entsprechenden Kommandos aus.
 Das Framework besteht aus einer programmiersprachenunabhängigen Bibliothek, einer Server-Anwendung und einer mobilen Anwendung für Android Smartphones.
+
 Neben den technisch Details und Funktionsweisen werden in dieser Arbeit außerdem Beispielaufgaben gereich mit den angehende Programmiererinnen oder Programmierern gereicht.
 Diese sind in Kapitel \ref{chap:Experimente} zu finden.
 In Kapitel \ref{chap:architektur} werden die verwendeten Komponenten vorgestellt und Designentscheidungen innerhalb des Entwicklungsprozesses erläutert.
