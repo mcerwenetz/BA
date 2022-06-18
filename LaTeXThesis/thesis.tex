@@ -737,7 +737,7 @@ Neben der Latenzzeit zum Broker ist jedoch auch die Anzahl der angemeldeten Ger�
 Da die Geräte in direktem Wettbewerb um Sendezeit stehen bedeuten mehr Geräte an einem AccessPoint größere Latenzen.
 In den Messungen werden nur WLAN-Verbindungen nach dem Standard WLAN 802.11n berücksichtigt.
 Es sind dabei stets beide Geräte, Lokaler PC und Smartphone per WLAN mit dem Internet verbunden.
-Untersucht werden lediglich rpc\_requests.
+Untersucht wird lediglich die Zeitspanne zwischen rpc\_request und rpc\_response.
 Sensor\_requests kommunizieren stets per loopback-interface mit der Kontrollanwendung.
 Daher die Latenzzeiten gering.
 Im Durchschnitt belaufen Sie sich auf unter 1ms.
@@ -747,6 +747,17 @@ Zum Beispiel in Laboren.
 Der zweite Einsatzort ist ein Heimnetz, das etwa 8 Hops entfernt vom MQTT-Broker liegt.
 Etwa 8 Geräte sind dabei auf dem Access Point angemeldet.
 Die Messergebnisse sind relevant für die Heimarbeit oder das Erledigen von Hausaufgaben.
+Die Ergebnisse sind in Abbildung \ref{fig:measure_home} dargestellt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.6\textwidth]{images/timing_at_home}
+  \caption{Zeitmessungen im Heimnetz}
+  \label{fig:measure_home}
+\end{figure}
+Insgesamt wurden 100 Messungen durchgeführt.
+Im Mittel beträgt die Reaktionszeit 537 ms.
+Die Streuung ist bei einer Standardabweichung von 238ms allerdings auch sehr breit gestreut.
+Alle Messungen blieben jedoch unter 1ms Reaktionszeit.
 
 
 Der letzte Einsatzort ist in einer virtuellen Maschine auf dem lokalen PC das über den virtuellen Netzwerkkontroller aus einem NAT-Netzbereich auf das Internet zugreift.
