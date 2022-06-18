@@ -1,0 +1,1 @@
+1..100 | % {Measure-Command {python ./ping_example.py} | Out-File -FilePath .\measurement.txt -append}
