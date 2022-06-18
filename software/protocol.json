@@ -27,8 +27,7 @@
     },
     "commands": {
         "write_text": "write_text",
-        "button": "button",
-        "button_toggle": "button_toggle",
+        "button_toggle": "led_toggle",
         "vibrate": "vibrate",
         "which_button": "which_button"
     },

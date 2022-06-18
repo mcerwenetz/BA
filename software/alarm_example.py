@@ -9,7 +9,7 @@ while True:
         p.write_text("ALARM")
         for _ in range(5):
             p.vibrate(1000)
-            p.toggle_button()
+            p.toggle_led()
             sleep(0.2)
     sleep(0.5)
     

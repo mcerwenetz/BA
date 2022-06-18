@@ -120,17 +120,15 @@ class Phone():
             self._sendMessage(message=rpc_message)
 
         threading.Thread(target=_write_text, args=(self, text_outer)).start()
-        res = self._wait_on_result()
-        return res
+        
+    def toggle_led(self):
 
-    def toggle_button(self):
-
-        def _toogle_button(self) -> None:
+        def _toogle_led(self) -> None:
             """this toggles the button in the interface"""
-            rpc_message = JsonMessagesWrapper.get_rpc_request(command="button", value="")
+            rpc_message = JsonMessagesWrapper.get_rpc_request(command="button_toggle", value="")
             self._sendMessage(message=rpc_message)
 
-        threading.Thread(target=_toogle_button, args=(self, )).start()
+        threading.Thread(target=_toogle_led, args=(self, )).start()
 
     def vibrate(self, time : int):
         "vibrates phone for time miliseconds"
