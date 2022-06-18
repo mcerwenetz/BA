@@ -47,7 +47,6 @@ public class MQTTService extends Service {
     //    final public static String PASSWORT = "";
     final public static String PASSWORT = "n4xdnp36";
     private static final String TOPIC = "22thesis01/test";
-    private static final String TOPIC_QOS = "22thesis01/test_qos";
     private RootActivity rootActivity;
     private JsonMessageWrapper jsonMessageWrapper;
 
@@ -195,6 +194,11 @@ public class MQTTService extends Service {
             //ignore. if type is not rpc command and value are not needed anyway
         }
         rootActivity.toggle_recording();
+        if (command.equals("")) {
+            JSONObject rpc_answer = jsonMessageWrapper.get_rpc_response("", "");
+            this.sendRpcAnswer(rpc_answer);
+        }
+
         if (command.equals("led_toggle")) {
             this.rootActivity.toogleButton();
         }
@@ -251,7 +255,6 @@ public class MQTTService extends Service {
 
         mqttMessaging.connect(CONNECTION_URL, options); // secure via URL
         addTopic(MQTTService.TOPIC);
-        addTopic(MQTTService.TOPIC_QOS);
 
         Log.v(TAG, "connected");
     }
