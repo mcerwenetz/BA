@@ -102,7 +102,7 @@ Als zwischenvermittlung fungiert dasbei das zentrale Kontrollprogramm was in \re
 Das Kontrollprogram tauscht wiederrum Nachrichten mit der Programmierumgebung aus.
 Angehende Programmierer benötigen Sie um das Smartphone anzusteuern.
 Einbindung, Nutzung, sowie interne Kommunikation zu den anderen zwei Komponenten werden in Kapitel \ref{chap:libs} erklärt.
-Zum Schluss wird in Kapitel \ref{chap:eval} untersucht ob die vorgegebenen Anforderungen erfüllt wurden und ob sich die auftretenden Latenzen in einem tolerablen Bereich befinden.
+Zum Schluss wird in Kapitel \ref{chap:eval} untersucht ob die vorgegebenen Anforderungen erfüllt wurden.
 Desweiteren wird die Verwendung der Lösung anhand einer Beispielaufgabe vorgestellt.
 Die bei der Entwicklung festgestellten Probleme werden in Kapitel \ref{chap:fazit} diskutiert.
 Erweiterungsmöglichkeiten und Verbesserungen werden diskutiert.
@@ -194,8 +194,8 @@ So muss auch ausprobiert werden, wie sich eine Umdrehung in den Messwerten äuß
 \section{Anforderungen}\label{sec:anforderungen}
 Damit die im vorherigen Abschnitt erläuterten Beispielprogrammieraufgaben umgesetzt werden können müssen verschiedene Anforderungen an die Lösung erfüllt werden.
 Geringe Latenzen sind der Sensordatenübermittlung nötig um eine schnelle Reaktion der Programme auf Messergebnisse realisieren.
-Aus diesem Grund müssen die Aufgabenbereiche der Lösung auf drei Einsatzorte seperiert werden.
-Die Komponenten müssen über Datensparsame Protokolle miteinander kommunizieren um die Latenzen verringern.
+Ddie Aufgabenbereiche der Lösung müssen seperiert werden.
+Die Komponenten, die diese bearbeiten müssen über Datensparsame Protokolle miteinander kommunizieren um die Latenzen verringern.
 
 Funktionen die aufgerufen werden um Sensormessdaten zu erhalten müssen ihre Rückgabewerte simpel gestalten.
 Serialisierte Formate erfordern zusätzliches Hintergrundwissen.
@@ -509,17 +509,9 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
       \hline
       \textbf{TYPE-Kürzel} & \textbf{Beschreibung} \\
       \hline
-      accell\_x & Lagesensor für die X-Richtung \\
+      accel\_xyz & Lagesensor für die X, Y oder Z-Richtung \\
       \hline
-      accell\_y & Lagesensor für die Y-Richtung \\
-      \hline
-      accell\_z & Lagesensor für die Z-Richtung \\
-      \hline
-       gyro\_x & Gyroskopsensor für die X-Richtung \\
-      \hline
-      gyro\_y & Gyroskopsensor für die Y-Richtung \\
-      \hline
-      gyro\_z & Gyroskopsensor für die Z-Richtung \\
+       gyro\_xyz & Gyroskopsensor für die X, Y oder Z-Richtung \\
       \hline
       prox & Näherungssensor \\
       \hline
@@ -534,11 +526,6 @@ Diese sind der Tabelle \ref{tab:command_types} zu entnehmen.
 \texttt{CMD-Kürzel} beschreibt die Notation des Kürzels mit dem eine Aktion ausgeführt werden kann.
 Diese wird unter \texttt{Beschreibung} kurz zusammengefasst.
 \texttt{return} gibt an, ob der Aufruf des Requests eine Antwort rücksendet und somit auch, ob ein Aufruf der Funktion in der Library blockiert oder nur sendet.
-
-
-
-
-
 
 \chapter{Kontrollanwendung}\label{chap:server_software}
 
@@ -648,57 +635,134 @@ Hierfür werden Sockets benötigt.
 Für's Empfangen muss der Socket binded sein.
 Die Serveranwendung ist auf dem Port 5006 erreichbar.
 Antworten erwarten die Bibliotheken auf dem Port 5005.
+
 \chapter{Evaluation}\label{chap:eval}
-\section{Android Anwendung}\label{sec:androidApp}
-Für Ausgaben auf dem Smartphone existiert die Android Anwendung Smartbit, die verschiedene Interaktionsmöglichkeiten bereitstellt.
-Das Userinterface ist in Abbildung \ref{fig:androidUI} dargestellt..
+In disem Kapitel wird die Verwendung des Frameworks anhand dem Beispiel \textit{Alarmanlage} vorgestellt.
+Gezeigt wird, wie die Aufgabe in der Programmierumgebung gelöst wurde und wie sich die Aufgabe auf dem Smartphone äußert.
+Dadurch wird überprüft, ob die Anforderungen an die Smartphone-Anwendung erfüllt wurden.
+Neben Anforderungen Benutzung betreffen gibt es auch welche, die die Latenzen betreffen.
+Transportwege müssen berücksichtigt werden.
+Die Zeiten werden in drei verschiedenen Umgebungen überprüft: In nächster Nähe zum MQTT-Server, in mittlerer Nähe und in einer virtuellen Umgebung über ein simuliertes NAT-Netzwerk.
+
+\section{Beispielverwendung}
+Die Verwendung der Lösung wird anhand des \textit{Alarmanlage}-Beispiel vorgestellt.
+In der Programmierumgebung wird dabei die Bibliothek in Python verwendet.
+
+Damit Nachrichten ausgetauscht werden können muss zuerst das Kontrollprogramm gestartet werden.
+Es wird mit dem Befehl \texttt{python ./server.py} in einer lokalen Shell gestartet.
+Der Vorgang wird in Abbildung \ref{fig:start_controll_app} dargestellt.
+Es handelt sich um das Python-Skript \textit{server.py}.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.6\textwidth]{images/android_app_ui}
-  \caption{Userinterface Android Anwendung}
-  \label{fig:androidUI}
+  \includegraphics[width=.8\textwidth]{images/server_logging}
+  \caption{Start der Kontrollanwendung}
+  \label{fig:start_controll_app}
 \end{figure}
-\\
-Die Anwendung besteht aus zwei Leds, einer Signal- und einer Funktions-LED
-Ein Textfeld in der Mitte kann zur Ausgabe von Text verwendet werden.
-Die beiden Buttons können gedrückt werden.
-Neben den sichtbaren Elementen kann die Anwendung das Smartphone außerdem vibrieren lassen.
-\\
-Die Signal-LED wird für die Ausgabe verwendet.
-Aufgabe der Funktions-Led ist die Anzeige eines aktuell ausgeführten Kommandos aufgrund eines rpc\_request.
-Leuchtet die LED rot wird gerade ein Vorgang abgearbeitet.
-Anschließend verblasst Sie wieder um einen Leerlauf anzuzeigen.
-Dieses Designelement wurde zusätzlich implementiert, da gerade sich wiederholende Vorgänge, sowie haptische Vorgänge wie das Vibrieren kein optisches Signal aussenden.
-Hält der Anwender das Smartphone beispielsweise nicht in der Hand oder liegt es nicht auf einer harten Oberfläche auf der die Vibration hörbar ist, ist das Vibrieren nicht wahrnehmbar.
+Die Anwendung meldet, dass Sie sich erfolgreich mit dem MQTT-Broker verbunden und das korrekte Topic abboniert hat.
+Die Kontrollanwendung loggt neben diesen Informationen auch rpc-requests und responses.
+Sensor-requests und responses werden wegen ihrer hohen Anzahl nicht geloggt.
 
-\section{Kontrollanwendung}
-\blindtext
+Die Implementierung der Lösung der Aufgabe ist in Listing \ref{lis:alarm} vorgestellt.
 
-\section{Programmierumgebung}
-\blindtext
+\lstset{language=python, captionpos=b, frame=single, numberstyle=\tiny, style=customcs}
+\lstinputlisting[label=lis:alarm, caption=Alarmanlage-Beispiel]{listings/code_examples/alarm.py}
+Die Bibliothek wird in Zeile 2 importiert.
+Dafür muss die Datei \texttt{smartbit.py} im gleichen Ordner wie das Programm gespeichert sein.
+In Zeile 4 wird ein Phone-Objekt erstellt, über das Sensor-Auslesemethoden wie \texttt{get\_x\_accel()} oder Smartphone-Ausgaben wie \texttt{vibrate()} augerufen werden können.
+Da das Programm nie abbrechen soll, außer wenn es in der shell gestoppt wird, wird in einer While-True Schleife der Näherungssensor immer wieder abgefragt.
+Anschließend wird eine halbe Sekunde gewartet um den Server nicht mit Anfragen zu überlasten.
+Ist der abgerfragte Näherungssensorwert wie in der achten Zeile überprüft wird 0.0, dann liegt eine Näherung vor.
+Auf dem Smartphone wird dann mit der  Methode \texttt{write\_text()} der Text ALARM usgegeben.
+Das Smartphone vibriert 5 mal hintereinander im Abstand von 200 ms für eine Sekunde und lässt die Signal-LED blinken.
+Insgesamt werden die RPC-Funktionen vibrate, toggle\_button und write\_text aufgerufen.
+Keine dieser Funktionen liefert einen Rückgabewert.
+
+Die Bibliothek sendet die Nachrichten an das Smartphone.
+Nähert sich eine Person dem Smartphone wird der Code in der If-Bedingung ausgeführt.
+Die jeweiligen Nachrichten werden als rpc\_request per UDP an die Kontrollanwendung gesendet.
+Dort werden Sie angenommen, geloggt und per MQTT an das Smartphone weitergereicht.
+Eine Übersicht der gesendeten Nachrichten ist in Abbildung \ref{fig:req_controll_app} zu sehen.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{images/server_requests}
+  \caption{Nachrichtenversand der Kontrollanwendung}
+  \label{fig:req_controll_app}
+\end{figure}
+Die Nachrichten werden im JSON Format übertragen.
+rpc\_requests haben ein Typ-Feld, ein Kommando und einen Paramterwert für das Kommando.
+Write\_text ist für Textausgaben auf dem Smartphone, vibrate um das Smartphone vibrieren zu lassen und led\_toggle um die LED anzusprechen.
+Für write\_text wird der gibt der Parameter-Wert den anzuzeigenden Text an.
+Vibrate erwartet für value die Zeitdauer der vibrierung in ms.
+led\_toggle erwartet keinen Parameterwert, da der gesamte Aufruf lediglich die Farbe der LED wechselt.
+Es ist nicht vorgesehen, dass die Farbe manuell gesetzt werden kann.
+
+Auf dem Smartphone ist die App zu Anfang im Initialmodus.
+Dieser ist in Abbildung \ref{fig:initial_app} dargestellt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[height=0.4\textheight]{images/app_initial}
+  \caption{Initialzustand der Anwendung}
+  \label{fig:initial_app}
+\end{figure}
+Zu sehen sind zwei Buttons, beschriftet mit A und B.
+Das textfeld liegt in der Mitte und zeigt zum Start den Text \textit{output} an.
+Daneben gibt es noch eine Vorgangs-LED die ausgegraut oben rechts über der Signal-LED liegt.
+Sie leuchtet, wenn gerade ein Vorgang wie das Ausführen einer Vibration auf dem Smartphone ausgeführt wird.
+
+Nähert man sich dem Smartphone geht es über in den Alarmzustand der in Abbildung \ref{fig:app_alarm} dargestellt ist.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[height=0.4\textheight]{images/app_alarm}
+  \caption{Initialzustand der Anwendung}
+  \label{fig:app_alarm}
+\end{figure}
+Erkennbar ist, dass das Textfeld den Wert \textit{ALARM} darstellt.
+Die Farbe der LED hat sich von grün auf rot und wieder auf grün geändert.
+Das ist erkennbar an der kleinen Screenshot-Vorschau links unten die unmittelbar vor dem in der Abbildung zu sehenden Screenshot zu sehen ist.
+Die Vorgangs-LED leuchtet tief rot um zu signalisieren dass gerade eine Ausgabe ausgeführt wird.
+Nicht sichtbar ist das haptische vibrationsfeedback.
+Hierfür dient jedoch die Vorgangs-LED.
+Sie ist auch hilfreich um bei Smartphones mit sanften Vibrationsausgaben eine Ausgabe zu erkennen.
+
+Die Reaktionszeit liegt unter einer Sekunde.
+Die Ausgabe erscheint als direkter Grund der Annäherung.
+
+\section{Messergebnisse}
+Damit die Benutzbarkeit sichergestellt ist, müssen Latenzzeiten zwischen Smartphone und Programmierumgebung in einem akzeptablen Rahmen liegen.
+Um dies herauszufinden werden die Latenzzeiten gemessen.
+In diesem Kapitel wird die Latenzzeit von drei Standorten aus gemessen.
+
+Der erste Einsatzort ist im gleichen Netzbereich wie der MQTT-Broker wodurch die Transferstrecke reduziert wird.
+Neben der Latenzzeit zum Broker ist jedoch auch die Anzahl der angemeldeten Geräte am gleichen AccessPoint interessant.
+Da die Geräte in direktem Wettbewerb um Sendezeit stehen bedeuten mehr Geräte an einem AccessPoint größere Latenzen.
+In den Messungen werden nur WLAN-Verbindungen nach dem Standard WLAN 802.11n berücksichtigt.
+Es sind dabei stets beide Geräte, Lokaler PC und Smartphone per WLAN mit dem Internet verbunden.
+Untersucht werden lediglich rpc\_requests.
+Sensor\_requests kommunizieren stets per loopback-interface mit der Kontrollanwendung.
+Daher die Latenzzeiten gering.
+Im Durchschnitt belaufen Sie sich auf unter 1ms.
+Die Messungen sind  für den Fall interessant, für den Studierende an der Hochschule die Lösung nutzen möchten.
+Zum Beispiel in Laboren.
+
+Der zweite Einsatzort ist ein Heimnetz, das etwa 8 Hops entfernt vom MQTT-Broker liegt.
+Etwa 8 Geräte sind dabei auf dem Access Point angemeldet.
+Die Messergebnisse sind relevant für die Heimarbeit oder das Erledigen von Hausaufgaben.
+
+
+Der letzte Einsatzort ist in einer virtuellen Maschine auf dem lokalen PC das über den virtuellen Netzwerkkontroller aus einem NAT-Netzbereich auf das Internet zugreift.
+Das Smartphone befindet sich direkt im Netzbereich des lokalen PCs.
+
+
+
 
 \chapter{Fazit}\label{chap:fazit}
-\section{Android Anwendung}
-
-\section{Kontrollanwendung}
-MQTT QOS 2 zu langsam.
-\blindtext
-
-\section{Programmierumgebung}
-Nachteil: JSON
-\blindtext
-
-\section{Ausblick}
-\blindtext
-
-\chapter{Quellen}\label{chap:source}
 
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
 % Meist ist das aber unnötig.
 % \listoffigures % Liste der Abbildungen 
 % \listoftables % Liste der Tabellen
-% \newpage
+\newpage
 
 \bibliographystyle{plain} % Literaturverzeichnis
 \begin{btSect}{thesis} % mit bibtopic Quellen trennen

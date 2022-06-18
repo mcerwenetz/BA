@@ -358,6 +358,7 @@ class MqttHandlerThread(threading.Thread):
             self.request_queue.put((1, message.payload.decode("utf-8")))
         if msg["type"] == "rpc_response":
             self.request_queue.put((1, message.payload.decode("utf-8")))
+            self.logger.info("rpc_response: " + str(msg))
 
     def stop(self):
         "stop mqtt listener"

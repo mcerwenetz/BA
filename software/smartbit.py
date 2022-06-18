@@ -86,6 +86,19 @@ class JsonMessagesWrapper():
         return message
 
     @staticmethod
+    def get_rpc_request() ->str:
+        """
+        start an rpc on the smartphone
+        raises: Exception if command is not found
+        """
+        message : dict = get_config_parameter("rpc_request")
+        message["command"] = ""
+        message["value"] = ""
+        message = json.dumps(message)
+        return message
+
+
+    @staticmethod
     def get_rpc_response(command :str, value : str):
         """
         answers an rpc request
@@ -110,7 +123,16 @@ class Phone():
         self.udp_listener_port = 5005
         self.sock.bind((self.udp_ip, self.udp_listener_port))
 
+    def rpc_ping(self):
 
+        def _rpc_ping(self) -> None:
+            rpc_message = JsonMessagesWrapper.get_rpc_request()
+            self._sendMessage(message=rpc_message)
+
+        threading.Thread(target=_rpc_ping, args=(self,)).start()
+        result = self._wait_on_result()
+        return result
+        
 
     def write_text(self, text_outer) -> str:
 
@@ -162,8 +184,7 @@ class Phone():
 
 
     def _wait_on_result(self) -> dict:
-        """get's response blocking with socket timeout
-        and checks if types match.
+        """get's response, blocking, with socket timeout.
         """
         try:
             data = str(self.sock.recvfrom(1024)[0], encoding="utf-8")
