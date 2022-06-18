@@ -384,8 +384,7 @@ class MqttHandlerThread(threading.Thread):
             try:
                 # nur auf dem topic mit hoher qos senden
                 message = str(self.sender_queue.get(timeout=1))
-                client.publish(topic=self.QOSTOPIC, payload=message, qos=2)
-                self.logger.info("sent: %s" % message) 
+                client.publish(topic=self.TOPIC, payload=message) 
             except queue.Empty:
                 continue
 
