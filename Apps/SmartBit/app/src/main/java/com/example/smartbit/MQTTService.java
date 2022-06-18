@@ -7,6 +7,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.View;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.json.JSONException;
@@ -194,10 +195,7 @@ public class MQTTService extends Service {
             //ignore. if type is not rpc command and value are not needed anyway
         }
         rootActivity.toggle_recording();
-        if (command.equals("textview")) {
-            this.rootActivity.setTextView(value);
-        }
-        if (command.equals("button_toggle")) {
+        if (command.equals("led_toggle")) {
             this.rootActivity.toogleButton();
         }
         if (command.equals("vibrate")) {
@@ -210,25 +208,28 @@ public class MQTTService extends Service {
                 e.printStackTrace();
             }
         }
-        if(command.equals("write_text")){
+        if (command.equals("write_text")) {
             this.rootActivity.setTextView(value);
-            JSONObject rpc_answer = jsonMessageWrapper.get_rpc_response(command, String.format("text %s was printed", value));
-            sendRpcAnswer(rpc_answer);
-            Log.v(TAG, "answer sent");
         }
-        if(command.equals("which_button")){
+        if (command.equals("which_button")) {
             Object lock = new Object();
-            BigButtonOnClickListener bboclA = new BigButtonOnClickListener(command, "A",this, jsonMessageWrapper, lock);
+            BigButtonOnClickListener bboclA = new BigButtonOnClickListener(command, "A", this, jsonMessageWrapper, lock);
             this.rootActivity.button_a.setOnClickListener(bboclA);
-            BigButtonOnClickListener bboclB = new BigButtonOnClickListener(command, "B",this, jsonMessageWrapper, lock);
+            BigButtonOnClickListener bboclB = new BigButtonOnClickListener(command, "B", this, jsonMessageWrapper, lock);
             this.rootActivity.button_b.setOnClickListener(bboclB);
-            synchronized (lock){
-            try {
-                lock.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            synchronized (lock) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                this.rootActivity.button_a.setOnClickListener((View v) -> {
+                });
+                this.rootActivity.button_b.setOnClickListener((View v) -> {
+                });
+
             }
-        }}
+        }
 
         rootActivity.toggle_recording();
     }
