@@ -335,7 +335,6 @@ class MqttHandlerThread(threading.Thread):
         self.HOSTNAME = mqtt_config["network"]["hostname"]
         self.PORT =  mqtt_config["network"]["port"]
         self.TOPIC= mqtt_config["topics"]["normal"]
-        self.QOSTOPIC = mqtt_config["topics"]["qos"]
         self.USERNAME =  mqtt_config["credentials"]["username"]
         self.PASSWORD =  mqtt_config["credentials"]["password"]
         self.sender_queue=mqqt_sender_queue
@@ -380,8 +379,6 @@ class MqttHandlerThread(threading.Thread):
             return
         client.subscribe(self.TOPIC)
         self.logger.info("mqtt subscribed to topic: %s" % self.TOPIC)
-        client.subscribe(self.QOSTOPIC, qos=0)
-        self.logger.info("mqtt subscribed to QOS-topic: %s" % self.QOSTOPIC)
         client.loop_start()
         while not self.stop_mqtt.is_set() or self.sender_queue.qsize() > 0:
             try:

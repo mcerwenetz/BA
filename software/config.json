@@ -1,8 +1,7 @@
 {
     "mqtt": {
         "topics": {
-            "normal": "22thesis01/test",
-            "qos": "22thesis01/test_qos"
+            "normal": "22thesis01/test"
         },
         "credentials": {
             "username": "22thesis01",
