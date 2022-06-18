@@ -757,14 +757,22 @@ Die Ergebnisse sind in Abbildung \ref{fig:measure_home} dargestellt.
 Insgesamt wurden 100 Messungen durchgeführt.
 Im Mittel beträgt die Reaktionszeit 537 ms.
 Die Streuung ist bei einer Standardabweichung von 238ms allerdings auch sehr breit gestreut.
-Alle Messungen blieben jedoch unter 1ms Reaktionszeit.
-
+Alle Messungen blieben jedoch unter 1s Reaktionszeit.
 
 Der letzte Einsatzort ist in einer virtuellen Maschine auf dem lokalen PC das über den virtuellen Netzwerkkontroller aus einem NAT-Netzbereich auf das Internet zugreift.
 Das Smartphone befindet sich direkt im Netzbereich des lokalen PCs.
-
-
-
+Die gemessenen Daten sind in Abbildung \ref{fig:measure_vm} dargestellt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.6\textwidth]{images/timing_vm}
+  \caption{Zeitmessungen in der virtuellen Maschine}
+  \label{fig:measure_vm}
+\end{figure}
+Wieder wurden 100 Messungen vorgenommen.
+Im Mittel beträgt die Reaktionszeit nun 3255 ms.
+Die Streuung ist mit einer Standardabweichung von 845 ms relativ gleichgroß.
+Die Reaktionszeit ist also im Durchschnitt sehr hoch, etwa sechs mal langsamer als bei einer Verwendung der Programmierumgebung auf dem Hostsystem.
+Eine direkte Assoziation zwischen Eingabe und Ausgabe kann nicht garantiert werden.
 
 \chapter{Fazit}\label{chap:fazit}
 
