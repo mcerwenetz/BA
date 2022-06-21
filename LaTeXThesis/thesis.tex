@@ -104,24 +104,22 @@ Erweiterungsmöglichkeiten und Verbesserungen werden diskutiert.
 \chapter{Smartphones als Microcontroller-Ersatz} \label{chap:Experimente}
 Smartphones sind in sich geschlossene technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB-Port, WLAN und Bluetooth keine weiteren Schnittstellen bieten um externe Hardware und Schaltungen anzuschließen und fernzusteuern.
 Microcontroller-Schaltungen zum Programmierenlernen bieten meistens mehrere Ausgabemöglichkeiten wie LEDs, Lautsprecher oder Piepser.
-Smartphones bieten jedoch den Vorteil der virtuellen Darstellung auf dem Display.
-Gewohnte Ausgabeelmente können dadurch virtualisiert werden.
-Die Funktionen sind hier außerdem nicht nur von Mehrzweck-Ausgaben wie LED-Grids begrenzt die zum Beispiel für die Text- oder Bildanzeige verwendet werden können.
-Spezifische zweckgebundene Elemente wie Textfelder, Textausgaben oder Bildausgaben in der App können beliebig kombiniert werden.
+Smartphones können diese Bausteine nicht anschließen aber virtuell darstellen.
+Gewohnte Ausgabeelmente können virtualisiert werden.
+Die Funktionen sind außerdem nicht nur von Mehrzweck-Ausgaben, wie LED-Grids begrenzt, die zum Beispiel für die Text- oder Bildanzeige verwendet werden können.
+Zweckgebundene Elemente wie Textfelder, Textausgaben oder Bildausgaben in der App können beliebig kombiniert werden.
 Darüber hinaus ist die Anordnung der jeweiligen Elemente frei wählbar, so dass das Layout anders als bei Microcontrollern auch im Nachhinein noch geändert werden kann.
-
-In diesem Kapitel werden Beispielaufgaben für Programmiererinnen und Programmierer vorgestellt die Sie mit der entwickelten Lösung absolvieren können.
-Durchführbar sind diese durch verschiedene Ansteuerungen aus der Programmierumgebung.
-Die darin angebotene Funktionalität stellt Anforderungen und Rahmenbedingungen an das Projekt welche ebenfalls behandelt werden.
-
+Die Ausgabemöglichkeiten können in Kombination mit Sensor-Daten verwendet werden, um kleine Programmieraufgaben zu lösen.
+Einige Beispiele werden in diesem Kapitel vorgestellt.
+Da diese nicht auf einem Microcontroller, sondern einem Smartphone ausgeführt werden, müssen gewisse Rahmenbedingungen erfüllt sein, wie beispielsweise geringe Latenzen in der Sensordatenübertragung.
 \section{Beispielprogrammieraufgaben}\label{sec:activities}
-Praxisnahe Programmieraufgaben mit interessanten Aufgabestellungen führen angehende Softwareentwickler an die Entwicklung heran.
-Um die Möglichkeiten der entwickelten Lösung zu nutzen wurden fünf Beispiele ausgearbeitet.
-Die Aufgaben sind interaktiv getaltet.
-Auf gemessene physikalische Eigenschaften wird reagiert.
-Auf dem Smartphone werden gegebenfalls Ausgaben getätigt.
-Eine zusätzliche Angabe des Schwierigkeitsgrads unterstützt Anfänger bei der Auswahl.
+Praxisnahe Programmieraufgaben mit interessanten Aufgabestellungen motivieren Softwareentwickler.
+In den Aufgaben interaktiv auf die Änderung physikalischer Eigenschaften gewartet und reagiert.
 Die Liste der Aufgaben ist in Tabelle \ref{tab:excercises} zu finden.
+In ihr ist zu finden, welche Aufgabe welche Sensordaten benötigt werden und welche Ausgabemöglichkeiten genutzt werden sollen
+Die Angabe des Schwierigkeitsgrads unterstützt Anfänger bei der Auswahl um die Motivation zu erhöhen.
+Er ist in drei Größen gegliedert:
+Einfach (+), Mittel(++) und Schwer (+++).
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|l|c|p{2cm}|c|}
@@ -143,93 +141,76 @@ Die Liste der Aufgaben ist in Tabelle \ref{tab:excercises} zu finden.
   \label{tab:excercises}
 \end{table}
 
-Beschrieben wird der Name der Aufgabe und die darin beötigten Sensoren auf deren Messergebnisse reagiert wird.
-Das Smartphone bietert verschiedene Ausgabemöglichkeiten.
-Nicht alle sind für die Lösung aller Aufgaben passend.
-Daher wird in der dritten Spalte definiert welche Ausgaben verwendet werden soll.
-Zum Schluss wird der Schwierigkeitsgrad der Aufgabe beschrieben.
-Er ist in drei größen gegliedert:
-Einfach (+), Mittel(++) und Schwer (+++).
-
-In der Aufgabe \textit{Disco} soll eine virtuelle LED alle 500 ms die von der Farbe grün auf die Farbe rot wechseln.
+In der Aufgabe \textit{Disco} soll eine virtuelle LED alle 500 ms von der Farbe grün auf die Farbe rot wechseln.
 Die Aufgabe benötigt keine Sensoren, da die LED nicht auf eine Eingabe seitens des Programmierers oder sonstigen Messwert-Änderungen warten soll.
 Der Schwierigkeitsgrad ist als einfach eingestuft, da hier weder Sensoren benötigt werden, noch sonstige Abhängigkeiten die auf Sensormesswerte beruhen innerhalb des Codes zu berücksichtigen sind.
 
-In der Aufgabe \textit{Würfeln} soll erkannt werden, ob ein Smartphone geschüttelt wurde.
-Verwendet wird dabei der Lagesensor, der Beschleunigungen in drei Achsenrichtungen misst.
-Wird ein Schütteln erkannt soll auf dem PC eine Zufallszahl generiert werden, welche dann auf dem Smartphone im Textfeld ausgegeben wird.
-Die Schwierigkeit wird hier ebenfalls auf einfach eingeschätzt, da lediglich ein Sensor und eine Ausgabe verwendet wird.
-Zudem muss das Programm nicht auf viele Sensorwerte reagieren.
+In der Aufgabe \textit{Würfeln} soll erkannt werden, ob ein Device geschüttelt wurde.
+Verwendet wird dabei der Lagesensor, der Beschleunigungen misst.
+Wird ein Schütteln erkannt soll auf dem PC eine Zufallszahl generiert werden, welche dann auf dem Device in einem Textfeld ausgegeben wird.
+Die Schwierigkeit wird ebenfalls auf einfach eingeschätzt, da lediglich ein Sensor und eine Ausgabe verwendet wird.
 
-In der Aufgabe \textit{Diebstahl-Alarm} soll überprüft werden, ob sich jemand dem Smartphone genähert hat um es zu greifen.
-Es wird gemessen ob der Näherungssensor eine Annäherung gemessen hat.
-Ist dies der Fall, soll ein alarmierender Text im Textfeld auf dem Smartphone ausgegeben werden.
-Ebenfalls benötigt wird die Vibrationsfunktion als haptische Feedback.
-Bei einer Näherungs-Detektion soll es fünf mal für die Zeit von 1000ms vibrieren.
-Außerdem soll zur Ausgabe die LED alle 500 ms die Farbe wechseln, so wie in der Aufgabe \textit{Disco}.
-Der Schwierigkeitsgrad der Aufgabe ist als \textit{Mittel} eingestuft, weil die Alarm-Ausgaben unterschiedlich lange gesteuert werden müssen.
-Zudem muss der Alarm-Zustand auch verlassen werden können.
-Berücksichtigt werden muss dann, dass alle Ausgaben wieder ihre ursprünglichen Zustände einnehmen.
+In der Aufgabe \textit{Diebstahl-Alarm} soll überprüft werden, ob sich jemand dem Device genähert hat um es zu greifen.
+Benötigt wird dafür der Näherungssensor.
+Misst er eine Annäherung, soll ein alarmierender Text im Textfeld auf dem Smartphone ausgegeben werden.
+Ebenfalls benötigt wird die Vibrationsfunktion als haptisches Feedback.
+Bei einer Näherungs-Detektion soll es fünf mal vibrieren.
+Außerdem soll die LED die Farbe wechseln, so wie in der Aufgabe \textit{Disco}.
+Der Schwierigkeitsgrad der Aufgabe ist als \textit{Mittel} eingestuft, da die Zeitdauer der Vibration länger sein soll als die Pausen zwischen dem Farbwechsel der LED.
+Entfernt sich die Person muss der Alarm-Zustand verlassen werden können.
+Alle Ausgaben werden auf ihren initialwert zurückgesetzt.
 
 Bei der Aufgabenstellung \textit{Klatsch-Zähler} muss für einen definierten Zeitraum die Anzahl der Händeklatscher gemessen werden.
-Programmierer klatschen vor dem Smartphone in die Hände.
+Programmierer klatschen vor dem Device in die Hände.
 Die Anzahl der Klatscher wird gemessen und auf dem Display des Smartphones ausgegeben.
 Verwendet wird dafür lediglich das Mikrofon zur Eingabe und das Textfeld zur Ausgabe.
-Die Schwierigkeit ist ebenfalls auf \textit{Mittel} angesetzt, da die Klatscher auf den Sensor nicht immer die gleiche intensivität haben.
-Programmierer müssen also ausprobieren, wann es sich wirklich um ein Händeklatschen handelt und wann einfach nur Hintergrundgeräusche zu hören sind.
+Die Schwierigkeit ist auf \textit{Mittel} angesetzt, da Klatscher unterschidliche Intensitäten haben können.
+Programmierer müssen also ausprobieren, wann es sich wirklich um ein Händeklatschen handelt und wann nur Hintergrundgeräusche zu hören sind.
 
 Bei der letzen Aufgabe \textit{Drehzähler} soll der Programmierer das Device innerhalb eines eigenen definierten Zeitraums drehen und anhand der zurückgegeben Werte die Anzahl der Drehungen ermitteln.
-Diese soll anschließend im Textfeld auf dem Smartphone ausgegeben werden.
+Diese soll anschließend im Textfeld auf dem Device ausgegeben werden.
 Zur Verwenung kommen hier ebenfalls der Lagesensor als Sensoreingabe und das Textfeld als Ausgabe.
 Die Aufgabe ist als \textit{Schwer} bewertet, da hier Wiederholungen in einer Werteabfolge erkannt werden müssen.
 Diese sind jedoch nicht immer exakt gleich.
 So muss auch ausprobiert werden, wie sich eine Umdrehung in den Messwerten äußert und wie Drehungen optimal erkannt werden können.
 
 \section{Anforderungen}\label{sec:anforderungen}
-Geringe Latenzen sind der Sensordatenübermittlung nötig um eine schnelle Reaktion der Programme auf Messergebnisse realisieren.
-Ddie Aufgabenbereiche der Lösung müssen seperiert werden.
-Die Komponenten, die diese bearbeiten müssen über Datensparsame Protokolle miteinander kommunizieren um die Latenzen verringern.
-
+Geringe Latenzen sind bei der Sensordatenübermittlung nötig, damit Programme bei Messwertänderungen schnell reagieren könnnen.
+Damit dies möglich ist müssen die Aufgabenbereiche der Lösung seperiert werden.
+Die Komponenten müssen über effiziente Protokolle kommunizieren.
 Funktionen die aufgerufen werden um Sensormessdaten zu erhalten müssen ihre Rückgabewerte simpel gestalten.
 Serialisierte Formate erfordern zusätzliches Hintergrundwissen.
 Um auf die Ergebnisse zurückgreifen zu können müssten weitere Bibliotheken zum Parsen eingesetzt werden.
 Das erschwert die Umsetzung der Aufgaben.
-Zwar muss die Smartphone-App nicht nur Sensordaten übermitteln, sondern auch Ausgaben ermöglichen, jedoch sind diese wiederum abhängig von den Sensormessergebnissen.
-Ein ungehindertes Übermitteln dieser Sensormessdaten hat daher Vorrang.
-
-Sensordaten müssen jederzeit angefragt werden können.
-Idealerweise liegen Sie zum Zeitpunkt der Anfrage bereits vor.
-Sensor-Mess-Prozesse dürfen nicht auf eine Anfrage hin gestartet, sondern vorher begonnen werden.
-Je rascher die Werte vorliegen desto schneller kann im Programm drauf reagiert werden.
+Damit das Programm entsprechend schnell auf geänderte Sensordaten reagieren kann, müssen Sie jederzeit angefragt werden können.
 So können Experimente eher begriffen werden, da Auswirkungen in der Realität unmittelbar Auswirkungen auf das entwickelte Programm haben.
-
-Neben der Entscheidung, wann Messprozesse auf dem Smartphone gestartet werden muss natürlich auch berücksichtigt werden, dass die Sensorwerte einen Transportweg durchlaufen.
-Der Transportweg beschreibt die Strecke zwischen Smartphone und Programmierumgebung.
-Diese können je nach Mobilfunk- bzw WLAN Standard, Umwelteinflüssen und Geräteanzahl variieren.
-Auch Round-Trip-Time (RTT) spielt eine Rolle.
-Während die Sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt kann Sie bei UMTS auf 300 ms bis 400 ms ansteigen.\cite{network_latencies}
-Um diesen Effekt zu mitigieren müssen Sensorwerte zwischengespeichert werden um einen Puffer aufzubauen auf den in Latenzfällen zugegriffen werden kann.
+Idealerweise liegen Sie zum Zeitpunkt der Anfrage bereits vor.
+Sensor-Messungen sollten nicht auf eine Anfrage hin gestartet, sondern vorher begonnen werden.
+So werden die Latenzzeiten minimiert.
+Weiterhin berücksichtigt wird, dass die Sensorwerte einen Transportweg durchlaufen.
+Dieser beschreibt die Strecke zwischen Smartphone und Programmierumgebung.
+Übertragungsszeiten können je nach Mobilfunk- bzw WLAN Standard, Umwelteinflüssen und Geräteanzahl im Medium variieren.
+Die Round-Trip-Time (RTT) dient bei Wireless-Verbindungen als Indikator für Latenzen.
+Sie beschreibt die Zeit des Hin- und Rückweges eines Gerätes zu einem Host.
+Bei Funk-Verbindungen wie WLAN fällt Sie höher aus als bei kabelgebundenen Medien.
+Während Sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt kann Sie bei UMTS auf 300 ms bis 400 ms ansteigen.\cite{network_latencies}
+Um diese Latenzen zu verringern müssen Sensorwerte zwischengespeichert werden um einen Puffer aufzubauen auf den in Fällen erhöhter Latenz zugegriffen werden kann.
 Dies bedeutet jedoch auch, dass das Smartphone kontinuierlich in periodischen Abständen Sensorwerte senden muss, damit der Puffer gefüllt ist.
 Liegen die Daten vor, kann der vom Programmierer entwickelte Algorithmus Ausgaben auf dem Smartphone auslösen.
-
 Ausgabe-Kommandos sind zwar ebenfalls von Latenzen betroffen, haben allerdings keine direkte Auswirkung auf die Entscheidungsstruktur eines Programms.
 Sollten Rückgabewerte trotzdem nötig sein und anfallen, ändern Sie sich nicht sehr häufig.
 Auf Sie muss seltener reagiert werden.
-Ihr Zweck besteht in einer Ausführungsmeldung, anstatt einer Meldung von Messergebnissen von denen der weitere Programmablauf abhängt.
+Der Zweck von Ausgaben mit Rückgabewert besteht in einer Ausführungsmeldung, anstatt einer Meldung von Messergebnissen von denen der weitere Programmablauf abhängt.
 Es kann zum Beispiel überprüft werden, ob die Änderungen an den Ausgabemöglichkeiten tasächlich stattgefunden haben.
 
-Neben den kommunikativen Anforderungen und der Sensormessung muss die Smartphone-App auch Ausgaben bereitstellen.
-
-Es muss eine LED geben welche die Farbe wechseln kann.
-Die LED muss muss zwischen zwei Farben wechseln können um ein Änderungen zu signalisieren.
-
-Ein Textfeld muss alphanumerische Zeichen ausgeben können um sowohl Zahlenwerte, als auch kurze Texte ausgeben zu können.
-Die Länge muss jedoch beschränkt sein und nur der Ausgabe von einzelnen Werten oder Wörtern dienen, nicht der Ausgabe von ganzen Textabsätzen.
-
+Neben den kommunikativen Anforderungen muss die Smartphone-App auch Ausgabemöglichkeiten bereitstellen.
+Es muss eine signal LED geben, deren Farbe gewechselt werden kann um Änderungen zu signalisieren.
+Ein Textfeld muss alphanumerische Zeichen ausgeben können, um sowohl Zahlenwerte, als auch kurze Texte darzustellen.
+Die Länge ist jedoch beschränkt, da nur einzelne Werte oder Wörter ausgegeben werden, keine Textabsätze.
 Die Vibrationsausgabe ist eine haptische Ausgabe, keine Optische.
 Für diese muss eine Zeitdauer konfigurierbar sein um Vibrationsmuster konfigurieren zu können.
 \chapter{Architektur} \label{chap:architektur}
-Insgesamt besteht das Framework aus einer mobilen Anwendung für Android-Smartphones, einer programmiersprachenunabhängigen Bibliothek für Sensoranfragen und Ausgabe-Kommandos und einem Kontrollprogramm das den Nachrichtenaustausch koordiniert.
+Insgesamt besteht die Lösung aus einer Programmierumgebung, einem Kontrollprogramm zur Nachrichtenkoordinierung und einer mobilen Android-Anwendung für die Sensordatenerhebung und für die Anzeige der Ausgaben.
 Der Aufbau ist in Abbildung \ref{fig:design} dargestellt.
 \begin{figure}[htbp]
 \centering
@@ -238,28 +219,23 @@ Der Aufbau ist in Abbildung \ref{fig:design} dargestellt.
 \caption{System-Aufbau}
 \label{fig:design}
 \end{figure}
-Die Lösung lässt sich in drei Komponenten aufteilen:
-Einer Programmierumgebung, einem Kontrollprogramm und einer Smartphone-App.
-Die Programmierumgebung bildet sich aus einer Bibliothek von der aus der Entwickler die volle Funktionalität des Frameworks nutzen kann und dem vom Entwickler geschriebenen Programm.
-Auf dem lokalen PC platziert sind sowohl das Kontrollprogramm und die Programmierumgebung.
-Diese bildet ein standardisiertes Interface für Funktionsaufrufe.
+Die Programmierumgebung besteht aus einer programmiersprachenunabhänigen Bibliothek und dem vom Entwickler geschriebenen Programm.
+Der Entwickler kann die Funktionalität der Lösung nach Einbindung der Bibliothek nutzen
+Neben der Programmierumgebung läuft auf dem lokalen PC auch das Kontrollprogramm.
+Dieses ist für die Koordinierung des Nachrichtenaustauschs zwischen der Android-App und der Programmierumgebung zuständig.
 Startet ein Entwickler einen Aufruf der Bibliothek, kommuniziert diese ihn per UDP dem Kontrollprogramm.
 Das Kontrollprogramm kommunziert dann weiter über MQTT mit dem Smartphone.
-
-MQTT ist ein Client-Server-Protokoll, das auf TCP basiert.
-Duch seinen platzsparenden Header von 2 Bytes und maximalen Nachtichengröße von 260 MB ist es leichtgewichtig und gleichzeitig flexibel.
+MQTT ist ein auf TCP basierendens Client-Server-Protokoll.
+Durch einen 2 Byte großen Header und maximalen Payload-Größe von 260 MB ist es leichtgewichtig und gleichzeitig flexibel.
 Nachrichten werden an einen MQTT Broker gesendet, der die Nachrichten dann an alle Clients weiterreicht die das Topic auf dem die Nachricht gesendet wurde abboniert haben.
-Die UDP-Kommunikation zwischen Bibliothek und Kontrollprogramm verläuft auf dem lokalen PC über das Loopback-Interface.
-
+Die UDP-Kommunikation zwischen Bibliothek und Kontrollprogramm verläuft auf dem lokalen PC über ein Loopback-Interface.
 Das Kontrollprogramm erfüllt drei Aufgaben: Die Beantwortung von Sensoranfragen der Bibliothek, dem Zwischenspeichern von Sensorwerten in einem Pufferspeicher und dem Weiterleiten von Ausgabe-Kommandos auf das Smartphone.
-
 Bei Sensoranfragen werden von der Bibliothek aus an die Kontrollanwendung gesendet.
 Dieses beantwortet Sie mit dem aktuell vorliegenden Sensorwert.
 Die Sensorwerte werden fortlaufend durch das Smartphone aktualisiert.
 Es sendet fortwährend aktuelle Sensordaten an das Kontrollprogramm.
 Dieses nimmt Sie entgegen und sichert Sie in einem internen Puffer.
 Ausgabe-Anfragen für das Smartphone werden ebenfalls über das Kontrollprogramm an das Smartphone per MQTT gesendet.
-
 Die Smartphone-Anwendung beginnt sobald Sie startet mit der Erhebung der Sensordaten, welche sie anschließend an die Kontrollanwendung sendet.
 Daneben reagiert Sie auf Ausgabeanfragen von der Bibliothek, welche bei Eingang ausführt werden.
 
