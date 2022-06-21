@@ -1,0 +1,24 @@
+{
+    "mqtt": {
+        "topics": {
+            "normal": "22thesis01/test"
+        },
+        "credentials": {
+            "username": "22thesis01",
+            "password": "n4xdnp36"
+        },
+        "network": {
+            "port": 8883,
+            "hostname": "pma.inftech.hs-mannheim.de"
+        }
+    },
+    "middleware": {
+        "udp_ip": "127.0.0.1",
+        "listener_port": 5006,
+        "sender_port": 5005
+    },
+    "client": {
+        "listener_port": 5005,
+        "sender_port": 5006
+    }
+}

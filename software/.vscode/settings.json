@@ -1,0 +1,10 @@
+{
+    "makefile.extensionOutputFolder": "./.vscode",
+    "java.project.sourcePaths": [
+        "."
+    ],
+    "java.project.referencedLibraries": [
+        "C:\\Users\\Marius Cerwenetz\\Downloads\\junit.jar",
+        "jsonlib_java\\json.jar"
+    ]
+}

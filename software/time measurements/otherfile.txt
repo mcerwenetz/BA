@@ -1,0 +1,1598 @@
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 518
+Ticks             : 5186849
+TotalDays         : 6,0032974537037E-06
+TotalHours        : 0,000144079138888889
+TotalMinutes      : 0,00864474833333333
+TotalSeconds      : 0,5186849
+TotalMilliseconds : 518,6849
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 497
+Ticks             : 4974135
+TotalDays         : 5,75710069444444E-06
+TotalHours        : 0,000138170416666667
+TotalMinutes      : 0,008290225
+TotalSeconds      : 0,4974135
+TotalMilliseconds : 497,4135
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 608
+Ticks             : 6086877
+TotalDays         : 7,04499652777778E-06
+TotalHours        : 0,000169079916666667
+TotalMinutes      : 0,010144795
+TotalSeconds      : 0,6086877
+TotalMilliseconds : 608,6877
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 807
+Ticks             : 8076149
+TotalDays         : 9,34739467592593E-06
+TotalHours        : 0,000224337472222222
+TotalMinutes      : 0,0134602483333333
+TotalSeconds      : 0,8076149
+TotalMilliseconds : 807,6149
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 834
+Ticks             : 8346628
+TotalDays         : 9,66044907407407E-06
+TotalHours        : 0,000231850777777778
+TotalMinutes      : 0,0139110466666667
+TotalSeconds      : 0,8346628
+TotalMilliseconds : 834,6628
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 231
+Ticks             : 12313178
+TotalDays         : 1,42513634259259E-05
+TotalHours        : 0,000342032722222222
+TotalMinutes      : 0,0205219633333333
+TotalSeconds      : 1,2313178
+TotalMilliseconds : 1231,3178
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 770
+Ticks             : 7704009
+TotalDays         : 8,91667708333333E-06
+TotalHours        : 0,00021400025
+TotalMinutes      : 0,012840015
+TotalSeconds      : 0,7704009
+TotalMilliseconds : 770,4009
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 448
+Ticks             : 14486872
+TotalDays         : 1,6767212962963E-05
+TotalHours        : 0,000402413111111111
+TotalMinutes      : 0,0241447866666667
+TotalSeconds      : 1,4486872
+TotalMilliseconds : 1448,6872
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 269
+Ticks             : 12699682
+TotalDays         : 1,46987060185185E-05
+TotalHours        : 0,000352768944444444
+TotalMinutes      : 0,0211661366666667
+TotalSeconds      : 1,2699682
+TotalMilliseconds : 1269,9682
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 6
+Ticks             : 10063789
+TotalDays         : 1,16479039351852E-05
+TotalHours        : 0,000279549694444444
+TotalMinutes      : 0,0167729816666667
+TotalSeconds      : 1,0063789
+TotalMilliseconds : 1006,3789
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 715
+Ticks             : 17156418
+TotalDays         : 1,98569652777778E-05
+TotalHours        : 0,000476567166666667
+TotalMinutes      : 0,02859403
+TotalSeconds      : 1,7156418
+TotalMilliseconds : 1715,6418
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 750
+Ticks             : 17504684
+TotalDays         : 2,02600509259259E-05
+TotalHours        : 0,000486241222222222
+TotalMinutes      : 0,0291744733333333
+TotalSeconds      : 1,7504684
+TotalMilliseconds : 1750,4684
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 765
+Ticks             : 17659192
+TotalDays         : 2,04388796296296E-05
+TotalHours        : 0,000490533111111111
+TotalMinutes      : 0,0294319866666667
+TotalSeconds      : 1,7659192
+TotalMilliseconds : 1765,9192
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 518
+Ticks             : 15184261
+TotalDays         : 1,75743761574074E-05
+TotalHours        : 0,000421785027777778
+TotalMinutes      : 0,0253071016666667
+TotalSeconds      : 1,5184261
+TotalMilliseconds : 1518,4261
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 566
+Ticks             : 15663326
+TotalDays         : 1,8128849537037E-05
+TotalHours        : 0,000435092388888889
+TotalMinutes      : 0,0261055433333333
+TotalSeconds      : 1,5663326
+TotalMilliseconds : 1566,3326
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 363
+Ticks             : 13636691
+TotalDays         : 1,57832071759259E-05
+TotalHours        : 0,000378796972222222
+TotalMinutes      : 0,0227278183333333
+TotalSeconds      : 1,3636691
+TotalMilliseconds : 1363,6691
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 447
+Ticks             : 14478135
+TotalDays         : 1,67571006944444E-05
+TotalHours        : 0,000402170416666667
+TotalMinutes      : 0,024130225
+TotalSeconds      : 1,4478135
+TotalMilliseconds : 1447,8135
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 10
+Ticks             : 10104279
+TotalDays         : 1,16947673611111E-05
+TotalHours        : 0,000280674416666667
+TotalMinutes      : 0,016840465
+TotalSeconds      : 1,0104279
+TotalMilliseconds : 1010,4279
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 842
+Ticks             : 18424001
+TotalDays         : 2,13240752314815E-05
+TotalHours        : 0,000511777805555556
+TotalMinutes      : 0,0307066683333333
+TotalSeconds      : 1,8424001
+TotalMilliseconds : 1842,4001
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 717
+Ticks             : 17173820
+TotalDays         : 1,98771064814815E-05
+TotalHours        : 0,000477050555555556
+TotalMinutes      : 0,0286230333333333
+TotalSeconds      : 1,717382
+TotalMilliseconds : 1717,382
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 749
+Ticks             : 17494653
+TotalDays         : 2,02484409722222E-05
+TotalHours        : 0,000485962583333333
+TotalMinutes      : 0,029157755
+TotalSeconds      : 1,7494653
+TotalMilliseconds : 1749,4653
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 626
+Ticks             : 16266759
+TotalDays         : 1,88272673611111E-05
+TotalHours        : 0,000451854416666667
+TotalMinutes      : 0,027111265
+TotalSeconds      : 1,6266759
+TotalMilliseconds : 1626,6759
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 417
+Ticks             : 14177518
+TotalDays         : 1,64091643518519E-05
+TotalHours        : 0,000393819944444444
+TotalMinutes      : 0,0236291966666667
+TotalSeconds      : 1,4177518
+TotalMilliseconds : 1417,7518
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 202
+Ticks             : 12024142
+TotalDays         : 1,39168310185185E-05
+TotalHours        : 0,000334003944444444
+TotalMinutes      : 0,0200402366666667
+TotalSeconds      : 1,2024142
+TotalMilliseconds : 1202,4142
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 717
+Ticks             : 17177960
+TotalDays         : 1,98818981481481E-05
+TotalHours        : 0,000477165555555556
+TotalMinutes      : 0,0286299333333333
+TotalSeconds      : 1,717796
+TotalMilliseconds : 1717,796
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 2
+Milliseconds      : 400
+Ticks             : 24001577
+TotalDays         : 2,77796030092593E-05
+TotalHours        : 0,000666710472222222
+TotalMinutes      : 0,0400026283333333
+TotalSeconds      : 2,4001577
+TotalMilliseconds : 2400,1577
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 2
+Milliseconds      : 163
+Ticks             : 21636330
+TotalDays         : 2,50420486111111E-05
+TotalHours        : 0,000601009166666667
+TotalMinutes      : 0,03606055
+TotalSeconds      : 2,163633
+TotalMilliseconds : 2163,633
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 868
+Ticks             : 18681194
+TotalDays         : 2,16217523148148E-05
+TotalHours        : 0,000518922055555555
+TotalMinutes      : 0,0311353233333333
+TotalSeconds      : 1,8681194
+TotalMilliseconds : 1868,1194
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 2
+Milliseconds      : 103
+Ticks             : 21037582
+TotalDays         : 2,43490532407407E-05
+TotalHours        : 0,000584377277777778
+TotalMinutes      : 0,0350626366666667
+TotalSeconds      : 2,1037582
+TotalMilliseconds : 2103,7582
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 753
+Ticks             : 17534932
+TotalDays         : 2,02950601851852E-05
+TotalHours        : 0,000487081444444444
+TotalMinutes      : 0,0292248866666667
+TotalSeconds      : 1,7534932
+TotalMilliseconds : 1753,4932
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 643
+Ticks             : 16432459
+TotalDays         : 1,90190497685185E-05
+TotalHours        : 0,000456457194444444
+TotalMinutes      : 0,0273874316666667
+TotalSeconds      : 1,6432459
+TotalMilliseconds : 1643,2459
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 252
+Ticks             : 12521289
+TotalDays         : 1,44922326388889E-05
+TotalHours        : 0,000347813583333333
+TotalMinutes      : 0,020868815
+TotalSeconds      : 1,2521289
+TotalMilliseconds : 1252,1289
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 99
+Ticks             : 10990462
+TotalDays         : 1,27204421296296E-05
+TotalHours        : 0,000305290611111111
+TotalMinutes      : 0,0183174366666667
+TotalSeconds      : 1,0990462
+TotalMilliseconds : 1099,0462
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 914
+Ticks             : 9140474
+TotalDays         : 1,05792523148148E-05
+TotalHours        : 0,000253902055555556
+TotalMinutes      : 0,0152341233333333
+TotalSeconds      : 0,9140474
+TotalMilliseconds : 914,0474
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 869
+Ticks             : 8695747
+TotalDays         : 1,00645219907407E-05
+TotalHours        : 0,000241548527777778
+TotalMinutes      : 0,0144929116666667
+TotalSeconds      : 0,8695747
+TotalMilliseconds : 869,5747
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 786
+Ticks             : 7862619
+TotalDays         : 9,10025347222222E-06
+TotalHours        : 0,000218406083333333
+TotalMinutes      : 0,013104365
+TotalSeconds      : 0,7862619
+TotalMilliseconds : 786,2619
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 702
+Ticks             : 7023142
+TotalDays         : 8,12863657407407E-06
+TotalHours        : 0,000195087277777778
+TotalMinutes      : 0,0117052366666667
+TotalSeconds      : 0,7023142
+TotalMilliseconds : 702,3142
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 730
+Ticks             : 7306954
+TotalDays         : 8,45712268518518E-06
+TotalHours        : 0,000202970944444444
+TotalMinutes      : 0,0121782566666667
+TotalSeconds      : 0,7306954
+TotalMilliseconds : 730,6954
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 623
+Ticks             : 6237163
+TotalDays         : 7,21893865740741E-06
+TotalHours        : 0,000173254527777778
+TotalMinutes      : 0,0103952716666667
+TotalSeconds      : 0,6237163
+TotalMilliseconds : 623,7163
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 523
+Ticks             : 5238143
+TotalDays         : 6,06266550925926E-06
+TotalHours        : 0,000145503972222222
+TotalMinutes      : 0,00873023833333333
+TotalSeconds      : 0,5238143
+TotalMilliseconds : 523,8143
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 527
+Ticks             : 5271874
+TotalDays         : 6,10170601851852E-06
+TotalHours        : 0,000146440944444444
+TotalMinutes      : 0,00878645666666667
+TotalSeconds      : 0,5271874
+TotalMilliseconds : 527,1874
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 474
+Ticks             : 4746421
+TotalDays         : 5,49354282407407E-06
+TotalHours        : 0,000131845027777778
+TotalMinutes      : 0,00791070166666667
+TotalSeconds      : 0,4746421
+TotalMilliseconds : 474,6421
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 542
+Ticks             : 5421787
+TotalDays         : 6,27521643518519E-06
+TotalHours        : 0,000150605194444444
+TotalMinutes      : 0,00903631166666667
+TotalSeconds      : 0,5421787
+TotalMilliseconds : 542,1787
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 522
+Ticks             : 5225838
+TotalDays         : 6,04842361111111E-06
+TotalHours        : 0,000145162166666667
+TotalMinutes      : 0,00870973
+TotalSeconds      : 0,5225838
+TotalMilliseconds : 522,5838
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 468
+Ticks             : 4681351
+TotalDays         : 5,41823032407407E-06
+TotalHours        : 0,000130037527777778
+TotalMinutes      : 0,00780225166666667
+TotalSeconds      : 0,4681351
+TotalMilliseconds : 468,1351
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 706
+Ticks             : 7066328
+TotalDays         : 8,17862037037037E-06
+TotalHours        : 0,000196286888888889
+TotalMinutes      : 0,0117772133333333
+TotalSeconds      : 0,7066328
+TotalMilliseconds : 706,6328
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 489
+Ticks             : 4897612
+TotalDays         : 5,66853240740741E-06
+TotalHours        : 0,000136044777777778
+TotalMinutes      : 0,00816268666666667
+TotalSeconds      : 0,4897612
+TotalMilliseconds : 489,7612
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 427
+Ticks             : 4272148
+TotalDays         : 4,94461574074074E-06
+TotalHours        : 0,000118670777777778
+TotalMinutes      : 0,00712024666666667
+TotalSeconds      : 0,4272148
+TotalMilliseconds : 427,2148
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 118
+Ticks             : 11185505
+TotalDays         : 1,29461863425926E-05
+TotalHours        : 0,000310708472222222
+TotalMinutes      : 0,0186425083333333
+TotalSeconds      : 1,1185505
+TotalMilliseconds : 1118,5505
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 259
+Ticks             : 12596700
+TotalDays         : 1,45795138888889E-05
+TotalHours        : 0,000349908333333333
+TotalMinutes      : 0,0209945
+TotalSeconds      : 1,25967
+TotalMilliseconds : 1259,67
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 972
+Ticks             : 9722503
+TotalDays         : 1,12528969907407E-05
+TotalHours        : 0,000270069527777778
+TotalMinutes      : 0,0162041716666667
+TotalSeconds      : 0,9722503
+TotalMilliseconds : 972,2503
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 20
+Ticks             : 10203920
+TotalDays         : 1,18100925925926E-05
+TotalHours        : 0,000283442222222222
+TotalMinutes      : 0,0170065333333333
+TotalSeconds      : 1,020392
+TotalMilliseconds : 1020,392
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 645
+Ticks             : 6453250
+TotalDays         : 7,46903935185185E-06
+TotalHours        : 0,000179256944444444
+TotalMinutes      : 0,0107554166666667
+TotalSeconds      : 0,645325
+TotalMilliseconds : 645,325
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 774
+Ticks             : 7741200
+TotalDays         : 8,95972222222222E-06
+TotalHours        : 0,000215033333333333
+TotalMinutes      : 0,012902
+TotalSeconds      : 0,77412
+TotalMilliseconds : 774,12
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 675
+Ticks             : 6756458
+TotalDays         : 7,81997453703704E-06
+TotalHours        : 0,000187679388888889
+TotalMinutes      : 0,0112607633333333
+TotalSeconds      : 0,6756458
+TotalMilliseconds : 675,6458
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 543
+Ticks             : 5436717
+TotalDays         : 6,29249652777778E-06
+TotalHours        : 0,000151019916666667
+TotalMinutes      : 0,009061195
+TotalSeconds      : 0,5436717
+TotalMilliseconds : 543,6717
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 616
+Ticks             : 6163686
+TotalDays         : 7,13389583333333E-06
+TotalHours        : 0,0001712135
+TotalMinutes      : 0,01027281
+TotalSeconds      : 0,6163686
+TotalMilliseconds : 616,3686
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 801
+Ticks             : 8012599
+TotalDays         : 9,27384143518518E-06
+TotalHours        : 0,000222572194444444
+TotalMinutes      : 0,0133543316666667
+TotalSeconds      : 0,8012599
+TotalMilliseconds : 801,2599
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 510
+Ticks             : 5106061
+TotalDays         : 5,90979282407407E-06
+TotalHours        : 0,000141835027777778
+TotalMinutes      : 0,00851010166666667
+TotalSeconds      : 0,5106061
+TotalMilliseconds : 510,6061
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 613
+Ticks             : 6135848
+TotalDays         : 7,10167592592593E-06
+TotalHours        : 0,000170440222222222
+TotalMinutes      : 0,0102264133333333
+TotalSeconds      : 0,6135848
+TotalMilliseconds : 613,5848
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 534
+Ticks             : 5342306
+TotalDays         : 6,18322453703704E-06
+TotalHours        : 0,000148397388888889
+TotalMinutes      : 0,00890384333333333
+TotalSeconds      : 0,5342306
+TotalMilliseconds : 534,2306
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 452
+Ticks             : 4528425
+TotalDays         : 5,24123263888889E-06
+TotalHours        : 0,000125789583333333
+TotalMinutes      : 0,007547375
+TotalSeconds      : 0,4528425
+TotalMilliseconds : 452,8425
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 464
+Ticks             : 4642691
+TotalDays         : 5,3734849537037E-06
+TotalHours        : 0,000128963638888889
+TotalMinutes      : 0,00773781833333333
+TotalSeconds      : 0,4642691
+TotalMilliseconds : 464,2691
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 575
+Ticks             : 5750612
+TotalDays         : 6,65580092592593E-06
+TotalHours        : 0,000159739222222222
+TotalMinutes      : 0,00958435333333333
+TotalSeconds      : 0,5750612
+TotalMilliseconds : 575,0612
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 425
+Ticks             : 4252589
+TotalDays         : 4,92197800925926E-06
+TotalHours        : 0,000118127472222222
+TotalMinutes      : 0,00708764833333333
+TotalSeconds      : 0,4252589
+TotalMilliseconds : 425,2589
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 474
+Ticks             : 4747387
+TotalDays         : 5,49466087962963E-06
+TotalHours        : 0,000131871861111111
+TotalMinutes      : 0,00791231166666667
+TotalSeconds      : 0,4747387
+TotalMilliseconds : 474,7387
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 519
+Ticks             : 5197222
+TotalDays         : 6,01530324074074E-06
+TotalHours        : 0,000144367277777778
+TotalMinutes      : 0,00866203666666667
+TotalSeconds      : 0,5197222
+TotalMilliseconds : 519,7222
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 500
+Ticks             : 5005886
+TotalDays         : 5,79384953703704E-06
+TotalHours        : 0,000139052388888889
+TotalMinutes      : 0,00834314333333333
+TotalSeconds      : 0,5005886
+TotalMilliseconds : 500,5886
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 954
+Ticks             : 9544803
+TotalDays         : 1,10472256944444E-05
+TotalHours        : 0,000265133416666667
+TotalMinutes      : 0,015908005
+TotalSeconds      : 0,9544803
+TotalMilliseconds : 954,4803
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 219
+Ticks             : 12191078
+TotalDays         : 1,41100439814815E-05
+TotalHours        : 0,000338641055555556
+TotalMinutes      : 0,0203184633333333
+TotalSeconds      : 1,2191078
+TotalMilliseconds : 1219,1078
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 17
+Ticks             : 10175302
+TotalDays         : 1,17769699074074E-05
+TotalHours        : 0,000282647277777778
+TotalMinutes      : 0,0169588366666667
+TotalSeconds      : 1,0175302
+TotalMilliseconds : 1017,5302
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 44
+Ticks             : 10440321
+TotalDays         : 1,20837048611111E-05
+TotalHours        : 0,000290008916666667
+TotalMinutes      : 0,017400535
+TotalSeconds      : 1,0440321
+TotalMilliseconds : 1044,0321
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 769
+Ticks             : 7691538
+TotalDays         : 8,90224305555555E-06
+TotalHours        : 0,000213653833333333
+TotalMinutes      : 0,01281923
+TotalSeconds      : 0,7691538
+TotalMilliseconds : 769,1538
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 819
+Ticks             : 8191664
+TotalDays         : 9,48109259259259E-06
+TotalHours        : 0,000227546222222222
+TotalMinutes      : 0,0136527733333333
+TotalSeconds      : 0,8191664
+TotalMilliseconds : 819,1664
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 649
+Ticks             : 6498397
+TotalDays         : 7,52129282407407E-06
+TotalHours        : 0,000180511027777778
+TotalMinutes      : 0,0108306616666667
+TotalSeconds      : 0,6498397
+TotalMilliseconds : 649,8397
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 508
+Ticks             : 15082188
+TotalDays         : 1,74562361111111E-05
+TotalHours        : 0,000418949666666667
+TotalMinutes      : 0,02513698
+TotalSeconds      : 1,5082188
+TotalMilliseconds : 1508,2188
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 44
+Ticks             : 10441865
+TotalDays         : 1,20854918981481E-05
+TotalHours        : 0,000290051805555556
+TotalMinutes      : 0,0174031083333333
+TotalSeconds      : 1,0441865
+TotalMilliseconds : 1044,1865
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 979
+Ticks             : 9796096
+TotalDays         : 1,13380740740741E-05
+TotalHours        : 0,000272113777777778
+TotalMinutes      : 0,0163268266666667
+TotalSeconds      : 0,9796096
+TotalMilliseconds : 979,6096
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 1
+Milliseconds      : 39
+Ticks             : 10397162
+TotalDays         : 1,20337523148148E-05
+TotalHours        : 0,000288810055555556
+TotalMinutes      : 0,0173286033333333
+TotalSeconds      : 1,0397162
+TotalMilliseconds : 1039,7162
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 565
+Ticks             : 5653820
+TotalDays         : 6,54377314814815E-06
+TotalHours        : 0,000157050555555556
+TotalMinutes      : 0,00942303333333333
+TotalSeconds      : 0,565382
+TotalMilliseconds : 565,382
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 708
+Ticks             : 7088602
+TotalDays         : 8,20440046296296E-06
+TotalHours        : 0,000196905611111111
+TotalMinutes      : 0,0118143366666667
+TotalSeconds      : 0,7088602
+TotalMilliseconds : 708,8602
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 635
+Ticks             : 6355687
+TotalDays         : 7,35611921296296E-06
+TotalHours        : 0,000176546861111111
+TotalMinutes      : 0,0105928116666667
+TotalSeconds      : 0,6355687
+TotalMilliseconds : 635,5687
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 453
+Ticks             : 4536342
+TotalDays         : 5,25039583333333E-06
+TotalHours        : 0,0001260095
+TotalMinutes      : 0,00756057
+TotalSeconds      : 0,4536342
+TotalMilliseconds : 453,6342
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 451
+Ticks             : 4517524
+TotalDays         : 5,22861574074074E-06
+TotalHours        : 0,000125486777777778
+TotalMinutes      : 0,00752920666666667
+TotalSeconds      : 0,4517524
+TotalMilliseconds : 451,7524
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 558
+Ticks             : 5583096
+TotalDays         : 6,46191666666667E-06
+TotalHours        : 0,000155086
+TotalMinutes      : 0,00930516
+TotalSeconds      : 0,5583096
+TotalMilliseconds : 558,3096
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 401
+Ticks             : 4018203
+TotalDays         : 4,65069791666667E-06
+TotalHours        : 0,00011161675
+TotalMinutes      : 0,006697005
+TotalSeconds      : 0,4018203
+TotalMilliseconds : 401,8203
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 386
+Ticks             : 3869178
+TotalDays         : 4,47821527777778E-06
+TotalHours        : 0,000107477166666667
+TotalMinutes      : 0,00644863
+TotalSeconds      : 0,3869178
+TotalMilliseconds : 386,9178
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 460
+Ticks             : 4605695
+TotalDays         : 5,33066550925926E-06
+TotalHours        : 0,000127935972222222
+TotalMinutes      : 0,00767615833333333
+TotalSeconds      : 0,4605695
+TotalMilliseconds : 460,5695
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 397
+Ticks             : 3973707
+TotalDays         : 4,59919791666667E-06
+TotalHours        : 0,00011038075
+TotalMinutes      : 0,006622845
+TotalSeconds      : 0,3973707
+TotalMilliseconds : 397,3707
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 745
+Ticks             : 7457839
+TotalDays         : 8,63175810185185E-06
+TotalHours        : 0,000207162194444444
+TotalMinutes      : 0,0124297316666667
+TotalSeconds      : 0,7457839
+TotalMilliseconds : 745,7839
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 421
+Ticks             : 4212113
+TotalDays         : 4,87513078703704E-06
+TotalHours        : 0,000117003138888889
+TotalMinutes      : 0,00702018833333333
+TotalSeconds      : 0,4212113
+TotalMilliseconds : 421,2113
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 500
+Ticks             : 5006519
+TotalDays         : 5,79458217592593E-06
+TotalHours        : 0,000139069972222222
+TotalMinutes      : 0,00834419833333333
+TotalSeconds      : 0,5006519
+TotalMilliseconds : 500,6519
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 603
+Ticks             : 6030028
+TotalDays         : 6,97919907407407E-06
+TotalHours        : 0,000167500777777778
+TotalMinutes      : 0,0100500466666667
+TotalSeconds      : 0,6030028
+TotalMilliseconds : 603,0028
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 519
+Ticks             : 5198143
+TotalDays         : 6,01636921296296E-06
+TotalHours        : 0,000144392861111111
+TotalMinutes      : 0,00866357166666667
+TotalSeconds      : 0,5198143
+TotalMilliseconds : 519,8143
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 631
+Ticks             : 6310809
+TotalDays         : 7,30417708333333E-06
+TotalHours        : 0,00017530025
+TotalMinutes      : 0,010518015
+TotalSeconds      : 0,6310809
+TotalMilliseconds : 631,0809
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 836
+Ticks             : 8361300
+TotalDays         : 9,67743055555555E-06
+TotalHours        : 0,000232258333333333
+TotalMinutes      : 0,0139355
+TotalSeconds      : 0,83613
+TotalMilliseconds : 836,13
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 803
+Ticks             : 8037422
+TotalDays         : 9,30257175925926E-06
+TotalHours        : 0,000223261722222222
+TotalMinutes      : 0,0133957033333333
+TotalSeconds      : 0,8037422
+TotalMilliseconds : 803,7422
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 711
+Ticks             : 7111920
+TotalDays         : 8,23138888888889E-06
+TotalHours        : 0,000197553333333333
+TotalMinutes      : 0,0118532
+TotalSeconds      : 0,711192
+TotalMilliseconds : 711,192
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 810
+Ticks             : 8101837
+TotalDays         : 9,37712615740741E-06
+TotalHours        : 0,000225051027777778
+TotalMinutes      : 0,0135030616666667
+TotalSeconds      : 0,8101837
+TotalMilliseconds : 810,1837
+
+
+
+
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 655
+Ticks             : 6556811
+TotalDays         : 7,58890162037037E-06
+TotalHours        : 0,000182133638888889
+TotalMinutes      : 0,0109280183333333
+TotalSeconds      : 0,6556811
+TotalMilliseconds : 655,6811
+
+
+
