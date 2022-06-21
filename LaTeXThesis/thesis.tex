@@ -15,7 +15,7 @@
 \newcommand{\thesisofwas}{of Science}
 \newcommand{\studiengang}{Technische Informatik}
 % \newcommand{\studiengang}{Medizintechnik}
-\newcommand{\titel}{Smartphonesensoren- und Ausgabemöglichkeiten zum Programmierenlernen}
+\newcommand{\titel}{Smartphones als Sensor- und Aktor}
 \newcommand{\kurztitel}{Template Abschlussarbeit}
 \newcommand{\autor}{Marius Cerwenetz}
 \newcommand{\datum}{08. Juli 2022} % Abgabedatum
@@ -27,87 +27,81 @@
 \include{vorspann} % Titelseite, Erklärungen, etc.
 
 \begin{abstract}
-Um Programmieraufgaben möglichst interaktiv zu gestalten eignen sich Projekte mit Microcontrollern besonders gut.
+Um Programmieraufgaben interaktiv zu gestalten eignen sich Projekte mit Microcontrollern besonders gut.
 Smartphones bieten einen vergleichbaren Funktionsumfang und müssen meist nicht zusätzlich beschafft werden.
 In dieser Arbeit wurde eine Softwarelösung erstellt, um Smartphonesensoren über eine Programmierumgebung auszulesen und Ausgaben auf dem Smartphone auszuführen.
-Hierfür wurde eine Android-Anwendung, eine Kontrollanwendung und drei Softwarebibliotheken in dem Sprachen C, Java und Python implementiert.
-Als Verbindungstechnologien kommen UDP und MQTT zum Einsatz.
-Für die Nutzung werden Beispiel-Programmieraufgaben dazugereicht.
+Hierfür wurde eine Android-Anwendung, eine Kontrollanwendung und eine programiersprachenunabhängige Softwarebibliothek erstellt.
+
+Für die Nutzung der Lösung werden Beispiel-Programmieraufgaben dazugereicht.
 Programmierer schreiben Programme auf dem PC, welche auf Änderungen von Smartphonesensorwerten wie beispielsweise Beschleunigungssensoren reagieren und die Ausgabemöglichkeiten des Smartphones nutzen.
 \end{abstract}
 
 \tableofcontents
 
 \chapter{Einführung} \label{chap:intro}
-Viele Programmiererinnen und Programmiererinnen, die das Programmieren gerade erst entdecken, mühen sich zu Anfang mit Semantik und grundlegenden algorithmischen Konzepten.
-Akademische Übungsaufgaben senken die Lernmotivation, abstrahieren gelerntes und lassen Softwareentwicklung fade und dumpf erscheinen.
+Viele Programmierer mühen sich zu Anfang mit der Semantik von Programmiersprachen und grundlegenden algorithmischen Konzepten.
+Akademische Übungsaufgaben senken die Lernmotivation und abstrahieren gelerntes.
 Projekte mit Microcontrollern dagegen bieten eine praktische, fordernde und spielerische Einstiegsmöglichkeit.
 Es werden kleine Projekte realisiert, die durch die Inbezugnahme von Sensoren Programmierer einladen sich an Programmieraufgaben auszuprobieren.
-Diese Eigenschaften sind insbesondere bei Projekten mit wenig Vorwissen für Lernwillige wie Schüler oder Erstemester-Studierende sinnvoll.
-Gelerntes kann direkt angewandt werden und Änderungen an Algorithmen sind schnell in der Verhaltensweise der Hardware erkennbar.
-Praktische Programmieraufgaben bieten für Programmieranfänger den höchsten Lerneffekt bei höchster Motivation.\cite{learning_computer_programming}
-Die in Microcontroller integrierten Sensoren sind zentraler Bestandteil um physische Eigenschaften in der realen Welt zu messen.
-Auf diese Eigenschaften und ihre Änderung kann reagiert werden.
-Dann erscheint ein Gerät für Nutzer bedienbar.
-Im Programm beschriebene Abläufe definieren das Verhalten auf Änderungen dieses Sensorwerte.
-Während der Entwicklung können Messergebnisse jedoch nicht perfekt abgeschätzt werden was zu einem Fehlverhalten führen kann.
+Diese Eigenschaften sind sinnvoll, insbesondere bei Projekten für Programmierer mit wenig Vorwissen wie Schüler oder Erstemester-Studierende.
+Gelerntes kann direkt angewandt werden.
+Praktische Programmieraufgaben bieten für Programmieranfänger den besten Lerneffekt bei höchster Motivation.\cite{learning_computer_programming}
+Die in Microcontroller integrierten Sensoren sind Voraussetzung um physische Eigenschaften in der realen Welt zu messen.
+Auf diese Eigenschaften und ihre Änderung kann entsprechend reagiert werden.
+Im Programm beschriebene Abläufe definieren Funktion und Verhalten des Microcontrollers bei Änderungen der Sensorwerte.
+Geräte erscheinen dann für Nutzer bedienbar.
+Während der Entwicklung können Messergebnisse jedoch nicht perfekt vorausbestimmt werden.
+Bei anschließenden Tests fällt häufig ein Fehlverhalten auf.
 Dann muss das Programm gegebenenfalls angepasst werden, bis das gewünschte Verhalten vorliegt.
-Die ständige Berührung und Weiterentwicklung mindert Ängste vor Änderungen, schafft Routine und damit ein tieferes Verständnis, Kontext und Hintergrundwissen für die Problemstellung.
+Die ständige Weiterentwicklung mindert Ängste vor Änderungen des Codes.
+Kontakt schafft Routine und damit ein tieferes Verständnis und Hintergrundwissen für die Problemstellung.
 
-Microcontroller-Projekte benötigen allerdings teure Einstiegs-Kits.
-Ein Arduino-Development-Board kostet im internen Arduino-Shop über 80,00 € \cite{arduino_kit}.
-Ein Großteil der Kosten entfällt zwar auf den eigentlichen Microcontroller, ein nicht unmittelbarer Teil jedoch auch auf Peripherie wie wie Breadboards, Verbindungskabel und Erweiterungsboards.
-Neben zusätzlich verursachten Kosten setzen Sie außerdem gewisses Hintergrundwissen voraus.
-Für die erstmalige Verwendung von Breadboards muss beispielsweise bekannt sein welche Ports wie verbunden sind, welche Konventionen es für Plus- und Minuspole gibt und welche Bauteile für die Benutzung geeignet sind.
-Dies stellt ebenfalls eine Einstiegshürde dar, die die eigentliche interaktive Lernerfahrung herauszögert und Ziele entfernt und die Motivation senkt.
-
+Microcontroller-Projekte benötigen allerdings kostspielige Einstiegs-Kits.
+Ein Arduino-Development-Board kostet im Arduino-Shop über 80,00 € \cite{arduino_kit}.
+Ein Großteil der Kosten entfällt zwar auf den eigentlichen Microcontroller, ein nicht unmittelbarer Teil jedoch auf Peripherie wie wie Breadboards, Verbindungskabel und Erweiterungsboards.
+Sie setzen außerdem gewisses Hintergrundwissen voraus.
+Für die erstmalige Verwendung von Breadboards muss beispielsweise bekannt sein, welche Ports wie verbunden sind, welche Konventionen es für Plus- und Minuspole gibt und welche Bauteile für die Benutzung geeignet sind.
+Dies stellt ebenfalls eine Einstiegshürde dar, die die eigentliche interaktive Lernerfahrung herauszögert und die Motivation senkt.
 Smartphones dienen hier als Alternative.
 Aktuelle Smartphones sind mit zahlreichen Sensoren wie Lagesensoren, Gyroskop oder Näherungssensoren ausgestattet.
-Sie bieten einen ähnlichen Funktionsumfang wie vergleichbare Microcontroller und sind gleichzeitig noch sicherer.
-Elektrische Bauteile konventioneller Microcontroller-Sets erlaubt einen Fehlgebrauch der im schlimmsten Fall in der Zerstörung von Komponenten enden kann und zusätzliche Kosten verursacht.
+Sie bieten einen ähnlichen Funktionsumfang wie vergleichbare Microcontroller.
+Elektrische Bauteile konventioneller Microcontroller-Sets erlauben einen Fehlgebrauch, der im schlimmsten Fall in der Zerstörung von Komponenten enden kann.
 Projekte mit Smartphones reduzieren dieses Risiko dadurch, dass Schaltkreise bereits intern verknüpft und somit von äußerlicher Fehlverwendung geschützt sind.
-
-Ein weiterer Vorteil Smartphones anstatt Microcontroller zu verwenden liegt in der Verfügbarkeit.
+Ein weiterer Vorteil Smartphones gegebüber Microcontrollern liegt in der Verfügbarkeit.
 Weltweit besaßen 2022 5,2 Mrd. Menschen ein Smartphone. \cite{smartphone_users}
-Viele Kinder besitzen bereits mit 10 Jahren \cite{bitkom_smartphones} eins.
-Da ein Smartphone üblicherweise nicht nur für Programmieraufgaben, sondern auch für den Alltag verwendet wird, sind Smartphones bereits in Besitz.
-
-Smartphones sind eine Alternative zu herkömmlichen Microcontroller-Sets.
-Sie verursachen weniger Kosten und sind meistens bereits in Gebrauch.
+Viele Kinder besitzen bereits eins mit 10 Jahren \cite{bitkom_smartphones}.
+Da ein Smartphone üblicherweise nicht nur für Programmieraufgaben, sondern auch für den Alltag verwendet wird, sind Smartphones oft bereits in Besitz.
 Durch Ihre eingesetzten Sensoren können Sie zuverlässig Umgebungseigenschaften messen.
-Neben Übertragungsschnittstellen wie USB sind ist auch W-LAN eine Verbindungsmöglichkeit.
-Da vereinfacht die Ansteuerung.
-Kabel werden nicht benötigt und die Geräte sind Batteriebetrieben, was autonome Lösungen ermöglicht.
-
+Neben kabelgebundenen Übertragungsschnittstellen wie USB besteht auch die Möglichkeit sich per W-LAN zu verbinden.
+Die Geräte sind zudem batteriebetrieben, was autonome Lösungen ermöglicht.
 Eine Einbindung von Smartphones ist in den meisten Prgrammierumgebungen jedoch nicht möglich.
-Auch gibt es Seitens der Smartphone-Betriebssystemhersteller keine standardisierten Ausgabemöglichkeiten.
+Smartphone-Betriebssystemhersteller bieten keine standardisierten Ausgabemöglichkeiten an.
 Moderne Smartphone-Betriebssysteme bauen sich modular aus mobilen Anwendungen auf, so dass das Betriebssystem keine direkten Ausgabemöglichkeiten besitzt.
 Visuelle und haptische Ausgaben sind nur über mobile Anwendungen möglich.
 
-Ziel der Arbeit ist es eine Smartphone-Anwendung für visuelle Ausgaben und Sensorwerte zu entwickeln und Schnittstellen in Programmierumgebungen zu schaffen, die die Nutzungsmöglichkeiten des Smartphones in Programmierprozesse einbinden.
-Möglich wird dies durch Softwarebibliotheken die Funktionsaufrufe bereitstellen, welche Aktionen auf dem Smartphone auslösen.
+Ziel der Arbeit ist es, eine Smartphone-Anwendung für visuelle Ausgaben sowie der Messung und Übertragung von Sensorwerten zu entwickeln.
+Außerdem werden Schnittstellen in einer Programmierumgebung geschaffen, die die Interaktionsmöglichkeiten von Smartphones nutzbar macht.
+Hierfür stellen Softwarebibliotheken Funktionsaufrufe zur Verfügung um Ausgaben auf dem Smartphone zu tätigen oder Sensorwerte auszulesen.
 Das Smartphone reagiert auf die empfangen Anfragen und führt die entsprechenden Kommandos aus.
-Das Framework besteht aus einer programmiersprachenunabhängigen Programmierumgebung, einer Kontroll-Anwendung und einer mobilen Anwendung für Android Smartphones.
-
+Zusammengesetzt besteht die Lösung aus einer programmiersprachenunabhängigen Programmierumgebung, einer Kontroll-Anwendung und einer mobilen Anwendung für Android Smartphones.
 Für die Verwendung werden angehenden Programmiereren Beispielaufgaben gereicht.
-Sie stellen Anforderungen an die Umsetzung der Lösung.
-Diese Rahmenbedingungen sowie die Aufgaben sind in Kapitel \ref{chap:Experimente} zu finden.
-Die drei Komponenten Smartphone-App, Kontrollanwendung und Programmierumgebung werden
-in Kapitel \ref{chap:architektur} vorgestellt und das Zusammenspiel der Komponenten erläutert.
+Um die Beispielaufgaben zu bewältigen muss die Lösung auch Benutzungsmöglichkeiten bereitstellen.
+Hierdurch werden Anforderungen an Sie gestellt.
+Die Aufgaben, Anforderungen und Rahmenbedingungen sind in Kapitel \ref{chap:Experimente} zu finden.
+Die drei Komponenten Smartphone-App, Kontrollanwendung und Programmierumgebung und ihr Zusammenspiel werden
+in Kapitel \ref{chap:architektur} vorgestellt.
 Die dafür benötigten Nachrichtenformate werden in Kapitel \ref{chap:message_formats} gezeigt.
-Zweck und Ablauf der Nachrichten-Typen wird erklärt und der Nachrichtenaustausch exemplarisch veranschaulicht.
-Kapitel \ref{chap:app} behandelt die Funktionsweise und den Aufbau der Android App im Detail.
-Die App tauscht Nachrichten mit der Programmierumgebung aus.
-Als zwischenvermittlung fungiert dasbei das zentrale Kontrollprogramm was in \ref{chap:server_software} erklärt wird.
-Das Kontrollprogram tauscht wiederrum Nachrichten mit der Programmierumgebung aus.
-Angehende Programmierer benötigen Sie um das Smartphone anzusteuern.
-Einbindung, Nutzung, sowie interne Kommunikation zu den anderen zwei Komponenten werden in Kapitel \ref{chap:libs} erklärt.
-Zum Schluss wird in Kapitel \ref{chap:eval} untersucht ob die vorgegebenen Anforderungen erfüllt wurden.
-Desweiteren wird die Verwendung der Lösung anhand einer Beispielaufgabe vorgestellt.
-Die bei der Entwicklung festgestellten Probleme werden in Kapitel \ref{chap:fazit} diskutiert.
+Ihr Zweck wird erklärt und und der Nachrichtenaustausch dort exemplarisch veranschaulicht.
+Kapitel \ref{chap:app} behandelt die Funktionsweise und den Aufbau der Android-App im Detail.
+Diese tauscht Nachrichten mit der Programmierumgebung aus.
+Als Zwischenvermittlung fungiert das zentrale Kontrollprogramm, was in Kapitel \ref{chap:server_software} erklärt wird.
+Einbindung, Nutzung, und externe Schnittstellen der Bibliotheken zur Android-App und dem Kontrollprogramm werden in Kapitel \ref{chap:libs} erklärt.
+In Kapitel wird \ref{chap:eval} untersucht, ob die vorgegebenen Anforderungen erfüllt wurden.
+Dort wird zudem die Verwendung der Lösung anhand einer Beispielaufgabe vorgestellt.
+Schwierigkeiten die bei der Entwicklung auftraten werden in Kapitel \ref{chap:fazit} diskutiert.
 Erweiterungsmöglichkeiten und Verbesserungen werden diskutiert.
 
-\chapter{Sensorauslesung und Informationsdarstellung auf Smartphones} \label{chap:Experimente}
+\chapter{Smartphones als Microcontroller-Ersatz} \label{chap:Experimente}
 Smartphones sind in sich geschlossene technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB-Port, WLAN und Bluetooth keine weiteren Schnittstellen bieten um externe Hardware und Schaltungen anzuschließen und fernzusteuern.
 Microcontroller-Schaltungen zum Programmierenlernen bieten meistens mehrere Ausgabemöglichkeiten wie LEDs, Lautsprecher oder Piepser.
 Smartphones bieten jedoch den Vorteil der virtuellen Darstellung auf dem Display.
@@ -192,7 +186,6 @@ Diese sind jedoch nicht immer exakt gleich.
 So muss auch ausprobiert werden, wie sich eine Umdrehung in den Messwerten äußert und wie Drehungen optimal erkannt werden können.
 
 \section{Anforderungen}\label{sec:anforderungen}
-Damit die im vorherigen Abschnitt erläuterten Beispielprogrammieraufgaben umgesetzt werden können müssen verschiedene Anforderungen an die Lösung erfüllt werden.
 Geringe Latenzen sind der Sensordatenübermittlung nötig um eine schnelle Reaktion der Programme auf Messergebnisse realisieren.
 Ddie Aufgabenbereiche der Lösung müssen seperiert werden.
 Die Komponenten, die diese bearbeiten müssen über Datensparsame Protokolle miteinander kommunizieren um die Latenzen verringern.
