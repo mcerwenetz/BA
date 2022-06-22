@@ -1,0 +1,24 @@
+@startuml
+<style>
+activityDiagram {
+FontSize 20
+}
+document {
+   BackgroundColor transparent
+}
+</style>
+|#Beige|MqttHandlerThread|
+:Mqtt Nachricht entgegennehmen;
+:Nachricht in die \n mqtt_request_queue eintragen;
+|#GhostWhite|MqttRequestHandler|
+:Nachricht aus der \nmqtt_request_queue \nentnehmen;
+if(type) then (update_request)
+	:Sensorwert \naktualisieren;
+	stop
+else(rpc_response)
+	:in udp_anwer_queue \neintragen;
+|#LightBlue|AnswerQueueWorker|
+:RPC Response aus \nder udp_anwer_queue \nnehmen;
+:per udp an \ndie Bibliothek senden;
+stop
+@enduml

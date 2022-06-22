@@ -1,0 +1,15 @@
+@startuml
+:SensorEventListener starten und binden;
+fork
+	:Sensordaten übermitteln;
+fork again
+	while(Neue Nachricht kann eingehen?) is (Ja)
+	:Auf Anfrage warten;
+	:Ausgabe ausführen;
+	:Auf Anfrage warten;
+	endwhile (false)
+	stop
+end fork
+stop
+
+@enduml

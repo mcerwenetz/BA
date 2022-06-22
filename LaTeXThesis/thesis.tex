@@ -301,27 +301,26 @@ Dieses antwortet über UDP mit einer sensor\_response.
 Währenddessen sendet die App auf dem Smartphone kontinuierlich update\_requests per MQTT um der Kontrollanwendung neue Messergebnisse mitzuteilen.
 
 Neben den Sensordaten betreffenden Nachrichten existieren auch Ausgabe-Kommandos um Ausgaben in der Smartphone-App umzusetzen.
-Unterscheidbar sind solche Anfragen die lediglich ausgeführt werden sollen und solche , die einen Rückgabewert erwarten.
-Für erstere gibt es den Nachreichtentyp \textit{rpc\_request}.
-RPC steht für Remote Procedure Call und bezeichnet Funktionsaufrufe die auf einem Client aufgerufen, jedoch auf einem Server ausgeführt werden.
-Die Bezeichnung entspricht so nicht dem Konzept, da die die Smartphone-App in diesem Fall die Rolle des Servers einnähme.
-Die Voraussetzung einer Client-Server-Anwendung ist nicht gegeben.
-Vielmehr tauschen hier gleichwertige Kommunikationspartner Daten aus.
-Die Bezeichnung wurde eher unter dem Fokus auf die entfernte Ausführung gewählt.
+Es wird unterschieden Ausgaben mit und ohne Rückgabewert.
+Für erstere gibt es den Nachrichtentyp \textit{rpc\_request}.
+RPC steht für Remote Procedure Call und bezeichnet Clientseitige Funktionsaufrufe, die auf einem Server ausgeführt werden.
+Die Bezeichnung entspricht nicht dem Konzept, da die die Smartphone-App in diesem Fall die Rolle des Servers einnehmen würde.
+Die Voraussetzung einer Client-Server-Anwendung ist dadurch nicht gegeben.
+Kommunikationspartner tauschen auf gleicher Ebene Daten aus.
+Die Bezeichnung wurde unter dem Fokus auf der entfernten Ausführung einer Funktion gewählt.
 Der Nachrichtentyp enthält die Felder \texttt{command} und \texttt{value}.
-Ersters beeinhaltet eines der spezifizierten Ausgabe-Kommandos.
-Das Zweite beschreibt die Größe des Parameters für das Ausgabekommando.
+Ersters spezifiziert das Ausgabe-Kommando, das Zweite die Größe des Parameters für das Ausgabekommando.
 Es ist fast immer befüllt.
 Vereinzelt gibt es jedoch auch Kommandos die keinen Parameter benötigen.
 Dann bleibt dieses Feld leer.
-Die Nachricht wird von der Bibliothek, aufgrund eines Aufrufs des Programmes des Entwicklers erst per UDP an die Kontrollanwendung und von dort aus per MQTT an das Smartphone gesendet.
-Die Smartphone-App überprüft bei Eingang den Aufruf und setzt die gewünschte Ausgabe entsprechend um.
-Manche Kommandos führen nicht nur Ausgaben aus, sondern erheben zusätzlich noch einen Rückgabewert.
-Damit dieser vom Smartphone zurück an die Bibliothek gesendet werden kann gibt es das Nachrichtenformat \textit{rpc\_response}.
+Die Nachricht wird von der Bibliothek per UDP an die Kontrollanwendung und von dort aus per MQTT an das Smartphone gesendet.
+Die Smartphone-App nimmt die Anfrage an und führt die Ausgabe aus.
+Manche Kommandos erheben zusätzlich einen Rückgabewert.
+Damit dieser vom Smartphone zurück an die Bibliothek gesendet werden kann, gibt es das Nachrichtenformat \textit{rpc\_response}.
 Dieses wird erst per MQTT an das Kontrollprogramm und von dort aus per UDP an die Bibliothek gesendet.
 Wie bei sensor\_responses können sich die Antworten nicht gegenseitig überholen, was die Übertragung des zugrundeliegenden Ausgabe-Kommandos überflüssig macht.
 Nur der ermittelte Wert des Kommandos ist relevant und wird in der Nachricht übermittelt.
-Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} nochmal übersichtlich zusammengefasst.
+Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} zusammengefasst.
 \begin{figure}[htbp]
 \centering
 % \includegraphics[width=.9\textwidth]{zeichnung.eps}
@@ -329,44 +328,33 @@ Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} nochmal über
 \caption{Nachrichtenablauf der RPC-Anfragen}
 \label{fig:message_flow_rpc}
 \end{figure}
-Zu sehen sind die drei Komponenten Bibliothek, Kontrollprogramm und App auf dem Smartphone.
+Zu sehen sind die drei Komponenten Bibliothek, Kontrollprogramm und Android-App.
 Die Bibliothek sendet rpc\_requests per UDP an das Kontrollprogramm.
 Dieses leitet die Nachricht per MQTT direkt weiter an die App.
 Dort wird das gewünschte Kommando ausgeführt.
-Fällt ein Rückgabewert an, wird eine rpc\_response generiert und per MQTT zurück gesendet.
-Die Kontrollanwendung leitet die Nachricht dann per UDP weiter an die Bibliothek.
-Die erstellten Nachrichtenformate decken alle Nutzungszenarien vollständig ab.
-Sie bilden ein solides, effizientes Grundgerüst mit Möglichkeit zur Erweiterung.
-Diese werden auch vom Serialisierungsformat JSON unterstützt.
-Neue Kommandos mit größeren Parameterwerten sind simpel umzusetzen.
-Neben Text könnten beispielsweise auch Binärdaten wie Bilder oder Sound-Dateien übertragen werden.
-Limitiert werden Sie nur von den darunterliegenden Protokollen UDP und MQTT.
+Fällt ein Rückgabewert an, wird eine rpc\_response generiert und vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet.
+Diese leitet die Nachricht dann per UDP weiter an die Bibliothek.
 
 \chapter{Android Anwendung}\label{chap:app}
 Die Android-Anwendung ist eine der drei zentralen Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
 Für diese bietet Sie unterschiedliche UI-Elemente in einer Activity, der RootActivity ein.
-Sie ist zentrale UI Schnittstelle für sämtliche Formen der Ausgaben.
-Diese sind: eine Signal-Led und ein Textfeld.
-Neben UI Elementen gibt es zusätzlich noch die haptische Ausgabe der Vibration.
-\\
-Für die Grundfunktionalität benötigt die Kontrollanwendung des Frameworks Sensordaten welche Anschließend versendet werden müssen.
-Versandt werden die Nachrichten über einen Service, der im Hintergrund ausgeführt wird, dem MQTT-Service.
-Die Sensordatenerhebung funktioniert über sogenannte SensorEventListener.
-Sie starten Sensormessprozesse und überwachen diese auf neue Werte.
-In einem solchen Fall senden Sie über den MQTT-Service update\_requests an das Kontrollprogramm.
-Die Anwendung versendet neben dieser Nachrichtenart auch noch rpc\_response-Nachrichten.
-Erstellt werden diese von der Klasse JsonMessageWrapper.
-
+Sie besteht aus einer Signal-Led, einem Textfeld und zwei Buttons.
+Neben UI Elementen gibt es zusätzlich noch eine Vibrationsausgabe. 
+Die Anwendung misst Sensorwerte und sendet Sie an die Kontrollanwendung.
+Messungen werden über SensorEventListener realisiert.
+Sie starten Messvorgänge und ermitteln periodischen Zeitabständen den aktuell vorliegenden Messwert.
+Jedes Messergebnis wird anschließend per MQTT an die Kontrollanwendung gesendet.
+Versandt werden die Sensorwerte über den MQTT-Service, einem App-Service, der im Hintergrund ausgeführt wird.
+Dieser reagiert ebenfalls auf eingehende Anfragen um Ausgaben auf dem Smartphone auszulösen.
+Gibt die Ausgabe einen Rückgabewert zurück, werden rpc\_response-Nachrichten an die Kontrollanwendung und schlussendlich an die Bibliothek gesendet.
 
 \section{Funktionsablauf}
 Die Erhebung der Messwerte erfolgt zum Start der Anwendung.
 Ein Ablaufplan ist in Abbildung \ref{fig:app_flow} zu sehen.
-Asynchrone Schritte sind mit einem \textit{A} markiert.
-\\\\
 \begin{figure}[htbp]
   \centering
-  \includegraphics[height=0.8\textheight]{images/app_ablauf.png}
+  \includegraphics[width=0.8\textwidth]{images/app_ablauf}
   \caption{Ablaufdiagramm Android Anwendung}
   \label{fig:app_flow}
 \end{figure}
@@ -453,7 +441,7 @@ Hierfür stehen vier Schnelligkeitsstufen bereit.
       SENSOR\_DELAY\_NORMAL & 200 ms\\
       \hline
   \end{tabular}
-  \caption{Sensor-Taktgeschwindigkeiten}
+  \caption{Sensor-Taktgeschwindigkeiten\cite{sensor-takt}}
   \label{tab:sensor_speeds}
 \end{table}
 Die mit der jeweiligen Frequenz aufgenommenen Beschleunigungssensordaten beeinhalten jedoch auch die Ergbeschleunigung.
@@ -524,7 +512,7 @@ Da die Sensorwerte des Smartphoens vorrätig gehalten werden, wird außerdem ein
 Eine Übersicht über die Komponenten ist Abbildung \ref{fig:serverUml} zu entnehmen.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.8\textwidth]{images/ServerUml.png}
+  \includegraphics[width=\textwidth]{images/ServerUml}
   \caption{UML Digaramm Server}
   \label{fig:serverUml}
 \end{figure}
@@ -537,7 +525,7 @@ Zu sehen ist ein MQTT-Request, also eine Anfragen des Smartphones, dass über MQ
 Schnittstellen zu MQTT sind in der Abbildung grün, Schnittstellen zur Library per UDP, sind blau markiert.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.8\textwidth]{images/MqttRequestServerPath}
+  \includegraphics[width=\textwidth]{images/MqttRequestServerPath}
   \caption{Ablaufdiagramm MQTT Request}
   \label{fig:serverMqttReqPath}
 \end{figure}
@@ -556,7 +544,7 @@ Der Ablauf ist in Abbildung \ref{fig:serverUDPReqPath} dargestellt.
 Wie auch schon in der letzten Abbildung sind alle Schnittstellen zum Smartphone grün und alle Schnittstellen zur Library blau markiert.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.8\textwidth]{images/UDPRequestServerPath}
+  \includegraphics[width=\textwidth]{images/UDPRequestServerPath}
   \caption{Ablaufdiagramm UDP Request}
   \label{fig:serverUDPReqPath}
 \end{figure}
@@ -735,6 +723,13 @@ Die Reaktionszeit ist also im Durchschnitt sehr hoch, etwa sechs mal langsamer a
 Eine direkte Assoziation zwischen Eingabe und Ausgabe kann nicht garantiert werden.
 
 \chapter{Fazit}\label{chap:fazit}
+Die erstellten Nachrichtenformate decken alle Nutzungszenarien vollständig ab.
+Sie bilden ein solides, effizientes Grundgerüst mit Möglichkeit zur Erweiterung.
+Diese werden auch vom Serialisierungsformat JSON unterstützt.
+Neue Kommandos mit größeren Parameterwerten sind simpel umzusetzen.
+Neben Text könnten beispielsweise auch Binärdaten wie Bilder oder Sound-Dateien übertragen werden.
+Limitiert werden Sie nur von den darunterliegenden Protokollen UDP und MQTT.
+
 
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.

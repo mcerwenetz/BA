@@ -1,0 +1,45 @@
+@startuml
+<style>
+activityDiagram {
+FontSize 40
+}
+document {
+   BackgroundColor transparent
+}
+</style>
+|#LightSalmon|UDPRequest\nQueueWorker|
+:UDP-Nachricht \nannehmen;
+:in die 
+udp_request_queue
+eintragen;
+|#GhostWhite|UDPRequestHandler|
+:Anfrage aus der
+queue holen;
+if (type) then (sensor request)
+	|#GhostWhite|UDPRequestHandler|
+	:Wert aus der
+	SensorDB holen;
+	:sensor_response
+	zusammenbauen;
+	:in udp_anwer_queue
+	eintragen;
+	|#LightBlue|AnswerQueueWorker|
+	:Nachricht aus 
+	der queue
+	nehmen;
+	:per udp an 
+	die Bibliothek senden;
+	stop
+else (rpc request)
+	|#GhostWhite|UDPRequestHandler|
+	:in mqtt_answer_queue
+	eintagen;
+	|#Beige|MqttHandlerThread|
+	:Mqtt Nachricht 
+	aus der Queue
+	entnehmen;
+	:Nachricht auf dem
+	topic versenden;
+	stop
+
+@enduml

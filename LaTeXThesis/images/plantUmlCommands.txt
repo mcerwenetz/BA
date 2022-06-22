@@ -1,0 +1,3 @@
+java -jar plantuml-1.2022.6.jar -tsvg UDPRequestServerPath.txt
+
+rsvg-convert -f pdf -o UDPRequestServerPath.pdf UDPRequestServerPath.svg

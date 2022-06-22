@@ -1,0 +1,10 @@
+@startuml
+Server *-- "Mqtt\nHandlerThread"
+Server *-- DataHandler
+Server *-- SensorDB
+DataHandler *-- Mqtt\nRequestHandler
+DataHandler *-- UDP\nRequestHandler
+DataHandler *-- UDP\nRequestQueueWorker
+DataHandler *-- Answer\nQueueWorker
+hide members
+@enduml
