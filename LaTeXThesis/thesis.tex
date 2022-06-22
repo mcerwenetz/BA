@@ -482,7 +482,6 @@ Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen
 User können über die Library RPC-Anfragen oder Sensor-Anfragen an den Server stellen.
 Dies geschieht in form von JSON-Anfragen die per UDP übermittelt werden.
 Der Server ist unter der localhost-Adresse 127.0.0.1 auf dem Port 5006 erreichbar.
-\\
 Für die MQTT-Verbindung kommt dabei die unter OpenSource-Liznenz stehende MQTT-Library Paho der Eclipse-Foundation zum Einsatz. \cite{paho}
 
 
@@ -497,13 +496,13 @@ Dieser speichert Sie dann, sobald ein Sensorwert gemessen und übermittelt wurde
 Hierdurch wird insbesondere der Latenzunterschied zwischen Smartphone und Localhost berücksichtigt.
 UDP Anfragen per Localhost haben eine wesentlich geringe Latenz als MQTT-Anfragen, auf die das Smartphone reagieren muss.
 Durch das Cachen auf dem Server liegen bei Anfragen per UDP, also von der Library aus, immer Sensordaten vor.
-\\
+
 Um Funktionsanfragen zeitnah auszuführen müssen unterschiedliche Netzwerklatenzen berücksichtigt werden.
 Die Übermittlung erfolgt asynchron zwischen Library und Smartphone, wobei zu erwarten ist dass Übermittlungen an das Smartphone mit einer höheren Latenz übertragen werden, als Anfragen zwischen Library und Server, da sich beide auf dem gleichen Host befinden.
 Die Verbindung zwischen Library und Server erfolgt darüber hinaus über localhost und somit über ein Loopback-Device.
 Loopback-Devices reichen Netzwerkpakete nicht herkömmlich über ein physisches Netzwerkinterface weiter sondern stellen ein virtuelles Gerät dar, dessen Übertragungsrate an die CPU gekoppelt ist.
 Die Bandbreiten sind dadurch sehr hoch und die Latenzen gering.
-\\
+
 Um die Latenzen und die damit verbundenen unterschiedlichen Auftrittszeitpunkte von Anfragen zu berücksichten, sowie eine möglichst effiziente Abarbeitung der selbiger zu ermöglichen wird eien paralelle Algorithmusstruktur verwendet.
 
 \section{Interner Aufbau}
@@ -516,9 +515,8 @@ Eine Übersicht über die Komponenten ist Abbildung \ref{fig:serverUml} zu entne
   \caption{UML Digaramm Server}
   \label{fig:serverUml}
 \end{figure}
-\\
 DataHandler wiederrum teilt sich nochmal auf in vier seperate Funktionen, die als Threads nebenläufig laufen: MqttRequestHandler, UDPRequestHandler, UDPRequestQueueWorker und AnswerQueueWorker.
-\\
+
 Die Funktionsweise und Zwecke dieser Threads wird im Folgenden an zwei Beispielen erläutert.
 Für das erste Beispiel wird Abbildung \ref{fig:serverMqttReqPath} betrachtet.
 Zu sehen ist ein MQTT-Request, also eine Anfragen des Smartphones, dass über MQTT an den Server gesendet wird.
@@ -529,7 +527,6 @@ Schnittstellen zu MQTT sind in der Abbildung grün, Schnittstellen zur Library p
   \caption{Ablaufdiagramm MQTT Request}
   \label{fig:serverMqttReqPath}
 \end{figure}
-\\
 Erreicht ein MQTT Request den Server wird es im MQTTHandlerThread entgegengenommen.
 Dieser setzt die Nachricht in eine MQTTRequestQueue ein.
 Der MQTTRequestHandler des DataHandlers wartet bis ein Eintrag in der Queue vorhanden ist und nimmt gegebenenfalls eine Nachricht.
@@ -537,7 +534,6 @@ Daraufhin wird derTyp des Requests bestimmt.
 Handelt sich um ein Sensorupdate muss nur der Sensorwert in der Datenbank aktualisiert werden.
 Handelt es sich um eine rpc\_response, also um eine Antwort auf eine vorausgegangenes rpc\_request, dass einen Rückgabewert fordert, wird das request in eine udp\_answer\_queue eingefügt.
 Der AnswerQueue Worker wartet, ähnlich wie der MQTT Request Handler, bis eine neue Nachricht vorhanden ist die per UDP an den Client gesendet werden soll und sendet diese dann gegebenfalls ab.
-\\
 
 Das zweite Beispiel befasst sich mit dem Ablauf eines UDP-Requests, also einer Anfrage die mithilfe der Library gesendet wurde.
 Der Ablauf ist in Abbildung \ref{fig:serverUDPReqPath} dargestellt.
@@ -554,21 +550,17 @@ Handelt es sich um eine Anfrage des Types RPC\_Request soll sie Aktionen auf dem
 Sie muss an das Smartphone gesendet werden, was über MQTT möglich ist.
 Dafür wird Sie ineine MqttAnswerQueue eingesetzt.
 Der MQTTHandlerThread entnimmt Sie und sendet Sie per MQTT ab.
-\\
 Ist Request hingegen ein SensorRequest, also eine Anfrage auf die ein Sensorwert geantwortet werden soll wird der nachgefragte Sensorwert über die Klasse SensorDB entnommen und in die Udp\_answer\_queue eingetragen.
 Der AnswerQueueWorker entnimmt die Anfrage und sendet Sie per udp an die Library zurück.
-\\\\
+
 Zusammenfassend erfüllen die Komponenten folgende Aufgaben.
 Der MQTTHandlerThread nimmt Nachrichten direkt per MQTT an und gibt die Anfrage weiter.
 Außerdem sendet er Nachrichten per MQTT, falls welche anfallen.
-\\
 Der MQTTRequestHandler kümmert sich um das Verfahren von MQTT Requests.
-\\
 Der UDPRequestQueue Worker nimmt wie der MQTTHandlerThread Anfragen die per UDP übermittelt wurden an und gibt Sie zur Behandlung entsprechend weiter.
 Er sendet jedoch im Gegensatz keine Responses zurück.
-\\
 Hierfür gibt es den AnswerQueueWorker, dessen einzige Aufgabe es ist Antworten per UDP zurück zu übermitteln.
-\\\\
+
 Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues des queue-Moduls\cite{python_queue} der cpython Implementierung.
 Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
 
@@ -577,7 +569,6 @@ Die Bibliotheken bilden die Einstiegsstelle für Nutzer um die Anwendung fernzus
 Funktionsaufrufe liegen jeweils in den Sprachen C, Java und Python vor.
 Daten werden wie in Kapitel \ref{chap:architektur} in Abbildung \ref{fig:design} gezeigt per UDP an eine Serveranwendung gesendet.
 Diese sendet die Daten dann nach gegebenenfalls per MQTT an das Smartphone weiter, oder wieder per UDP zurück.
-\\
 Die Bibliotheken senden und empfangen alle jeweils Daten per UDP.
 Hierfür werden Sockets benötigt.
 Für's Empfangen muss der Socket binded sein.
