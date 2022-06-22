@@ -242,16 +242,13 @@ Daneben reagiert Sie auf Ausgabeanfragen von der Bibliothek, welche bei Eingang 
 
 \chapter{Nachrichtenformate}\label{chap:message_formats}
 Ein einheitliches Kommunikationsformat ist für den Nachrichtenaustausch unabdingbar.
-Der ausgearbeitete Standard definiert Nachrichten in einem Klartextformat.
+Der zur Übermittlung ausgearbeitete Standard definiert die Nachrichten in einem Klartextformat.
 Als Darstellungsform wird JSON verwendet.
-\\
-Die Nachrichtenformate werden als Vorlagen in einer zentralen Datei abgelegt.
-Diese werden in der Bibliothek, dem Kontrollprogramm und in der Smartphone-App abgespeichert und eingelesen.
-So ist zentral definiert welche Nachrichten es gibt, welche Felder und Datenformate Sie beeinhalten.
-Neben diesen Daten sind zusätzlich noch Bezeichnungen über die nutzbaren Sensoren, sowie den ausführbaren Ausgabe-Kommandos enthalten.
-\\
-Jede Nachricht weist mindestens die Angabe eines Nachrichtenformat-Typs auf.
-Diese sind der Tabelle \ref{tab:message_types} zu entnehmen.
+Die in einer Datei gespeicherten Nachrichten-Vorlagen werden in der Bibliothek, dem Kontrollprogramm und in der Smartphone-App eingelesen
+So sind die Nachrichten in jeder Komponente gleich.
+Es gibt unterschiedliche Nachrichtentypen für verschiedene Zwecke.
+Diese sind in Tabelle \ref{tab:message_types} aufgeführt.
+Um besser nachvollziehen zu können welche Kommunikationspartner welche Nachrichten austauschen, sind außerdem Quelle und Ziel und das verwendete Netzwerkprotokoll angegeben.
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|l|p{30mm}|c|c|}
@@ -272,27 +269,25 @@ Diese sind der Tabelle \ref{tab:message_types} zu entnehmen.
   \caption{Nachrichten-Typen}
   \label{tab:message_types}
 \end{table}
-Die Spalte \textit{Nachrichtentyp} beschreibt die Bezeichnung des Nachrichtentypes.
-Zu Übersicht sind noch \textit{Quelle} und \textit{Ziel} der Nachrichten beschrieben.
-Außerdem aufgeführt ist das verwendete Netzwerkprotokoll zur Übermittlung.
-\\\\
-\textit{Sensor\_request}s werden von der Bibliothek an das Kontrollprogramm gesendet.
-Ihr Verwendungszweck besteht darin, einen zwischengespeicherten Sensorwert abzufragen.
-Daher beeinhaltet Sie neben dem Typ-Bezeichner auch noch das Feld \texttt{sensor\_type}.
-Nach Eingang ermittelt das Kontrollprogramm den gewünschten Sensorwert und gibt das Ergebnis zurück.
-\\
-Eine solche Antwort erfolgt im Nachrichtenformat \textit{sensor\_response}.
-Diese beeinhaltet den vom Kontrollprogramm erschlossenen Sensordaten-Wert, \texttt{sensor\_value}, als String.
-Sie wird von der Bibliothek entgegengenommen und als float an das aufrufende Programm des Entwicklers zurückgegeben.
-Da Aufrufe von der Bibliothek immer blockierend im Call-Response-Schema aufgerufen werden kann es nicht passieren, dass sich responses überholen und die Sensorwerte eines anderen Sensors für den angefragten Sensorwert eingetragen werden.
-Deshalb ist die Angabe des gültigen Sensor-Typs für sensor\_responses nicht nötig.
-\\
-Damit Sensorwerte vorhanden sind muss die Smartphone-App der Kontrollanwendung kontinuierlich gemessene Sensorwerte übermitteln, damit diese in den internen Puffer eingespeichert werden können um bei erhöhten Latenzen Zwischenwerte liefern zu können.
-Dies geschieht durch den Nachrichtentyp \textit{update\_request}.
-Geltungsgegenstand ist diese Nachricht für alle Art von Sensoren.
-Übermittelt wird daher sowohl der Sensor-Typ, als auch der gemessene Sensor-Wert um ihn für die Kontrollanwendung schnell zuordenbar zu machen und Sie in den internen Datenpuffer eintragen zu können.
-\\
-Der gesamte Ablauf für Sensoranfragen ist in Abbildung \ref{fig:message_flow_requests} zusammengefasst dargestellt.
+
+\textit{Sensor\_request}s kommen zum Einsatz, wenn Programmierer einen Sensorwert abfragen.
+Dann wird die Nachricht von der Bibliothek an das Kontrollprogramm gesendet.
+Dieses hat vom Smartphone übermittelte Sensorwerte zwischengespeichert.
+Nach Eingang ermittelt das Kontrollprogramm den gewünschten Sensorwert.
+Die Angabe des gewünschten Sensors wird im Feld \texttt{sensor\_type} beschrieben.
+Ist er in der gespeicherten Datenstruktur zu finden, wird er in einer neuen Nachricht im Nachrichtenformat \textit{sensor\_response} zurückgesendet.
+Der gespeicherte Wert ist im Feld \texttt{sensor\_value} zu finden.
+Die Antwort wird von der Bibliothek angenommen und anschließend an das Programm des Entwicklers zurückgegeben, das den Sensortwert ursprünglich forderte.
+Sensor-Abfragen laufen blockierend ab.
+Das bedeutet, dass jede Sensor-Wert-Anfrage immer erst eine Rückgabe erhalten muss, bevor die nächste Sensor-Wert-Anfrage gestartet werden kann.
+Es ist unmöglich, dass die Kontrollanwendung zwei Sensor-Wert-Anfrage gleichzeitig erhält und die Antworten in umgekehrter Reihenfolge zurücksendet, was eine Vertauschung der Sensorwerte bedeutete.
+Durch  Angabe des ursprünglich geforderten Sensor-Typs in der Antwort könnte dies verhindert werden, ist allerdings nicht nötig.
+Sensorwerte müssen kontinuierlich vom Smartphone aktualisiert werden, damit das Kontrollprogramm immer den aktuellste Wert zurückliefern kann.
+Die Android-App sendet daher in periodischen Abständen Nachrichten des typs \textit{update\_request} an das Kontrollprogramm.
+Sie kann für jede Sensor-Art verwendet werden.
+Übermittelt wird sowohl der Sensor-Typ, als auch der gemessene Sensor-Wert.
+Die Kontrollanwendung kann den den Wert über den Typ zuordnen und in den internen Datenpuffer eintragen.
+Der gesamte Ablauf für Sensoranfragen ist in Abbildung \ref{fig:message_flow_requests} dargestellt.
 \begin{figure}[htbp]
 \centering
 % \includegraphics[width=.9\textwidth]{zeichnung.eps}
@@ -303,8 +298,8 @@ Der gesamte Ablauf für Sensoranfragen ist in Abbildung \ref{fig:message_flow_re
 Zu sehen sind die drei Komponenten Bibliothek, Kontrollprogramm und App auf dem Smartphone.
 Die Bibliothek sendet sensor\_requests per UDP an das Kontrollprogramm.
 Dieses antwortet über UDP mit einer sensor\_response.
-Währenddessen sendet die App auf dem Smartphone kontinuierlich update\_requests um neue Messergebnisse der Sensorwerte einzuspeichern.
-\\\\
+Währenddessen sendet die App auf dem Smartphone kontinuierlich update\_requests per MQTT um der Kontrollanwendung neue Messergebnisse mitzuteilen.
+
 Neben den Sensordaten betreffenden Nachrichten existieren auch Ausgabe-Kommandos um Ausgaben in der Smartphone-App umzusetzen.
 Unterscheidbar sind solche Anfragen die lediglich ausgeführt werden sollen und solche , die einen Rückgabewert erwarten.
 Für erstere gibt es den Nachreichtentyp \textit{rpc\_request}.
@@ -313,7 +308,6 @@ Die Bezeichnung entspricht so nicht dem Konzept, da die die Smartphone-App in di
 Die Voraussetzung einer Client-Server-Anwendung ist nicht gegeben.
 Vielmehr tauschen hier gleichwertige Kommunikationspartner Daten aus.
 Die Bezeichnung wurde eher unter dem Fokus auf die entfernte Ausführung gewählt.
-\\
 Der Nachrichtentyp enthält die Felder \texttt{command} und \texttt{value}.
 Ersters beeinhaltet eines der spezifizierten Ausgabe-Kommandos.
 Das Zweite beschreibt die Größe des Parameters für das Ausgabekommando.
@@ -322,13 +316,11 @@ Vereinzelt gibt es jedoch auch Kommandos die keinen Parameter benötigen.
 Dann bleibt dieses Feld leer.
 Die Nachricht wird von der Bibliothek, aufgrund eines Aufrufs des Programmes des Entwicklers erst per UDP an die Kontrollanwendung und von dort aus per MQTT an das Smartphone gesendet.
 Die Smartphone-App überprüft bei Eingang den Aufruf und setzt die gewünschte Ausgabe entsprechend um.
-\\
 Manche Kommandos führen nicht nur Ausgaben aus, sondern erheben zusätzlich noch einen Rückgabewert.
 Damit dieser vom Smartphone zurück an die Bibliothek gesendet werden kann gibt es das Nachrichtenformat \textit{rpc\_response}.
 Dieses wird erst per MQTT an das Kontrollprogramm und von dort aus per UDP an die Bibliothek gesendet.
 Wie bei sensor\_responses können sich die Antworten nicht gegenseitig überholen, was die Übertragung des zugrundeliegenden Ausgabe-Kommandos überflüssig macht.
 Nur der ermittelte Wert des Kommandos ist relevant und wird in der Nachricht übermittelt.
-\\
 Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} nochmal übersichtlich zusammengefasst.
 \begin{figure}[htbp]
 \centering
@@ -343,7 +335,6 @@ Dieses leitet die Nachricht per MQTT direkt weiter an die App.
 Dort wird das gewünschte Kommando ausgeführt.
 Fällt ein Rückgabewert an, wird eine rpc\_response generiert und per MQTT zurück gesendet.
 Die Kontrollanwendung leitet die Nachricht dann per UDP weiter an die Bibliothek.
-\\\\
 Die erstellten Nachrichtenformate decken alle Nutzungszenarien vollständig ab.
 Sie bilden ein solides, effizientes Grundgerüst mit Möglichkeit zur Erweiterung.
 Diese werden auch vom Serialisierungsformat JSON unterstützt.
