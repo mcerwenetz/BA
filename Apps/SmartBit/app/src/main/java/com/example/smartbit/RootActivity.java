@@ -4,12 +4,16 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,11 +39,14 @@ public class RootActivity extends AppCompatActivity {
     private ImageView recording_led;
     public Button button_a;
     public Button button_b;
+    private Button button_settings;
     private TextView tv_output_text;
     private boolean ButtonToggleBool = true;
     private SensorManager sensorManager;
     private SmartBitEventListenerContainer smartBitEventListenerContainer;
     private AtomicBoolean keepSending = new AtomicBoolean(false);
+
+
     private JsonMessageWrapper jsonMessageWrapper;
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -121,6 +128,11 @@ public class RootActivity extends AppCompatActivity {
         tv_output_text = findViewById(R.id.tv);
         button_a = findViewById(R.id.button_a);
         button_b = findViewById(R.id.button_b);
+        button_settings = findViewById(R.id.btn_settings);
+        button_settings.setOnClickListener((View v) -> {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        });
         action_led.setBackgroundColor(Color.GREEN);
         recording_led.setImageAlpha(50);
     }
@@ -158,14 +170,15 @@ public class RootActivity extends AppCompatActivity {
     protected void onPause() {
         Log.v(TAG, "onPause");
         super.onPause();
-        unbindMQTTService();
         unregisterEventListeners();
+        unbindMQTTService();
     }
 
     @Override
     protected void onStop() {
         Log.v(TAG, "onStop");
         super.onStop();
+        onStopService();
     }
 
     @Override
