@@ -101,6 +101,7 @@ public class RootActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout);
         bindUI();
+        bindMQTTService();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        List<Sensor> sensorList = sm.getSensorList(Sensor.TYPE_ALL);
 
@@ -193,7 +194,7 @@ public class RootActivity extends AppCompatActivity {
     private void bindMQTTService() {
         Log.v(TAG, "bindMQTTService");
         Intent intent = new Intent(this, MQTTService.class);
-        intent.setAction(MQTTService.ACTION_PRESS);
+        intent.setAction(MQTTService.ACTION_START);
         mqttServiceBound = bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         if (!mqttServiceBound) {
             Log.w(TAG, "could not try to bind service, will not be bound");

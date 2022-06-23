@@ -86,7 +86,7 @@ class JsonMessagesWrapper():
         return message
 
     @staticmethod
-    def get_rpc_request() ->str:
+    def get_rpc_request_empty() ->str:
         """
         start an rpc on the smartphone
         raises: Exception if command is not found
@@ -126,7 +126,7 @@ class Phone():
     def rpc_ping(self):
 
         def _rpc_ping(self) -> None:
-            rpc_message = JsonMessagesWrapper.get_rpc_request()
+            rpc_message = JsonMessagesWrapper.get_rpc_request_empty()
             self._sendMessage(message=rpc_message)
 
         threading.Thread(target=_rpc_ping, args=(self,)).start()

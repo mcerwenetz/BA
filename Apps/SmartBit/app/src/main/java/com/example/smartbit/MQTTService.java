@@ -301,7 +301,7 @@ public class MQTTService extends Service {
     public IBinder onBind(Intent intent) {
         Log.v(TAG, "onBind");
         String action = intent.getAction();
-        if (action != null && action.equals(MQTTService.ACTION_PRESS)) {
+        if (action != null && action.equals(MQTTService.ACTION_START)) {
             Log.v(TAG, "onBind for Press");
             return localBinder;
             // } else if (action.equals(MQTTService.ACTION_LOG)) {
