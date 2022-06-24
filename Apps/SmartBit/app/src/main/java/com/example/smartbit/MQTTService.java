@@ -3,9 +3,11 @@ package com.example.smartbit;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
@@ -13,15 +15,11 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.PhantomReference;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -46,12 +44,25 @@ public class MQTTService extends Service {
     final public static String USER = "22thesis01";
     //    final public static String PASSWORT = "";
     final public static String PASSWORT = "n4xdnp36";
-    private static final String TOPIC = "22thesis01/test";
+    private final String TOPICPREFIX = "22thesis01/";
+    private static String topic;
     private RootActivity rootActivity;
     private JsonMessageWrapper jsonMessageWrapper;
 
     private MqttMessaging mqttMessaging;
-    private final ArrayList<String> topicList = new ArrayList<>();
+    private ArrayList<String> topicList = new ArrayList<>();
+    private SharedPreferences sharedPreferences;
+
+//    private SharedPreferences.OnSharedPreferenceChangeListener ospcl = (sharedPreferences, s) -> {
+//        replaceTopic();
+//    };
+
+//    private void replaceTopic() {
+//        Log.v(TAG,"replace topic called");
+//        mqttMessaging.unsubscribe(topic);
+//        topic = PreferenceManager.getDefaultSharedPreferences(this).getString("topic", "");
+//        mqttMessaging.subscribe(topic);
+//    }
 
 
     final private MqttMessaging.FailureListener failureListener =
@@ -88,11 +99,13 @@ public class MQTTService extends Service {
     private AtomicBoolean keepSending;
 
     public void send(JSONObject jo) {
-        mqttMessaging.send(TOPIC, jo.toString());
+        if(mqttMessaging != null){
+            mqttMessaging.send((TOPICPREFIX + topic), jo.toString());
+        }
     }
 
     public void sendRpcAnswer(JSONObject jo) {
-        mqttMessaging.send(TOPIC, jo.toString());
+        mqttMessaging.send((TOPICPREFIX + topic), jo.toString());
     }
 
 
@@ -100,6 +113,8 @@ public class MQTTService extends Service {
     public void onCreate() {
         Log.v(TAG, "onCreate");
         super.onCreate();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        sharedPreferences.registerOnSharedPreferenceChangeListener(ospcl);
     }
 
     @Override
@@ -159,25 +174,7 @@ public class MQTTService extends Service {
 
 
     //Send and Receive
-    final private MqttMessaging.MessageListener messageListener = (topic, stringMsg) -> {
-        JSONObject jo = null;
-        try {
-            jo = new JSONObject(stringMsg);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String type = null;
-        try {
-            type = jo.getString("type");
-            if (type.equals("rpc_request")) {
-                handle_rpc_request(jo);
-            }
-        } catch (JSONException je) {
-            je.printStackTrace();
-        } catch (NullPointerException npe) {
-            //ignore. if type is not rpc command and value are not needed anyway
-        }
-    };
+    private MqttMessaging.MessageListener messageListener;
 
     private void handle_rpc_request(JSONObject jo) {
         String command = null;
@@ -240,8 +237,31 @@ public class MQTTService extends Service {
 
 
     //Connect and Disconnect
-    private void connect() {
+    public void connect() {
         Log.v(TAG, "connect");
+        topic = PreferenceManager.getDefaultSharedPreferences(this).getString("topic","");
+        Log.v(TAG,"topic is " + topic);
+
+        messageListener = (topic, stringMsg) -> {
+            JSONObject jo = null;
+            try {
+                jo = new JSONObject(stringMsg);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String type = null;
+            try {
+                type = jo.getString("type");
+                if (type.equals("rpc_request")) {
+                    handle_rpc_request(jo);
+                }
+            } catch (JSONException je) {
+                je.printStackTrace();
+            } catch (NullPointerException npe) {
+                //ignore. if type is not rpc command and value are not needed anyway
+            }
+        };
+
         if (mqttMessaging != null) {
             disconnect();
             Log.w(TAG, "reconnect");
@@ -254,17 +274,19 @@ public class MQTTService extends Service {
         Log.v(TAG, String.format("username=%s, password=%s, ", USER, PASSWORT));
 
         mqttMessaging.connect(CONNECTION_URL, options); // secure via URL
-        addTopic(MQTTService.TOPIC);
+        addTopic(TOPICPREFIX + topic);
 
         Log.v(TAG, "connected");
     }
 
-    private void disconnect() {
+    public void disconnect() {
         try {
             Log.v(TAG, "disconnect");
             if (mqttMessaging != null) {
-                for (String topic : this.topicList)
+                for (String topic : this.topicList){
                     mqttMessaging.unsubscribe(topic);
+                }
+                topicList = new ArrayList<>();
                 List<MqttMessaging.Pair<String, String>> pending = mqttMessaging.disconnect();
                 if (!pending.isEmpty()) {
                     Log.w(TAG, "pending messages: " + pending.size());
