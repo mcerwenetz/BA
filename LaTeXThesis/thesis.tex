@@ -275,6 +275,25 @@ Dann wird die Nachricht von der Bibliothek an das Kontrollprogramm gesendet.
 Dieses hat vom Smartphone übermittelte Sensorwerte zwischengespeichert.
 Nach Eingang ermittelt das Kontrollprogramm den gewünschten Sensorwert.
 Die Angabe des gewünschten Sensors wird im Feld \texttt{sensor\_type} beschrieben.
+Alle Sensortypen besitzen ein festgelegtes Kürzel.
+Dadurch können ihre Werte in der Datenbank in der Kontrollanwendung addressiert werden und Messwerte eingespeichert oder zurückgegeben werden.
+Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden. 
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|c|c|}
+      \hline
+      \textbf{TYPE-Kürzel} & \textbf{Beschreibung} \\
+      \hline
+      accel\_xyz & Lagesensor für die X, Y oder Z-Richtung \\
+      \hline
+       gyro\_xyz & Gyroskopsensor für die X, Y oder Z-Richtung \\
+      \hline
+      prox & Näherungssensor \\
+      \hline
+  \end{tabular}
+  \caption{Sensor-Kürzel mit Beschreibung}
+  \label{tab:sensor_types}
+\end{table}
 Ist er in der gespeicherten Datenstruktur zu finden, wird er in einer neuen Nachricht im Nachrichtenformat \textit{sensor\_response} zurückgesendet.
 Der gespeicherte Wert ist im Feld \texttt{sensor\_value} zu finden.
 Die Antwort wird von der Bibliothek angenommen und anschließend an das Programm des Entwicklers zurückgegeben, das den Sensortwert ursprünglich forderte.
@@ -300,6 +319,7 @@ Die Bibliothek sendet sensor\_requests per UDP an das Kontrollprogramm.
 Dieses antwortet über UDP mit einer sensor\_response.
 Währenddessen sendet die App auf dem Smartphone kontinuierlich update\_requests per MQTT um der Kontrollanwendung neue Messergebnisse mitzuteilen.
 
+
 Neben den Sensordaten betreffenden Nachrichten existieren auch Ausgabe-Kommandos um Ausgaben in der Smartphone-App umzusetzen.
 Es wird unterschieden Ausgaben mit und ohne Rückgabewert.
 Für erstere gibt es den Nachrichtentyp \textit{rpc\_request}.
@@ -324,7 +344,7 @@ Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} zusammengefas
 \begin{figure}[htbp]
 \centering
 % \includegraphics[width=.9\textwidth]{zeichnung.eps}
-\includegraphics[width=.9\textwidth]{images/message_flow_rpc.pdf}
+\includegraphics[width=.8\textwidth]{images/message_flow_rpc.pdf}
 \caption{Nachrichtenablauf der RPC-Anfragen}
 \label{fig:message_flow_rpc}
 \end{figure}
@@ -335,21 +355,24 @@ Dort wird das gewünschte Kommando ausgeführt.
 Fällt ein Rückgabewert an, wird eine rpc\_response generiert und vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet.
 Diese leitet die Nachricht dann per UDP weiter an die Bibliothek.
 
+
 \chapter{Android Anwendung}\label{chap:app}
 Die Android-Anwendung ist eine der drei zentralen Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
-Für diese bietet Sie unterschiedliche UI-Elemente in einer Activity, der RootActivity ein.
-Sie besteht aus einer Signal-Led, einem Textfeld und zwei Buttons.
+Für diese bietet Sie unterschiedliche UI-Elemente in einer Activity an, der RootActivity.
+Diese sind: eine Signal-Led, ein Textfeld und zwei Buttons.
 Neben UI Elementen gibt es zusätzlich noch eine Vibrationsausgabe. 
-Die Anwendung misst Sensorwerte und sendet Sie an die Kontrollanwendung.
-Messungen werden über SensorEventListener realisiert.
-Sie starten Messvorgänge und ermitteln periodischen Zeitabständen den aktuell vorliegenden Messwert.
 Jedes Messergebnis wird anschließend per MQTT an die Kontrollanwendung gesendet.
-Versandt werden die Sensorwerte über den MQTT-Service, einem App-Service, der im Hintergrund ausgeführt wird.
+Versandt werden die Sensorwerte über einen Service, der im Hintergrund ausgeführt wird.
 Dieser reagiert ebenfalls auf eingehende Anfragen um Ausgaben auf dem Smartphone auszulösen.
-Gibt die Ausgabe einen Rückgabewert zurück, werden rpc\_response-Nachrichten an die Kontrollanwendung und schlussendlich an die Bibliothek gesendet.
+Gibt die Ausgabe einen Rückgabewert diese an die Kontrollanwendung weitergereicht.
 
-\section{Funktionsablauf}
+Die Anwendung misst in periodischen Zeitabständen Sensorwerte und sendet Sie an die Kontrollanwendung.
+Messungen werden über SensorEventListener realisiert.
+Diese starten Messvorgänge und ermitteln in periodischen Zeitabständen den aktuell vorliegenden Messwert.
+Verwendete Sensoren sind beispielsweise der Lagesensor oder das Gyroskop.
+
+\section{Startvorgang}
 Die Erhebung der Messwerte erfolgt zum Start der Anwendung.
 Ein Ablaufplan ist in Abbildung \ref{fig:app_flow} zu sehen.
 \begin{figure}[htbp]
@@ -405,27 +428,31 @@ Verluste von update\_requests sind unproblematisch, da es je nach Taktung sehr s
 Eine exakte Zustellung ist hier nicht notwendig und verlangsamt eher den Übertragungsprozess.
 
 \section{Sensoren}
-Smartphones beeinhalten verschiedene Sensoren die Daten über die Umgebung erfassen können.
-In der Android Anwendung werden folgende Sensortypen verwendet:
+Smartphones beeinhalten Sensoren die Daten über die Umgebungseigenschaften erfassen.
+Dazu zählen Beispielsweise Bewegung, Näherung, aber auch Temperatur oder Luftdruck.
+In der Lösung besteht ihr Zweck darin auf Änderungen der Werte zu reagieren.
+Für unterschiedliche Aufgaben werden unterschiedliche Sensoren benötigt.
+Beispielsweise word für \textit{Diebstahl-Alarm} nur der Näherungssensor verwendet, für \textit{Dreh-Zähler} der Lagesensor.
+Insgesamt werden in der Android Anwendung werden folgende Sensortypen verwendet:
 \begin{itemize}
   \item Lineare Beschleunigungssensoren
-  \item Mikrofon
   \item Annäherungssensor
   \item Gyroskop
 \end{itemize}
-
 Beschleunigungs- bzw. Lagesensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
-Eine Übersicht über die Anordungen der drei Axen ist in Abbildung \ref{fig:and_axes} zu sehen.
+Die Erdbeschleunigung ist auch in diesen Messwerten enthalten.
+Diese muss für die bereinigten, realen Werte von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
+Messeinheiten unterscheiden sich je nach Sensor.
+Das Gyroskop misst keine Beschleunigung sondern die aktuelle Geschwindigkeit in $rad/s$ der gleichen Achsen.
+Zur Übersicht sind diese in Abbildung \ref{fig:and_axes} zu dargestellt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.7\textwidth]{images/android_axes.png}
   \caption{Android-Koordinatensystem}
   \label{fig:and_axes}
 \end{figure}
-Die X-Achse verläuft horizontal durch das Display des Smartphones hindruch, die Y-Achse vertikal und die Z-Achse durchschneidet das Smartphone in die Tiefe.
-\\\\
-Die Frequenz mit der Messwerte erstellt werden kann manuell angegeben werden.
-Hierfür stehen vier Schnelligkeitsstufen bereit.
+Die Frequenz mit der Messwerte erfasst werden kann manuell angegeben werden.
+Hierfür stehen vier Stufen zur Auswahl.
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|c|p{4cm}|}
@@ -444,36 +471,13 @@ Hierfür stehen vier Schnelligkeitsstufen bereit.
   \caption{Sensor-Taktgeschwindigkeiten\cite{sensor-takt}}
   \label{tab:sensor_speeds}
 \end{table}
-Die mit der jeweiligen Frequenz aufgenommenen Beschleunigungssensordaten beeinhalten jedoch auch die Ergbeschleunigung.
-Diese muss für die bereinigten, realen Werte zuerst noch von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
-\section{Angaben für die Nachrichtenformate}
-Alle Sensordaten besitzen ein festgelegtes Kürzel zur Standardisierung des Nachrichtenverkehrs.
-Sie dienen vor allem der Adressierung der jeweiligen Daten in der Middleware und in der Library.
-\\
-Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden. 
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{|c|c|}
-      \hline
-      \textbf{TYPE-Kürzel} & \textbf{Beschreibung} \\
-      \hline
-      accel\_xyz & Lagesensor für die X, Y oder Z-Richtung \\
-      \hline
-       gyro\_xyz & Gyroskopsensor für die X, Y oder Z-Richtung \\
-      \hline
-      prox & Näherungssensor \\
-      \hline
-  \end{tabular}
-  \caption{Sensor-Kürzel mit Beschreibung}
-  \label{tab:sensor_types}
-\end{table}
+In der Android-APP erfolgen alle Messungen mit SENSOR\_DELAY\_NORMAL.
+Die Stufe gilt jedoch nicht als festes Limit, sondern eher als Richt-Frequenz.
+Android kann die reale Frequenz auch erhöhen.
+Nicht alle Smartphones besitzen alle Sensoren.
+Daher wird beim Start überprüft ob der Sensor auch wirklich vorhanden ist.
+Ist er es nicht, wird auch keine Messung gestartet.
 
-\section{Kommandos und Ausgaben}
-Für die Ausgabe auf dem Smartphone sind verschiedene Kommandos definiert.
-Diese sind der Tabelle \ref{tab:command_types} zu entnehmen.
-\texttt{CMD-Kürzel} beschreibt die Notation des Kürzels mit dem eine Aktion ausgeführt werden kann.
-Diese wird unter \texttt{Beschreibung} kurz zusammengefasst.
-\texttt{return} gibt an, ob der Aufruf des Requests eine Antwort rücksendet und somit auch, ob ein Aufruf der Funktion in der Library blockiert oder nur sendet.
 
 \chapter{Kontrollanwendung}\label{chap:server_software}
 
