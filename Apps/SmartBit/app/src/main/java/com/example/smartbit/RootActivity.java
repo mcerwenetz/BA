@@ -70,14 +70,19 @@ public class RootActivity extends AppCompatActivity {
 
     private void registerEventListeners() {
         Sensor accellometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(this.smartBitEventListenerContainer.getAccellerometerEventListener(), accellometer, SensorManager.SENSOR_DELAY_NORMAL);
+        if(accellometer != null){
+            sensorManager.registerListener(this.smartBitEventListenerContainer.getAccellerometerEventListener(), accellometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
 
         Sensor gyro = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        sensorManager.registerListener(this.smartBitEventListenerContainer.getGyroSensorEventListener(), gyro, SensorManager.SENSOR_DELAY_NORMAL);
+        if(gyro != null){
+            sensorManager.registerListener(this.smartBitEventListenerContainer.getGyroSensorEventListener(), gyro, SensorManager.SENSOR_DELAY_NORMAL);
+        }
 
         Sensor proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        sensorManager.registerListener(this.smartBitEventListenerContainer.getProximityEventListener(), proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
-
+        if(proximitySensor!= null) {
+            sensorManager.registerListener(this.smartBitEventListenerContainer.getProximityEventListener(), proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     private void unregisterEventListeners(){
@@ -159,12 +164,12 @@ public class RootActivity extends AppCompatActivity {
         super.onResume();
         onStartService();
         bindMQTTService();
-        if(mqttService != null){
-//            If not null service was already started and bound. No need for recreating Eventlisteners.
-//            If mqtt service is null this would throw null exception because Eventlistener are not already bound
-//            because mqtt service is not already bound.
-            registerEventListeners();
-        }
+//        if(mqttService != null){
+////            If not null service was already started and bound. No need for recreating Eventlisteners.
+////            If mqtt service is null this would throw null exception because Eventlistener are not already bound
+////            because mqtt service is not already bound.
+//            registerEventListeners();
+//        }
     }
 
     protected void onPause() {
