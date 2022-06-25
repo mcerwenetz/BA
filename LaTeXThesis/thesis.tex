@@ -433,12 +433,8 @@ Dazu zählen Beispielsweise Bewegung, Näherung, aber auch Temperatur oder Luftd
 In der Lösung besteht ihr Zweck darin auf Änderungen der Werte zu reagieren.
 Für unterschiedliche Aufgaben werden unterschiedliche Sensoren benötigt.
 Beispielsweise word für \textit{Diebstahl-Alarm} nur der Näherungssensor verwendet, für \textit{Dreh-Zähler} der Lagesensor.
-Insgesamt werden in der Android Anwendung werden folgende Sensortypen verwendet:
-\begin{itemize}
-  \item Lineare Beschleunigungssensoren
-  \item Annäherungssensor
-  \item Gyroskop
-\end{itemize}
+Insgesamt werden in der Android Anwendung werden folgende Sensortypen verwendet: Lineare Beschleunigungssensoren, Gyroskop und Annäherungssensor.
+
 Beschleunigungs- bzw. Lagesensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
 Die Erdbeschleunigung ist auch in diesen Messwerten enthalten.
 Diese muss für die bereinigten, realen Werte von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
@@ -569,15 +565,26 @@ Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues
 Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
 
 \chapter{Programmierumgebung}\label{chap:libs}
-Die Bibliotheken bilden die Einstiegsstelle für Nutzer um die Anwendung fernzusteuern oder Sensorwerte abzufragen.
-Funktionsaufrufe liegen jeweils in den Sprachen C, Java und Python vor.
-Daten werden wie in Kapitel \ref{chap:architektur} in Abbildung \ref{fig:design} gezeigt per UDP an eine Serveranwendung gesendet.
-Diese sendet die Daten dann nach gegebenenfalls per MQTT an das Smartphone weiter, oder wieder per UDP zurück.
-Die Bibliotheken senden und empfangen alle jeweils Daten per UDP.
+Das Programmieren und reagieren auf Sensorwerte erfolgt in der Lösung Clientseitig auf dem PC.
+Ein Programmierer schreibt ein Programm, bindet eine Bibliothek der Lösung ein und verwendet deren angebotene Funktionen dafür.
+Um eine optimale Nutzung unter möglichst vielen Plattformen anbieten zu können sind diese in den Programmiersprachen C, Java und Python entwickelt.
+Die Bibliotheken in Java und Python sind Plattformunabhängig.
+Für C gibt es zwei Bibliotheken: Eine für Unix- und eine für Windows-Systeme.
+In C ist die Bibliothek prozedural, in Java und Python objektorientiert implementiert.
+Werden die Funktionen aufgerufen werden standardisierte Anfragen generiert und an die Kontrollanwendung gesendet.
+Diese sendet die Daten gegebenenfalls an das Smartphone weiter oder antwortet direkt.
+Der Ablauf ist in Abbildung \ref{fig:Schnittstelle Bibliothek} dargestellt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.8\textwidth]{images/lib_server_connection}
+  \caption{Schnittstellen der Bibliothek}
+  \label{fig:Schnittstelle Bibliothek}
+\end{figure}
+Alle Anfragen werden über UDP versendet.
 Hierfür werden Sockets benötigt.
-Für's Empfangen muss der Socket binded sein.
 Die Serveranwendung ist auf dem Port 5006 erreichbar.
 Antworten erwarten die Bibliotheken auf dem Port 5005.
+
 
 \chapter{Evaluation}\label{chap:eval}
 In disem Kapitel wird die Verwendung des Frameworks anhand dem Beispiel \textit{Alarmanlage} vorgestellt.
@@ -724,19 +731,15 @@ Trotz einem QOS-Level 0 werden auch Ausgabeanfragen sicher übertragen und ausge
 Da die Nachrichten über TLS übertragen werden ist der Austausch sicher.
 Logging-Möglichkeiten in der Kontrollanwendung und der Android-App erleichterten die Entwicklung sehr und halfen bei der Fehlersuche.
 Neben den Vorteilen wurden jedoch während der Konzeption einige Fehlentscheidungen getroffen.
-Es ist nicht möglich den gleichen Programmcode auf mehreren Smartphones auszuführen, da die Kontrollanwendung die Sensordaten nicht pro Gerät unterscheidet.
-Eine Kontrollanwendung speichert immern nur die Sensordaten eines Smartphones.
-Außerdem ist es nicht nur nicht möglich ein Programm an mehrere Smartphones zu koppeln, sondern es ist auch unmöglich mehrere Kontrollanwendungen generell zu betreiben.
-Diese würden alle auf dem gleichen Topic senden.
-Ausgabeanfragen würden von allen Smartphones ausgeführt werden.
-Sensorwerte anderer Smartphones würden die richtigen überschreiben.
-Es können also keine Gruppen- und nicht mehr als eine Einzel-Session erstellt werden.
-Für den Laborbetrieb ist die Lösung so nicht geeignet.
-Letzteres Problem lässt sich einfach umgehen, indem man vor dem Start der Kontrollanwendung in der Konfigurationsdatei ein anderes Topic angibt.
-Damit das Smartphone auch auf dem gleichen Topic kommuniziert müsste man es ebenfalls abändern können, denn die Smartphone-Konfigurationsdatei kann nur in der Entwicklungsumgebung geändert werden.
-Das bedeutet einen erheblichen Mehraufwand.
-Share-Preferences könnten hierbei eingesetzt werden, damit das Topic im Nachhinein App-Seitig nochgeädert werden kann.
-So könnten immerhin insgesamt mehrere Smartphones insgesamt genutzt werden.
+Es ist nicht möglich bei den Sensordaten pro Kontrollanwendung zwischen mehreren Geräten zu unterscheiden.
+Die Kontrollanwendung speichert die Sensordaten nicht pro Gerät ein.
+Dadurch ist es außerdem unmöglich mit nur einem Programm mehrere Geräte fernzusteuern.
+Würden mehrere Smartphones für einen Server verwendet, würden alle auf dem gleichen Topic Sensorwerte senden.
+Smartphones würden sich gegenseitig ihre Sensorwerte überschreiben.
+Ausgabeanfragen vom Programm würden an alle Smartphones gesendet und von Allen ausgeführt werden.
+Es können also keine Gruppen-Sessions erstellt werden.
+Für Programme die die Java und Python-Schnittstelle verwenden erscheint das unintuitiv.
+Die Erstellung eines Phone-Objektes deutet eher darauf hin, dass mehrere Phone-Objekte mehreren Smartphones entspricht.
 Eine weitere Fehlentscheidung bestand in der Auswahl von JSON als Kommunikationsstandard zwischen Middleware und Programmierumgebung.
 Sowohl für Java, als auch für C sind zusätzliche JSON-Parser nötig.
 Für C muss dieser vor dem Kompilierprozess hinzugefügt werden.
