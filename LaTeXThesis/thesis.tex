@@ -565,25 +565,48 @@ Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues
 Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
 
 \chapter{Programmierumgebung}\label{chap:libs}
-Das Programmieren und reagieren auf Sensorwerte erfolgt in der Lösung Clientseitig auf dem PC.
-Ein Programmierer schreibt ein Programm, bindet eine Bibliothek der Lösung ein und verwendet deren angebotene Funktionen dafür.
-Um eine optimale Nutzung unter möglichst vielen Plattformen anbieten zu können sind diese in den Programmiersprachen C, Java und Python entwickelt.
-Die Bibliotheken in Java und Python sind Plattformunabhängig.
+Die Programmierumgebung ist die Schnittstelle, die Programmierer für die Interaktion mit dem Smartphone verwenden.
+Sie besteht aus einer Bibliothek, die Funktionen anbietet mit denen Programmierer Sensorwerte einlesen, oder Ausgaben auf dem Smartphone tätigen können.
+Sie können die Funktionen in ihren bestehenden Quellcode einbinden und die Funktionen dort verwenden.
+Die Bibliothek ist in den Programmiersprachen C, Java und Python vorhanden, damit Sie mit verschiedenen Programmiersprachen genutzt werden kann.
+In Java und Python ist Sie zudem Plattformunabhängig.
 Für C gibt es zwei Bibliotheken: Eine für Unix- und eine für Windows-Systeme.
-In C ist die Bibliothek prozedural, in Java und Python objektorientiert implementiert.
-Werden die Funktionen aufgerufen werden standardisierte Anfragen generiert und an die Kontrollanwendung gesendet.
+In C ist die Bibliothek prozedural mit statischen Methoden, in Java und Python objektorientiert implementiert.
+
+Werden die bereitgestellten Funktionen aufgerufen, werden standardisierte Anfragen im JSON-Format generiert und an die Kontrollanwendung gesendet.
 Diese sendet die Daten gegebenenfalls an das Smartphone weiter oder antwortet direkt.
-Der Ablauf ist in Abbildung \ref{fig:Schnittstelle Bibliothek} dargestellt.
+Eine Übersicht ist in Abbildung \ref{fig:Schnittstelle Bibliothek} dargestellt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.8\textwidth]{images/lib_server_connection}
   \caption{Schnittstellen der Bibliothek}
   \label{fig:Schnittstelle Bibliothek}
 \end{figure}
-Alle Anfragen werden über UDP versendet.
-Hierfür werden Sockets benötigt.
-Die Serveranwendung ist auf dem Port 5006 erreichbar.
-Antworten erwarten die Bibliotheken auf dem Port 5005.
+
+Alle Anfragen werden über das UDP-Protokoll unter IPv4 versendet.
+Das Kontrollprogramm ist auf dem Port 5006 erreichbar, Bibliotheken auf dem Port 5005.
+Beide kommunizieren über die localhost-Adresse 127.0.0.1.
+Dadurch werden Datagramme über das Loopback-Interface gesendet.
+Das Loopback-Interface ist eine virtuelle Netzwerk-Schnittstelle des Betriebssystems eines PCs.
+Pakete werden nicht über externe Netzwerk-Schnittstellen wie Netzwerkkarten versendet, sondern verbleiben im Netzwerk-Stack des Betriebssystems.
+Die Latenzen sind dadurch mit weniger als 1 ms äußerst gering.
+Zum Senden und Empfangen von Anfragen werden Sockets verwendet.
+Für das Empfangen von Paketen müssen diese gebunden werden, für Sendevorgänge nicht.
+
+Bei der Erstellung eines Phone-Objekts in Python und Java werden die Nachrichtenvorlagen für Anfragen und Antworten aus der Datei \texttt{protocol.json} geladen.
+Die Datei muss sich im Dateisystem im gleichen Ordner befinden wie die Bibliothek.
+Für die C-Bibliothek sind alle Methoden statisch definiert.
+Es gibt somit keinen Start-Punkt zu dem die Datei \texttt{protocol.json} eingelesen werden kann.
+Damit die Datei nicht für jeden Funktionsaufruf kontinuierlich eingelesen werden muss, muss Sie vom Programmierer einmal zum Start des Programms als cstring eingelesen werden.
+Anschließend muss dieser cstring für jeden Aufruf einer Funktion der Bibliothek als Parameter angegeben werden.
+Die Methode \texttt{get\_file\_content} kann, unter der Angabe des Dateipfades der \texttt{protocol.json}-Datei, aufgerufen werden um den Dateiinhalt einzulesen.
+Zurückgegeben wird der Inhalt als cstring.
+Diese Lösung verringert die Anzahl der Lesevorgänge und die damit verbundenen durch IO verursachten Latenzen.
+Der Inhalt ist ab dem Einlesezeitpunkt auf dem Heap des Arbeitsspeichers gespeichert.
+Der Programmierer muss diesen am Ende seines Programms durch den Aufruf der \texttt{free}-Funktion wieder freigeben.
+
+
+
 
 
 \chapter{Evaluation}\label{chap:eval}
