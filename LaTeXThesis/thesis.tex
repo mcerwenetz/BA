@@ -174,30 +174,28 @@ Die Aufgabe ist als \textit{Schwer} bewertet, da hier Wiederholungen in einer We
 Diese sind jedoch nicht immer exakt gleich.
 So muss auch ausprobiert werden, wie sich eine Umdrehung in den Messwerten äußert und wie Drehungen optimal erkannt werden können.
 
-\section{Anforderungen}\label{sec:anforderungen}
-Geringe Latenzen sind bei der Sensordatenübermittlung nötig, damit Programme bei Messwertänderungen schnell reagieren könnnen.
-Damit dies möglich ist müssen die Aufgabenbereiche der Lösung seperiert werden.
-Die Komponenten müssen über effiziente Protokolle kommunizieren.
-Funktionen die aufgerufen werden um Sensormessdaten zu erhalten müssen ihre Rückgabewerte simpel gestalten.
-Serialisierte Formate erfordern zusätzliches Hintergrundwissen.
-Um auf die Ergebnisse zurückgreifen zu können müssten weitere Bibliotheken zum Parsen eingesetzt werden.
-Das erschwert die Umsetzung der Aufgaben.
-Damit das Programm entsprechend schnell auf geänderte Sensordaten reagieren kann, müssen Sie jederzeit angefragt werden können.
-So können Experimente eher begriffen werden, da Auswirkungen in der Realität unmittelbar Auswirkungen auf das entwickelte Programm haben.
-Idealerweise liegen Sie zum Zeitpunkt der Anfrage bereits vor.
-Sensor-Messungen sollten nicht auf eine Anfrage hin gestartet, sondern vorher begonnen werden.
-So werden die Latenzzeiten minimiert.
-Weiterhin berücksichtigt wird, dass die Sensorwerte einen Transportweg durchlaufen.
+\section{Anforderungen der Lösung}\label{sec:anforderungen}
+Aus den Beispielaufgaben leiten sich Anforderungen an die Lösung ab.
+Geringe Latenzen sind bei der Sensordatenübermittlung für ein responsives Verhalten von Programmen nötig.
+Sie tragen zur Lernerfahrung bei, da sich physikalische Änderungen unmittelbar auf das Verhalten des entwickelten Progamms auswirken.
+Eine Verkürzung der Latenzen ist von mehreren Faktoren abhängig.
+Sensorwerte müssen für deren Übermittlung initial vorliegen.
+Für Sensormessungen sollten nicht auf nach einer Anfrage, sondern direkt zu Anfang gestartet werden.
+Weiterhin ist zu berücksichtigen, dass die Sensorwerte einen Transportweg durchlaufen.
 Dieser beschreibt die Strecke zwischen Smartphone und Programmierumgebung.
-Übertragungsszeiten können je nach Mobilfunk- bzw WLAN Standard, Umwelteinflüssen und Geräteanzahl im Medium variieren.
+Latenzen können je nach Mobilfunk- bzw WLAN Standard, Umwelteinflüssen und der Geräteanzahl im Medium variieren.
 Die Round-Trip-Time (RTT) dient bei Wireless-Verbindungen als Indikator für Latenzen.
 Sie beschreibt die Zeit des Hin- und Rückweges eines Gerätes zu einem Host.
 Bei Funk-Verbindungen wie WLAN fällt Sie höher aus als bei kabelgebundenen Medien.
-Während Sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt kann Sie bei UMTS auf 300 ms bis 400 ms ansteigen.\cite{network_latencies}
-Um diese Latenzen zu verringern müssen Sensorwerte zwischengespeichert werden um einen Puffer aufzubauen auf den in Fällen erhöhter Latenz zugegriffen werden kann.
+Während Sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt kann Sie bei UMTS auf 300 ms bis 400 ms ansteigen \cite{network_latencies} .
+
+Sensorwerte zwischengespeichert werden um einen Puffer aufzubauen auf den in Fällen erhöhter Latenz zugegriffen werden kann.
 Dies bedeutet jedoch auch, dass das Smartphone kontinuierlich in periodischen Abständen Sensorwerte senden muss, damit der Puffer gefüllt ist.
-Liegen die Daten vor, kann der vom Programmierer entwickelte Algorithmus Ausgaben auf dem Smartphone auslösen.
-Ausgabe-Kommandos sind zwar ebenfalls von Latenzen betroffen, haben allerdings keine direkte Auswirkung auf die Entscheidungsstruktur eines Programms.
+
+Die Komponenten müssen über effiziente Protokolle kommunizieren.
+Sensormessdatenfördernde Funktionen müssen simple Rückgabewerte in Form von primitiven Datentypen zurückgeben.
+
+Das vom Programmierer entwickelte Programm muss Ausgaben auf dem Smartphone auslösen können.
 Sollten Rückgabewerte trotzdem nötig sein und anfallen, ändern Sie sich nicht sehr häufig.
 Auf Sie muss seltener reagiert werden.
 Der Zweck von Ausgaben mit Rückgabewert besteht in einer Ausführungsmeldung, anstatt einer Meldung von Messergebnissen von denen der weitere Programmablauf abhängt.
@@ -238,6 +236,7 @@ Dieses nimmt Sie entgegen und sichert Sie in einem internen Puffer.
 Ausgabe-Anfragen für das Smartphone werden ebenfalls über das Kontrollprogramm an das Smartphone per MQTT gesendet.
 Die Smartphone-Anwendung beginnt sobald Sie startet mit der Erhebung der Sensordaten, welche sie anschließend an die Kontrollanwendung sendet.
 Daneben reagiert Sie auf Ausgabeanfragen von der Bibliothek, welche bei Eingang ausführt werden.
+
 
 
 \chapter{Nachrichtenformate}\label{chap:message_formats}
@@ -356,7 +355,12 @@ Fällt ein Rückgabewert an, wird eine rpc\_response generiert und vom Smartphon
 Diese leitet die Nachricht dann per UDP weiter an die Bibliothek.
 
 
-\chapter{Android Anwendung}\label{chap:app}
+\chapter{Implementierung der Komponenten}
+In diesem Kapitel werden die Designentscheidungen in der Implementierung der drei Komponenten Android-Anwendung, Kontrollanwendung und Programmierumgebung erörtert.
+Der Fokus liegt auf der internen Struktur der jeweiligen Komponenten ihrer Verknüpfung.
+Startabläufe werden dargelegt und die Funktionsweisen der einzelnen Komponenten vermittelt.
+
+\section{Android Anwendung}\label{chap:app}
 Die Android-Anwendung ist eine der drei zentralen Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
 Für diese bietet Sie unterschiedliche UI-Elemente in einer Activity an, der RootActivity.
@@ -372,7 +376,6 @@ Messungen werden über SensorEventListener realisiert.
 Diese starten Messvorgänge und ermitteln in periodischen Zeitabständen den aktuell vorliegenden Messwert.
 Verwendete Sensoren sind beispielsweise der Lagesensor oder das Gyroskop.
 
-\section{Startvorgang}
 Die Erhebung der Messwerte erfolgt zum Start der Anwendung.
 Ein Ablaufplan ist in Abbildung \ref{fig:app_flow} zu sehen.
 \begin{figure}[htbp]
@@ -401,14 +404,12 @@ Mit einer Referenz auf die Activity kann der Service UI-Ändernde Funtionen auf 
 Android unterbindet jedoch UI-Manipulationen durch Threads die nicht der UI-Thread sind.
 Dieses Problem wird durch die Methode \textit{runOnUiThread} umgangen, welche die Änderung in der Ausführungswarteschlange des UIThreads einreiht.
 Der Service baut eine Verbindung zu einem MQTT Server auf.
-\\
 Beim Einbinden des MQTT Servers stellt dieser eine Verbindung zu einem in config.json definierten MQTT-Broker und Topic her.
-\\
 Ist der Service final eingebunden können die Sensormessprozesse gestartet werden, da Messdaten nun zuverlässig gesendet werden können.
 Verschiedene SensorEventListener werden nun gestartet und zentral in einem SensorEventListenerContainer gesammelt gespeichert und die Messprozesse jeweils angestoßen.
 Somit ist die Startroutine der Mobilen Anwendung abgeschlossen.
 Auf Nachrichten wird nun nur noch im MQTT-Service in einem MessageListener mit entsprechendem Callback reagiert.
-\\\\
+
 Die Funktionsweise der Sensordatenübertragung wird in Abbildung \ref{fig:sensor_event_listener} nocheinmal zusammenfassend dargestellt.
 \begin{figure}[htbp]
   \centering
@@ -421,13 +422,12 @@ Der Container dient lediglich der Datenhaltung.
 Aufgabe der SensorEventListener ist es auf Sensorwert-Änderungen zu reagieren und eine entsprechende Callback-Funktion aufzurufen.
 In dieser werden dann über statische Methoden der Klasse \textit{JSONMessageWrapper} update\_requests generiert und der gemessene Wert eingesetzt.
 Die so generierte Nachricht wird anschließend über den gebundenen MQTT-Service an das vorher definierte Topic versendet.
-\\\\
+
 Die Anwendung ist nun betriebsbereit und beginnt bereits erste Nachrichten an die Kontrollanwendung zu senden.
 Übermittelt werden die Sensordaten an den Broker mit einer QOS-Stufe von 0.
 Verluste von update\_requests sind unproblematisch, da es je nach Taktung sehr schnell neue Sensorwerte gibt die übertragen werden können.
 Eine exakte Zustellung ist hier nicht notwendig und verlangsamt eher den Übertragungsprozess.
 
-\section{Sensoren}
 Smartphones beeinhalten Sensoren die Daten über die Umgebungseigenschaften erfassen.
 Dazu zählen Beispielsweise Bewegung, Näherung, aber auch Temperatur oder Luftdruck.
 In der Lösung besteht ihr Zweck darin auf Änderungen der Werte zu reagieren.
@@ -475,7 +475,7 @@ Daher wird beim Start überprüft ob der Sensor auch wirklich vorhanden ist.
 Ist er es nicht, wird auch keine Messung gestartet.
 
 
-\chapter{Kontrollanwendung}\label{chap:server_software}
+\section{Kontrollanwendung}\label{chap:server_software}
 
 Für Vermittlung zwischen den Komponenten fungiert eine Server-Anwendung.
 Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen Seite vom Client aus und MQTT-Anfragen vom Smartphone auf der anderen Seite.
@@ -484,28 +484,6 @@ Dies geschieht in form von JSON-Anfragen die per UDP übermittelt werden.
 Der Server ist unter der localhost-Adresse 127.0.0.1 auf dem Port 5006 erreichbar.
 Für die MQTT-Verbindung kommt dabei die unter OpenSource-Liznenz stehende MQTT-Library Paho der Eclipse-Foundation zum Einsatz. \cite{paho}
 
-
-\section{Anforderungen}
-Aus den Anforderungen ergeben sich folgende Aufgaben die der Server umsetzen muss:
-\begin{itemize}
-\item Sensoranfragen schnell beantworten
-\item Anfragen die Funktionen auf dem Smartphone starte, müssen schnell an das Smartphone weitergereicht und gegebenfalls wieder beantwortet werden.
-\end{itemize}
-Damit Sensoranfragen schnell beantwortet werden können, werden die aktuellen Sensorworte fortlaufend vom Smartphone an den Server übermittelt.
-Dieser speichert Sie dann, sobald ein Sensorwert gemessen und übermittelt wurde in eine interne, threadsichere Datenstruktur.
-Hierdurch wird insbesondere der Latenzunterschied zwischen Smartphone und Localhost berücksichtigt.
-UDP Anfragen per Localhost haben eine wesentlich geringe Latenz als MQTT-Anfragen, auf die das Smartphone reagieren muss.
-Durch das Cachen auf dem Server liegen bei Anfragen per UDP, also von der Library aus, immer Sensordaten vor.
-
-Um Funktionsanfragen zeitnah auszuführen müssen unterschiedliche Netzwerklatenzen berücksichtigt werden.
-Die Übermittlung erfolgt asynchron zwischen Library und Smartphone, wobei zu erwarten ist dass Übermittlungen an das Smartphone mit einer höheren Latenz übertragen werden, als Anfragen zwischen Library und Server, da sich beide auf dem gleichen Host befinden.
-Die Verbindung zwischen Library und Server erfolgt darüber hinaus über localhost und somit über ein Loopback-Device.
-Loopback-Devices reichen Netzwerkpakete nicht herkömmlich über ein physisches Netzwerkinterface weiter sondern stellen ein virtuelles Gerät dar, dessen Übertragungsrate an die CPU gekoppelt ist.
-Die Bandbreiten sind dadurch sehr hoch und die Latenzen gering.
-
-Um die Latenzen und die damit verbundenen unterschiedlichen Auftrittszeitpunkte von Anfragen zu berücksichten, sowie eine möglichst effiziente Abarbeitung der selbiger zu ermöglichen wird eien paralelle Algorithmusstruktur verwendet.
-
-\section{Interner Aufbau}
 Die Serveranwendung mit dem Namen server.py ist aufgeteilt in einen Datenverwaltungsteil, DataHandler, und eine MQTT Anbindung, MQTTHandlerThread.
 Da die Sensorwerte des Smartphoens vorrätig gehalten werden, wird außerdem eine Datenklasse für diese, SensorDB, intern gehalten.
 Eine Übersicht über die Komponenten ist Abbildung \ref{fig:serverUml} zu entnehmen.
@@ -564,7 +542,7 @@ Hierfür gibt es den AnswerQueueWorker, dessen einzige Aufgabe es ist Antworten 
 Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues des queue-Moduls\cite{python_queue} der cpython Implementierung.
 Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
 
-\chapter{Programmierumgebung}\label{chap:libs}
+\section{Programmierumgebung}\label{chap:libs}
 Die Programmierumgebung ist die Schnittstelle, die Programmierer für die Interaktion mit dem Smartphone verwenden.
 Sie besteht aus einer Bibliothek, die Funktionen anbietet mit denen Programmierer Sensorwerte einlesen, oder Ausgaben auf dem Smartphone tätigen können.
 Sie können die Funktionen in ihren bestehenden Quellcode einbinden und die Funktionen dort verwenden.
@@ -605,21 +583,10 @@ Diese Lösung verringert die Anzahl der Lesevorgänge und die damit verbundenen 
 Der Inhalt ist ab dem Einlesezeitpunkt auf dem Heap des Arbeitsspeichers gespeichert.
 Der Programmierer muss diesen am Ende seines Programms durch den Aufruf der \texttt{free}-Funktion wieder freigeben.
 
-
-
-
-
-\chapter{Evaluation}\label{chap:eval}
+\chapter{Verwendung der Lösung}
 In disem Kapitel wird die Verwendung des Frameworks anhand dem Beispiel \textit{Alarmanlage} vorgestellt.
 Gezeigt wird, wie die Aufgabe in der Programmierumgebung gelöst wurde und wie sich die Aufgabe auf dem Smartphone äußert.
-Dadurch wird überprüft, ob die Anforderungen an die Smartphone-Anwendung erfüllt wurden.
-Neben Anforderungen Benutzung betreffen gibt es auch welche, die die Latenzen betreffen.
-Transportwege müssen berücksichtigt werden.
-Die Zeiten werden in drei verschiedenen Umgebungen überprüft: In nächster Nähe zum MQTT-Server, in mittlerer Nähe und in einer virtuellen Umgebung über ein simuliertes NAT-Netzwerk.
-
-\section{Beispielverwendung}
-Die Verwendung der Lösung wird anhand des \textit{Alarmanlage}-Beispiel vorgestellt.
-In der Programmierumgebung wird dabei die Bibliothek in Python verwendet.
+In der Programmierumgebung wird dabei die Python-Bibliothek verwendet.
 
 Damit Nachrichten ausgetauscht werden können muss zuerst das Kontrollprogramm gestartet werden.
 Es wird mit dem Befehl \texttt{python ./server.py} in einer lokalen Shell gestartet.
@@ -700,7 +667,17 @@ Sie ist auch hilfreich um bei Smartphones mit sanften Vibrationsausgaben eine Au
 Die Reaktionszeit liegt unter einer Sekunde.
 Die Ausgabe erscheint als direkter Grund der Annäherung.
 
-\section{Messergebnisse}
+
+\chapter{Evaluation}\label{chap:eval}
+In diesem Kapitel wird überprüft, ob die implementierte Lösung die Anforderungen erfüllt.
+Überprüft wird die qualitive Nutzbarkeit der Lösung anhand der spezifizierten Anforderungen.
+Für verschiedene Nutzungszenarien wie der Labor- oder Heimarbeit werden Latenzuverhalten gemessen.
+
+
+
+Transportwege müssen berücksichtigt werden.
+Die Zeiten werden in drei verschiedenen Umgebungen überprüft: In nächster Nähe zum MQTT-Server, in mittlerer Nähe und in einer virtuellen Umgebung über ein simuliertes NAT-Netzwerk.
+
 Damit die Benutzbarkeit sichergestellt ist, müssen Latenzzeiten zwischen Smartphone und Programmierumgebung in einem akzeptablen Rahmen liegen.
 Um dies herauszufinden werden die Latenzzeiten gemessen.
 In diesem Kapitel wird die Latenzzeit von drei Standorten aus gemessen.
@@ -748,6 +725,8 @@ Die Reaktionszeit ist also im Durchschnitt sehr hoch, etwa sechs mal langsamer a
 Eine direkte Assoziation zwischen Eingabe und Ausgabe kann nicht garantiert werden.
 
 \chapter{Fazit}\label{chap:fazit}
+
+\section{Zusammenfassung}
 Die implementierte Lösung erfüllt die gestellten Anforderungen zum größten Teil zufriedenstellend.
 Latenzprobleme per MQTT treten nicht auf.
 Trotz einem QOS-Level 0 werden auch Ausgabeanfragen sicher übertragen und ausgeführt.
@@ -798,6 +777,8 @@ Insbesondere falls durch eine Weiterentwicklung neue Ausgabemöglichkeiten dazuk
 Dies könnte ähnlich wie bei der Platzierung von Widgets auf dem Homescreen gelöst werden.
 Ausgabeelemente könnten aus einer Art Baukasten an die gewünschte Position gezogen werden, wo Sie dann verwendet werden können.
 So könnte der Platz auf dem Bildschirm besser genutzt werden.
+
+\section{Ausblick}
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
 % Meist ist das aber unnötig.

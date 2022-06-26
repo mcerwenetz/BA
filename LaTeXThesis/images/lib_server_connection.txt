@@ -1,0 +1,14 @@
+@startuml
+
+package "Lokaler PC"{
+component Bibliothek #Green
+component Kontrollanwendung #Yellow
+}
+
+cloud "Verbindung zum Smartphone"
+
+Kontrollanwendung -left-> Bibliothek : Antwort
+Bibliothek -right-> Kontrollanwendung : Anfrage
+Kontrollanwendung <-down-> [Verbindung zum Smartphone]
+
+@enduml
