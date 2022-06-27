@@ -111,12 +111,11 @@ Einige Beispiele werden in diesem Kapitel vorgestellt.
 Da diese nicht auf einem Microcontroller, sondern einem Smartphone ausgeführt werden, müssen gewisse Rahmenbedingungen erfüllt sein, wie beispielsweise geringe Latenzen in der Sensordatenübertragung.
 \section{Beispielprogrammieraufgaben}\label{sec:activities}
 Praxisnahe Programmieraufgaben mit interessanten Aufgabestellungen motivieren Softwareentwickler.
-In den Aufgaben interaktiv auf die Änderung physikalischer Eigenschaften gewartet und reagiert.
-Die Liste der Aufgaben ist in Tabelle \ref{tab:excercises} zu finden.
-In ihr ist zu finden, welche Aufgabe welche Sensordaten benötigt werden und welche Ausgabemöglichkeiten genutzt werden sollen
-Die Angabe des Schwierigkeitsgrads unterstützt Anfänger bei der Auswahl um die Motivation zu erhöhen.
-Er ist in drei Größen gegliedert:
-Einfach (+), Mittel(++) und Schwer (+++).
+Die in diesem Abschnitt vorgestellten Beispielaufgaben definieren das von Sensormesswerten abhängige Verhalten interaktiver Programme.
+Die Aufgabenstellungen sind in Tabelle \ref{tab:excercises} aufgeführt.
+Für jede Aufgabe werden die benötigen Sensortypen und Ausgabeschnittstellen beschrieben.
+Leserinnen und Leser werden in der Entscheidungsfindung durch die Angabe eines dreistufigen Schwierigkeitsgrades unterstützt.
+Dies soll verhindern, dass sich unerfahrene Programmierer mit komplizierten Aufgaben zu Anfang überfordern.
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|l|c|p{2cm}|c|}
@@ -131,45 +130,44 @@ Einfach (+), Mittel(++) und Schwer (+++).
       \hline
       Klatsch-Zähler & Mikrofon & Textfeld & ++ \\
       \hline
-      Dreh-Zähler & lagesensor & Textfeld & +++ \\
+      Dreh-Zähler & Lagesensor & Textfeld & +++ \\
       \hline
   \end{tabular}
   \caption{Beispielprogrammieraufgaben}
   \label{tab:excercises}
 \end{table}
 
-In der Aufgabe \textit{Disco} soll eine virtuelle LED alle 500 ms von der Farbe grün auf die Farbe rot wechseln.
-Die Aufgabe benötigt keine Sensoren, da die LED nicht auf eine Eingabe seitens des Programmierers oder sonstigen Messwert-Änderungen warten soll.
-Der Schwierigkeitsgrad ist als einfach eingestuft, da hier weder Sensoren benötigt werden, noch sonstige Abhängigkeiten die auf Sensormesswerte beruhen innerhalb des Codes zu berücksichtigen sind.
+In der Aufgabe \textit{Disco} soll eine virtuelle LED für eine Zeitdauer von 500 ms grün und anschließen 500ms rot leuchten.
+Sensoren sind in dieser Aufgabe überflüssig, da die LED-Ausgabe unabhängig von Sensormesswertänderungen ausgeführt wird.
+Aus diesem Grund ist die Aufgabe als Einfach eingestuft.
 
-In der Aufgabe \textit{Würfeln} soll erkannt werden, ob ein Device geschüttelt wurde.
-Verwendet wird dabei der Lagesensor, der Beschleunigungen misst.
-Wird ein Schütteln erkannt soll auf dem PC eine Zufallszahl generiert werden, welche dann auf dem Device in einem Textfeld ausgegeben wird.
-Die Schwierigkeit wird ebenfalls auf einfach eingeschätzt, da lediglich ein Sensor und eine Ausgabe verwendet wird.
+In der Aufgabe \textit{Würfeln} soll ein Schütteln des Geräts erkannt werden.
+Zur Verwendung kommt dabei ein Lagesensor zum Einsatz welcher Gerätebeschleunigungen messen kann.
+Wird ein Schütteln erkannt, soll auf dem PC eine Zufallszahl generiert werden.
+Anschließend wird diese auf dem Gerät in einem Textfeld ausgegeben.
+Der Schwierigkeitsgrad wird ebenfalls auf Einfach eingeschätzt, da die Aufgabe unter Verwendung eines Sensors und einer Ausgabe lösbar ist.
 
-In der Aufgabe \textit{Diebstahl-Alarm} soll überprüft werden, ob sich jemand dem Device genähert hat um es zu greifen.
-Benötigt wird dafür der Näherungssensor.
-Misst er eine Annäherung, soll ein alarmierender Text im Textfeld auf dem Smartphone ausgegeben werden.
-Ebenfalls benötigt wird die Vibrationsfunktion als haptisches Feedback.
-Bei einer Näherungs-Detektion soll es fünf mal vibrieren.
-Außerdem soll die LED die Farbe wechseln, so wie in der Aufgabe \textit{Disco}.
-Der Schwierigkeitsgrad der Aufgabe ist als \textit{Mittel} eingestuft, da die Zeitdauer der Vibration länger sein soll als die Pausen zwischen dem Farbwechsel der LED.
-Entfernt sich die Person muss der Alarm-Zustand verlassen werden können.
+In der Aufgabe \textit{Diebstahl-Alarm} wird unter Verwendung des Näherungssensors das örtliche Umfeld des Geräts auf eine Annäherung kontrolliert.
+Wird eine Annäherung festgestellt, wird ein alarmierender Text im Textfeld ausgegeben.
+Zusätzlich soll die LED die wie in Aufgabe \textit{Disco} die Farbe wechseln.
+Neben den visuellen ausgaben wird die Vibrationsfunktion als haptisches Feedback benötigt.
+Im Falle einer Annäherung, soll das Gerät fünf mal vibrieren.
+Der Schwierigkeitsgrad der Aufgabe ist als Mittel eingestuft, da hier zwischen Alarm- und Normalzustand unterschieden werden muss.
+Entfernt sich eine Person, muss der Alarm-Zustand verlassen werden können.
 Alle Ausgaben werden auf ihren initialwert zurückgesetzt.
 
 Bei der Aufgabenstellung \textit{Klatsch-Zähler} muss für einen definierten Zeitraum die Anzahl der Händeklatscher gemessen werden.
-Programmierer klatschen vor dem Device in die Hände.
-Die Anzahl der Klatscher wird gemessen und auf dem Display des Smartphones ausgegeben.
-Verwendet wird dafür lediglich das Mikrofon zur Eingabe und das Textfeld zur Ausgabe.
-Die Schwierigkeit ist auf \textit{Mittel} angesetzt, da Klatscher unterschidliche Intensitäten haben können.
-Programmierer müssen also ausprobieren, wann es sich wirklich um ein Händeklatschen handelt und wann nur Hintergrundgeräusche zu hören sind.
+Diese Anzahl wird anschließend im Textfeld des Geräts ausgegeben.
+Zur Verwendung kommen hierfür das Mikrophon als Ein- und das Textfeld als Ausgabe.
+Die Schwierigkeit ist auf \textit{Mittel} angesetzt, da die Messwerte von Händeklatschern unterschiedliche Intensitäten aufweisen.
+Um einen Händeklatscher zu identifizieren ist es nötig Grenzwerte zu ermitteln um Sie von normalen Hintergrundgeräuschen abzugrenzen.
+Eine Visualisierung der Messdaten kann bei dieser Festlegung helfen.
 
-Bei der letzen Aufgabe \textit{Drehzähler} soll der Programmierer das Device innerhalb eines eigenen definierten Zeitraums drehen und anhand der zurückgegeben Werte die Anzahl der Drehungen ermitteln.
-Diese soll anschließend im Textfeld auf dem Device ausgegeben werden.
-Zur Verwenung kommen hier ebenfalls der Lagesensor als Sensoreingabe und das Textfeld als Ausgabe.
-Die Aufgabe ist als \textit{Schwer} bewertet, da hier Wiederholungen in einer Werteabfolge erkannt werden müssen.
-Diese sind jedoch nicht immer exakt gleich.
-So muss auch ausprobiert werden, wie sich eine Umdrehung in den Messwerten äußert und wie Drehungen optimal erkannt werden können.
+Bei der letzen Aufgabe \textit{Drehzähler} soll der Programmierer das Device innerhalb eines definierten Zeitraums drehen und anhand der Messdaten die Anzahl der Umdrehungen ermitteln.
+Diese Anzahl soll anschließend im Textfeld auf dem Gerät ausgegeben werden.
+Zur Verwendung kommen hier ebenfalls der Lagesensor als Sensoreingabe und das Textfeld als Ausgabe.
+Die Aufgabe ist als Schwer bewertet, da hier Wiederholungen in einer Werteabfolge erkannt werden müssen, welche jedoch wie bei der Aufgabe \textit{Klatsch-Zähler} in ihrer Größe variieren können.
+Abhängigkeiten zwischen den Messwertergebnissen erschweren eine Umdrehungserkennung zusätzlich.
 
 \section{Anforderungen der Implementierung}\label{sec:anforderungen}
 Aus den Beispielaufgaben leiten sich Anforderungen an die implementierte Lösung ab.
@@ -203,6 +201,9 @@ Für die Bedienung aller Ausgabemöglichkeiten des Smartphones wird muss die Lö
 Das Einbinden in bestehende Entwicklungsumgebungen ist neben der benutzerfreundlichen Schnittstellengestaltung Voraussetzung für die Nutzung der Lösung.
 Die Entwicklungsumgebung Eclipse ist im Labor-Kontext weit verbreitet.
 Da es sich um eine plattformunabhängige IDE handelt, muss auch die Lösung plattformübergreifend in diese Entwicklungsumgebung integrierbar sein.
+Nachrichtenabläufe sollen nachvollziehbar sein um fehlerhafte Konfigurationen rasch zu identifizieren und zu korrigieren.
+Hierfür muss es eine Logging-Funktion geben die den Nachrichtenverlauf aufzeichnet und ausgibt.
+Programmierer können anhand der Logeinträge den Versand nachvollziehen wodurch Fehler ersichtlich werden.
 
 Neben den Netzwerktechnischen- und Nutzungsbezogenen Anforderungen muss die Lösung auch Ausgabemöglichkeiten über die grafische Benutzeroberfläche einer Smartphone-App bereitstellen.
 Teil dieser Oberfläche ist eine farbwechselbare Signal-LED.
