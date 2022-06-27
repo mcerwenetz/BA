@@ -727,61 +727,36 @@ Die Streuung ist mit einer Standardabweichung von 845 ms relativ gleichgroß.
 Die Reaktionszeit ist also im Durchschnitt sehr hoch, etwa sechs mal langsamer als bei einer Verwendung der Programmierumgebung auf dem Hostsystem.
 Eine direkte Assoziation zwischen Eingabe und Ausgabe kann nicht garantiert werden.
 
-\chapter{Fazit}\label{chap:fazit}
-
-\section{Zusammenfassung}
-Die implementierte Lösung erfüllt die gestellten Anforderungen zum größten Teil zufriedenstellend.
 Latenzprobleme per MQTT treten nicht auf.
 Trotz einem QOS-Level 0 werden auch Ausgabeanfragen sicher übertragen und ausgeführt.
 Da die Nachrichten über TLS übertragen werden ist der Austausch sicher.
 Logging-Möglichkeiten in der Kontrollanwendung und der Android-App erleichterten die Entwicklung sehr und halfen bei der Fehlersuche.
-Neben den Vorteilen wurden jedoch während der Konzeption einige Fehlentscheidungen getroffen.
-Es ist nicht möglich bei den Sensordaten pro Kontrollanwendung zwischen mehreren Geräten zu unterscheiden.
-Die Kontrollanwendung speichert die Sensordaten nicht pro Gerät ein.
-Dadurch ist es außerdem unmöglich mit nur einem Programm mehrere Geräte fernzusteuern.
-Würden mehrere Smartphones für einen Server verwendet, würden alle auf dem gleichen Topic Sensorwerte senden.
-Smartphones würden sich gegenseitig ihre Sensorwerte überschreiben.
-Ausgabeanfragen vom Programm würden an alle Smartphones gesendet und von Allen ausgeführt werden.
-Es können also keine Gruppen-Sessions erstellt werden.
-Für Programme die die Java und Python-Schnittstelle verwenden erscheint das unintuitiv.
-Die Erstellung eines Phone-Objektes deutet eher darauf hin, dass mehrere Phone-Objekte mehreren Smartphones entspricht.
-Eine weitere Fehlentscheidung bestand in der Auswahl von JSON als Kommunikationsstandard zwischen Middleware und Programmierumgebung.
-Sowohl für Java, als auch für C sind zusätzliche JSON-Parser nötig.
-Für C muss dieser vor dem Kompilierprozess hinzugefügt werden.
-Unter Linux kann die Abhängigkeit einfach nachinstalliert und als Option mit angegeben werden.
-Auf Windows-PCs ist dies jedoch etwas aufwändiger.
-Ein Binärprotokoll würde Abhilfe schaffen.
-Der Parser müsste selbst implementiert werden, allerdings nur einmal in der Kontrollanwendung.
-Dadurch würde auch die Nachrichtengröße sinken.
-Zwischen Middleware und Android-App könnte weiterhin JSON eingesetzt werden, da beide integrierte JSON-Parser besitzen.
-Die Standardadisierung über eine JSON-Datei, die die Vorlagen für alle Nachrichten beinhaltet erhöht zwar die Übersicht bei vielen Nachrichtenformaten und bietet Raum für eventuelle Erweiterungen, stand der Entwicklung jedoch häufig im Weg.
-Die Nachrichtenformate besitzen meist zu wenig Felder, als dass eine Standardisierung Sinn ergäbe.
-So endete Sie meistens in zusätzlichem, unübersichtlichem Code.
-Ein weiterer Nachteil liegt in der Speicherung von Sensorwerten.
-Es wird immer nur der aktuelle Sensorwert in der Kontrollanwendung gehalten, bis der nächste kommt.
-Eingeführt wurde er, damit sich Latenzen nicht so stark äußern und der Sensorwert trotzdem abgefragt werden kann.
-Er hat jedoch kein Ablaufdatum.
-Bei einem Verbindungsabbruch seitens des Smartphones wird weiterhin der zuletzt verfügbare Wert eingetragen.
-Erhöhen sich die Latenzen kann nur ein einzelner Wert abgefragt werden.
-Ein größerer Pufferspeicher mit einer festen Größe und Ablaufdatum wäre optimal.
-So könnten bei erhöhten Latenzen trotzdem weiter valide, echte Sensorwerte zurückgegeben werden anstatt Kopien des zuletzt gespeicherten.
-Durch ein Ablaufdatum könnte man eine Maximalzeit festlegen in der die Sensorwerte valide wären.
 
-Kombinierbar wäre dies mit einem Stapel-Versand von Sensorwerten.
-Smartphone App könnten sich in in periodischen Zeitabständen Nachrichten zur Latenzmessung senden.
-Sollte sich diese erhöhen könnten Sie umschallten in einen Stapel-Übertragungsmodus in dem statt immer nur einem Sensorwert gleich mehrere übertragen werden.
-JSON unterstützt diese Übermittlung mit der Array-Schreibweise.
-So könnte die Bandbreite besser ausgenutzt werden und Latenzen umgangen.
-Denkbar wäre außerdem Sensorwerte überhaupt erst nach Sendeaufforderung vom Smartphone an die Kontrollanwendung zu versenden.
-Während die Android-App auf dem Smartphone läuft werden kontinuierlich von allen Sensoren die Sensorwerte übertragen.
-Ein erhöhter Energieverbrauch ist die Folge.
-Wünschenswert wäre spezifizieren zu können welche Ausgabemöglichkeiten auf dem Display angezeigt werden sollen.
-Insbesondere falls durch eine Weiterentwicklung neue Ausgabemöglichkeiten dazukommen.
-Dies könnte ähnlich wie bei der Platzierung von Widgets auf dem Homescreen gelöst werden.
-Ausgabeelemente könnten aus einer Art Baukasten an die gewünschte Position gezogen werden, wo Sie dann verwendet werden können.
-So könnte der Platz auf dem Bildschirm besser genutzt werden.
+\chapter{Fazit}\label{chap:fazit}
+Die implementierte Lösung erfüllt die Anforderungen zufriedenstellend.
+Die im Vorfeld durchgeführte Konzeption der Lösung ermöglichte eine problemlose Implementierung.
+Während der Entwicklung wurden jedoch einige Designentscheidungen getroffen, welche die Lösung beschränken.
+Sensordaten werden von der Kontrollanwendung nicht für einzelne Geräte eingespeichert.
+Es ist nicht möglich Programmcode simultan auf mehreren Smartphones gleichzeitig auszuführen.
+Gruppen-Sessions können nicht erstellt werden.
+Für Programme die die Java und Python-Schnittstelle könnte dies unintuitiv erscheinen.
+Die Bedeutung eines Phone-Objektes lässt auf eine zwischen Einzelgeräten unterscheidende Verwendung schließen.
+Ein weiterer Nachteil der Benutzerfreundlichkeit besteht in der zwingenden Verwendung von Hilfs-Bibliotheken für den Nachrichtenaustausch über JSON.
+Sowohl für Java, als auch für C sind zusätzliche JSON-Parser für die Kommunikation zwischen Bibliothek und Kontrollanwendung nötig.
+Für eine erfolgreiche Kompilierung in C muss der Dateipfad für diesen dem Linker bekannt gemacht werden.
+Für die interne Struktur ist die Datenverwaltung innerhalb des Programms ausreichend.
+Durch den asynchronen Ansatz des Multithreading können beide Kommunikationspartner gleichzeitig über das Kontrollprogramm kommunizieren und zwischengespeicherte Daten auslesen oder bearbeiten.
+Die Möglichkeit mehrere Werte zum internen Datenspeicher hinzuzufügen wird jedoch nicht unterstützt.
+Häufige Sensor-Anfragen werden mit dem gleichen, einzeln zwischengespeicherten Sensorwert beantwortet, welcher zusätzlich kein Ablaufdatum besitzt.
+Abbrüche der Übertragung resultieren in der kontinuierlichen Übermittlung des zuletzt eingespeicherten Sensorwerts.
 
-\section{Ausblick}
+Zur Ablösung von Hilfsbibliotheken eignet sich die Verwendung eines Binärprotokolls.
+In Enumerationen konvertierte Nachrichtenformate und Parameter könnten statt der implementierten Darstellung mit JSON eingesetzt werden.
+Dadurch entfiehle nicht nur der Nachteil der unintuitiven Einbindung.
+Die Nachrichtengröße würde ebenfalls verringert werden.
+Energieeffizienz der Android-App wurde zum Vorteil der Latenzreduzierung während der Implementierung nicht wesentlich berücksichtigt.
+Zum Start der Anwendung werden die Sensormessprozesse unmittelbar gestartet und Sensorwerte an die Kontrollanwendung gesendet, was einen erhöhten Energieverbrauch bedeutet.
+Sollten sich die Startzeiten der Sensormessprozesse nicht wesentlich auf die Latenzen auswirken, wäre eine auf Anfragen basierende Sensmessdatenübertragung erwägenswert um den Energieverbrauch zu reduzieren.
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
 % Meist ist das aber unnötig.
