@@ -212,7 +212,7 @@ Durch zwei Tasten muss der Nutzer außerdem mit der Anwendung interargieren kön
 Neben den optischen Ausgaben bzw. Bedienelementen muss die Smartphone-App auch haptische Ausgaben wie Vibrationen umsetzen können.
 Für die Einstellung von Vibrationsmustern muss eine Vibrationszeitdauer konfigurierbar sein.
 \chapter{Architektur} \label{chap:architektur}
-Die Lösung besteht aus den drei Komponenten Programmierumgebung, Kontrollprogramm und Android-Anwendung die zur korrekten Funktionsweise miteinander kommunizieren.
+Die implementierte Lösung besteht aus den drei Komponenten Programmierumgebung, Kontrollprogramm und Android-Anwendung, die zur korrekten Funktionsweise miteinander kommunizieren.
 Eine Übersicht des Aufbaus ist in Abbildung \ref{fig:design} dargestellt.
 \begin{figure}[htbp]
 \centering
@@ -221,17 +221,18 @@ Eine Übersicht des Aufbaus ist in Abbildung \ref{fig:design} dargestellt.
 \caption{System-Aufbau}
 \label{fig:design}
 \end{figure}
-Um mit dem Smartphone zu interargieren bietet die Programmierumgebung eine Bibliothek mit Schnittstellen in Form von Funktionen.
-Eine Einbindung in bestehenden Programmcode des Programmierers ermöglicht deren Nutzung.
-Zur Unterstützung der Verständlichkeit für angehende Programmierer wurde bei der Entwicklung auf die Implementierung von Funktionen mit asynchronem Verhalten verzichtet.
-Die Kontrollanwendung, welche ebenfalls auf dem lokalen PC betrieben wird, dient der Nachrichtenvermittlung zwischen Smartphone-App und Programmierumgebung. 
-Führt ein Programmierer einen Funktionsaufruf der Bibliothek aus, übermittelt die Bibliothek diesen per UDP dem Kontrollprogramm welches über die weitere Verfahrensweise entscheidet und die Nachricht gegebenenfalls per MQTT an das Smartphone überträgt, wie dies zum Beispiel bei einer Ausgabeanfrage der Fall ist.
-Zusätzlich bietet die Bibliothek indes Funktionen die Sensormessdaten zurückgeben.
-Diese werden von der Smartphone-App in regelmäßigen Abständen zur Zwischenspeicherung an die Kontrollanwendung gesendet.
-Bei Eingang einer Sensorwert-Anfrage sendet die Kontrollanwendung den zuletzt von der Smartphone-App übermittelten Wert an die Bibliothek zurück.
+Um mit dem Smartphone zu interargieren bietet die Programmierumgebung eine programmiersprachenunabhängige Bibliothek mit Schnittstellen in Form von Stub-Funktionen, die die API der Kontrollanwendung nutzen.
+Die Bibliothek kann in bestehenden Programmcode zum Zweck der Nutzung eingebunden werden.
+Zur Unterstützung der Verständlichkeit für angehende Programmierer wurde bei der Entwicklung auf die Implementierung von Funktionen mit asynchronen Rückgabewerten verzichtet.
+Die in der Programmiersprache Python imlementierte Kontrollanwendung, welche ebenfalls auf dem lokalen PC betrieben wird, dient der Nachrichtenvermittlung zwischen Smartphone-App und Programmierumgebung.
+Führt ein Programmierer einen Funktionsaufruf der Bibliothek aus, übermittelt die Bibliothek diesen per UDP dem Kontrollprogramm welches über die weitere Verfahrensweise entscheidet.
+Die Nachricht wird zum Beispiel bei einer Ausgabeanfrage per MQTT an das Smartphone übertragen.
+Die Kontrollanwendung speichert zudem Sensormesswerte unpersistent in einem assoziativen Feld mit Key-Value-Einträgen um sie gegenüber der Bibliothek zu cachen.
+Diese werden Messwerte von der Smartphone-App in regelmäßigen Abständen an die Kontrollanwendung übermittelt.
+Bei Eingang einer Sensorwert-Anfrage seitens der Bibliothek sendet die Kontrollanwendung den zuletzt von der Smartphone-App übermittelten Wert an die Bibliothek zurück.
 Die Smartphone-Anwendung beginnt zum Startvorgang mit der Erhebung sowie Übermittlung der Sensordaten und reagiert auf Ausgabe-Anfragen seitens der Kontrollanwendung.
 
-Für die Übermittlung der Nachrichten werden die Protokolle MQTT und UDP verwendet.
+Zur Übermittlung der Nachrichten werden die Protokolle MQTT und UDP eingesetzt.
 MQTT ist ein auf TCP basierendens Client-Server-Protokoll.
 Durch einen 2 Byte großen Header und maximalen Payload-Größe von 260 MB ist es leichtgewichtig und gleichzeitig flexibel.
 Nachrichten werden an einen MQTT Broker gesendet, der die Nachrichten dann an alle Clients weiterreicht die das Topic auf dem die Nachricht gesendet wurde abboniert haben.
@@ -242,12 +243,12 @@ Das menschlesbare, kompakte Nachrichtenformat ist weit verbreitet und wird von v
 \chapter{Nachrichtenformate}\label{chap:message_formats}
 Ein einheitliches Kommunikationsformat ist für den Nachrichtenaustausch unabdingbar.
 Der zur Übermittlung ausgearbeitete Standard definiert die Nachrichten in einem Klartextformat.
-Als Darstellungsform wird JSON verwendet.
-Die in einer Datei gespeicherten Nachrichten-Vorlagen werden in der Bibliothek, dem Kontrollprogramm und in der Smartphone-App eingelesen
+Die im JSON Format gespeicherten Nachrichten-Vorlagen sind in einer Datei gespeichert.
+Sie werden in der Bibliothek, dem Kontrollprogramm und in der Smartphone-App eingelesen.
 So sind die Nachrichten in jeder Komponente gleich.
-Es gibt unterschiedliche Nachrichtentypen für verschiedene Zwecke.
-Diese sind in Tabelle \ref{tab:message_types} aufgeführt.
-Um besser nachvollziehen zu können welche Kommunikationspartner welche Nachrichten austauschen, sind außerdem Quelle und Ziel und das verwendete Netzwerkprotokoll angegeben.
+Es gibt unterschiedliche Nachrichtenformate, welche in Tabelle \ref{tab:message_types} aufgeführt sind werden für verschiedene Zwecke eingesetzt.
+Zur besseren Nachvollziehbarkeit der Kommunikation sind außerdem Quelle, Ziel und das verwendete Netzwerkprotokoll angegeben.
+Eine Liste aller Nachrichtenformate, inklusive ihrer Felder, ist im Anhang aufgeführt.
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|l|p{30mm}|c|c|}
@@ -269,23 +270,20 @@ Um besser nachvollziehen zu können welche Kommunikationspartner welche Nachrich
   \label{tab:message_types}
 \end{table}
 
-\textit{Sensor\_request}s kommen zum Einsatz, wenn Programmierer einen Sensorwert abfragen.
-Dann wird die Nachricht von der Bibliothek an das Kontrollprogramm gesendet.
-Dieses hat vom Smartphone übermittelte Sensorwerte zwischengespeichert.
-Nach Eingang ermittelt das Kontrollprogramm den gewünschten Sensorwert.
-Die Angabe des gewünschten Sensors wird im Feld \texttt{sensor\_type} beschrieben.
-Alle Sensortypen besitzen ein festgelegtes Kürzel.
-Dadurch können ihre Werte in der Datenbank in der Kontrollanwendung addressiert werden und Messwerte eingespeichert oder zurückgegeben werden.
-Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden. 
+\textit{Sensor\_request}s kommen bei Sensormesswert-Abfragen zum Einsatz.
+Die Nachricht wird von der Bibliothek an das Kontrollprogramm gesendet, welches die vom Smartphone übermittelten Sensorwerte zwischengespeichert hat.
+Nach Eingang ermittelt das Kontrollprogramm durch Angabe des den gewünschten Sensortyps im Feld \texttt{sensor\_type} den gespeicherten Sensormesswert.
+Sensortyp-Kürzel sind für alle Sensoren definiert und dienen in der Kontrollanwendung als Schlüssel der Addressierung der Messwerte im Key-Value-Speicher.
+Die Kürzel sind in Tabelle \ref{tab:sensor_types} aufgelistet. 
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|c|c|}
       \hline
       \textbf{TYPE-Kürzel} & \textbf{Beschreibung} \\
       \hline
-      accel\_xyz & Lagesensor für die X, Y oder Z-Richtung \\
+      accel\_\{xyz\} & Lagesensor für die X, Y oder Z-Richtung \\
       \hline
-       gyro\_xyz & Gyroskopsensor für die X, Y oder Z-Richtung \\
+       gyro\_\{xyz\} & Gyroskopsensor für die X, Y oder Z-Richtung \\
       \hline
       prox & Näherungssensor \\
       \hline
@@ -293,90 +291,66 @@ Die Sensortyp Kürzel sind in Tabelle \ref{tab:sensor_types} zu finden.
   \caption{Sensor-Kürzel mit Beschreibung}
   \label{tab:sensor_types}
 \end{table}
-Ist er in der gespeicherten Datenstruktur zu finden, wird er in einer neuen Nachricht im Nachrichtenformat \textit{sensor\_response} zurückgesendet.
-Der gespeicherte Wert ist im Feld \texttt{sensor\_value} zu finden.
-Die Antwort wird von der Bibliothek angenommen und anschließend an das Programm des Entwicklers zurückgegeben, das den Sensortwert ursprünglich forderte.
-Sensor-Abfragen laufen blockierend ab.
-Das bedeutet, dass jede Sensor-Wert-Anfrage immer erst eine Rückgabe erhalten muss, bevor die nächste Sensor-Wert-Anfrage gestartet werden kann.
-Es ist unmöglich, dass die Kontrollanwendung zwei Sensor-Wert-Anfrage gleichzeitig erhält und die Antworten in umgekehrter Reihenfolge zurücksendet, was eine Vertauschung der Sensorwerte bedeutete.
-Durch  Angabe des ursprünglich geforderten Sensor-Typs in der Antwort könnte dies verhindert werden, ist allerdings nicht nötig.
-Sensorwerte müssen kontinuierlich vom Smartphone aktualisiert werden, damit das Kontrollprogramm immer den aktuellste Wert zurückliefern kann.
-Die Android-App sendet daher in periodischen Abständen Nachrichten des typs \textit{update\_request} an das Kontrollprogramm.
-Sie kann für jede Sensor-Art verwendet werden.
-Übermittelt wird sowohl der Sensor-Typ, als auch der gemessene Sensor-Wert.
-Die Kontrollanwendung kann den den Wert über den Typ zuordnen und in den internen Datenpuffer eintragen.
-Der gesamte Ablauf für Sensoranfragen ist in Abbildung \ref{fig:message_flow_requests} dargestellt.
+Ist für den Sensortyp ein Sensormesswert im Key-Value-Store vorhanden, wird das Ergebnis in einer \textit{sensor\_response}, im Feld \texttt{sensor\_value}, zurückgesendet.
+Die Antwort wird von der Bibliothek angenommen und an die aufrufende Funktion zurückgegeben.
+Um stets aktuelle Sensormesswerte zu erhalten, müssen sie vom Smartphone in regelmäßigen Zeitabständen übermittelt werden.
+Die Android-App sendet daher in periodischen Abständen Nachrichten des Typs \textit{update\_request} an das Kontrollprogramm.
+Übermittelt werden zur Einspeicherung und Zuordnung im Key-Value-Store sowohl der Sensortyp als auch der Sensormesswert.
+Der gesamte Ablauf der Sensordatenübertratung ist in Abbildung \ref{fig:message_flow_requests} dargestellt.
 \begin{figure}[htbp]
 \centering
-% \includegraphics[width=.9\textwidth]{zeichnung.eps}
-\includegraphics[width=.9\textwidth]{images/message_flow_sensor.pdf}
+\includegraphics[width=.8\textwidth]{images/message_flow_sensor.pdf}
 \caption{Nachrichtenablauf der Sensordatenübermittlung}
 \label{fig:message_flow_requests}
 \end{figure}
-Zu sehen sind die drei Komponenten Bibliothek, Kontrollprogramm und App auf dem Smartphone.
+Aufgeführt sind die drei Komponenten Bibliothek, Kontrollprogramm und Smartphone-App.
 Die Bibliothek sendet sensor\_requests per UDP an das Kontrollprogramm.
 Dieses antwortet über UDP mit einer sensor\_response.
-Währenddessen sendet die App auf dem Smartphone kontinuierlich update\_requests per MQTT um der Kontrollanwendung neue Messergebnisse mitzuteilen.
+Währenddessen werden der Kontrollanwendung vom Smartphone fortwährend neue Sensormesswerte durch update\_requests übertragen.
 
-
-Neben den Sensordaten betreffenden Nachrichten existieren auch Ausgabe-Kommandos um Ausgaben in der Smartphone-App umzusetzen.
-Es wird unterschieden Ausgaben mit und ohne Rückgabewert.
+Neben Nachrichten die die Sensordatenübermittlung betreffen, existieren zur Umsetzung von Ausgaben auf der Smartphone-App auch Ausgabe-Nachrichten.
+Die Appseitigen Ausgaben sind unterscheidbar in Ausgaben mit und ohne Rückgabewert.
 Für erstere gibt es den Nachrichtentyp \textit{rpc\_request}.
-RPC steht für Remote Procedure Call und bezeichnet Clientseitige Funktionsaufrufe, die auf einem Server ausgeführt werden.
-Die Bezeichnung entspricht nicht dem Konzept, da die die Smartphone-App in diesem Fall die Rolle des Servers einnehmen würde.
-Die Voraussetzung einer Client-Server-Anwendung ist dadurch nicht gegeben.
-Kommunikationspartner tauschen auf gleicher Ebene Daten aus.
-Die Bezeichnung wurde unter dem Fokus auf der entfernten Ausführung einer Funktion gewählt.
-Der Nachrichtentyp enthält die Felder \texttt{command} und \texttt{value}.
-Ersters spezifiziert das Ausgabe-Kommando, das Zweite die Größe des Parameters für das Ausgabekommando.
-Es ist fast immer befüllt.
-Vereinzelt gibt es jedoch auch Kommandos die keinen Parameter benötigen.
-Dann bleibt dieses Feld leer.
+
+RPC steht ist das Akronym für Remote Procedure Call und bezeichnet clientseitige Funktionsaufrufe, die auf einem Server ausgeführt werden.
+Die Bezeichnung entspricht nicht exakt dem Konzept, da die die Smartphone-App in diesem Fall die Rolle des Servers einnehmen würde.
+Die Voraussetzung einer Client-Server-Anwendung ist durch die beidseitige Nachrichtenübertragung zwischen Smartphone-App und Kontrollanwendung nicht gegeben.
+Die Bezeichnung wurde unter dem Fokus auf der entfernten Ausführung einer Funktion gewählt und entspricht eher einer Remote Method Invocation (RMI).
+
+Der Nachrichtentyp rpc\_request enthält die Felder \texttt{command} und \texttt{value}.
+Diese spezifizieren die Ausgabe und falls vorgesehen eine mit der Ausgabe verbundene Größe.
+Für die Vibrationsausgabe vibrate wären die Inhalte für eine Vibration von einer Sekunde beispielsweise \textit{vibrate} und \textit{1000}.
 Die Nachricht wird von der Bibliothek per UDP an die Kontrollanwendung und von dort aus per MQTT an das Smartphone gesendet.
 Die Smartphone-App nimmt die Anfrage an und führt die Ausgabe aus.
-Manche Kommandos erheben zusätzlich einen Rückgabewert.
+Manche Ausgabe-Anweisungen geben zusätzlich einen Rückgabewert zurück.
 Damit dieser vom Smartphone zurück an die Bibliothek gesendet werden kann, gibt es das Nachrichtenformat \textit{rpc\_response}.
-Dieses wird erst per MQTT an das Kontrollprogramm und von dort aus per UDP an die Bibliothek gesendet.
-Wie bei sensor\_responses können sich die Antworten nicht gegenseitig überholen, was die Übertragung des zugrundeliegenden Ausgabe-Kommandos überflüssig macht.
-Nur der ermittelte Wert des Kommandos ist relevant und wird in der Nachricht übermittelt.
-Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} zusammengefasst.
+Eine Nachricht dieser Nachrichtenart wird erst per MQTT an das Kontrollprogramm und von dort aus per UDP an die Bibliothek gesendet.
+Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} dargestellt.
 \begin{figure}[htbp]
 \centering
-% \includegraphics[width=.9\textwidth]{zeichnung.eps}
 \includegraphics[width=.8\textwidth]{images/message_flow_rpc.pdf}
 \caption{Nachrichtenablauf der RPC-Anfragen}
 \label{fig:message_flow_rpc}
 \end{figure}
-Zu sehen sind die drei Komponenten Bibliothek, Kontrollprogramm und Android-App.
-Die Bibliothek sendet rpc\_requests per UDP an das Kontrollprogramm.
-Dieses leitet die Nachricht per MQTT direkt weiter an die App.
-Dort wird das gewünschte Kommando ausgeführt.
-Fällt ein Rückgabewert an, wird eine rpc\_response generiert und vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet.
-Diese leitet die Nachricht dann per UDP weiter an die Bibliothek.
-
+Aufgeführt sind die drei Komponenten Bibliothek, Kontrollprogramm und Android-App.
+Die Bibliothek sendet ein rpc\_request per UDP an das Kontrollprogramm.
+Dieses leitet die Nachricht per MQTT weiter an die Smartphone-App, wo das Kommando ausgeführt wird.
+Ein eventuell anfallender Rückgabewert wird durch eine rpc\_response vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet, welche die Nachricht dann per UDP weiter an die Bibliothek weiterleitet.
 
 \chapter{Implementierung der Komponenten}
 In diesem Kapitel werden die Designentscheidungen in der Implementierung der drei Komponenten Android-Anwendung, Kontrollanwendung und Programmierumgebung erörtert.
-Der Fokus liegt auf der internen Struktur der jeweiligen Komponenten ihrer Verknüpfung.
+Der Fokus liegt auf der internen Struktur der jeweiligen Komponenten ihrer jeweiligen Schnittstellen.
 Startabläufe werden dargelegt und die Funktionsweisen der einzelnen Komponenten vermittelt.
 
 \section{Android Anwendung}\label{chap:app}
 Die Android-Anwendung ist eine der drei zentralen Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
-Für diese bietet Sie unterschiedliche UI-Elemente in einer Activity an, der RootActivity.
-Diese sind: eine Signal-Led, ein Textfeld und zwei Buttons.
+Für diese bietet Sie eine Signal-LED, ein Textfeld und zwei Buttons in einer RootActivity an.
 Neben UI Elementen gibt es zusätzlich noch eine Vibrationsausgabe. 
-Jedes Messergebnis wird anschließend per MQTT an die Kontrollanwendung gesendet.
-Versandt werden die Sensorwerte über einen Service, der im Hintergrund ausgeführt wird.
-Dieser reagiert ebenfalls auf eingehende Anfragen um Ausgaben auf dem Smartphone auszulösen.
-Gibt die Ausgabe einen Rückgabewert diese an die Kontrollanwendung weitergereicht.
-
-Die Anwendung misst in periodischen Zeitabständen Sensorwerte und sendet Sie an die Kontrollanwendung.
-Messungen werden über SensorEventListener realisiert.
-Diese starten Messvorgänge und ermitteln in periodischen Zeitabständen den aktuell vorliegenden Messwert.
+Die Anwendung initiiert zum Start die Sensormessprozesse und sendet unter Verwendung von SensorEventListenern die Sensormessdaten in periodischen Zeitabständen an die Kontrollanwendung.
 Verwendete Sensoren sind beispielsweise der Lagesensor oder das Gyroskop.
+Die gemessenen Werte werden über einen im Hintergrund ausgeführten MQTT-Service versandt, welcher ebenfalls auf eingehende Nachrichten reagiert, um Ausgaben auf dem Smartphone auszulösen.
 
-Die Erhebung der Messwerte erfolgt zum Start der Anwendung.
 Ein Ablaufplan ist in Abbildung \ref{fig:app_flow} zu sehen.
 \begin{figure}[htbp]
   \centering
@@ -384,19 +358,14 @@ Ein Ablaufplan ist in Abbildung \ref{fig:app_flow} zu sehen.
   \caption{Ablaufdiagramm Android Anwendung}
   \label{fig:app_flow}
 \end{figure}
-In der Root-Activity werden zuerst alle UI-Elemente eingebunden um Sie über Kommandos zu manipulieren.
-Anschließend werden Konfigurationsdaten eingelesen.
-Insgesamt gibt es zwei Konfigurationsdateien: config.json und protocol.json.
-In Ersterem ist zum Beispiel der Hostname des MQTT-Brokers, der Port oder das Topic definiert.
-Diese Daten sind für die Übermittlung der Nachrichten per MQTT wichtig.
-In protocol.json wird die Form der für das Smartphone relevanten Nachrichtenformate update\_request und rpc\_response definiert.
-Außerden sind dort die unterstützten Sensoren und Ausgabekommandos beschrieben.
-Relevant werden diese bei der Entscheidungsfindung bei Eingang eines rpc\_requests, wenn determiniert werden muss welche Aktion die Nachricht beeinhaltet.
-\\
-Nach dem Einlesen der Konfigurationen wird der zur Kommunikation verwendete MQTT Service eingebunden.
-Dies geschieht asynchron.
-Über eine ServiceConnection wird beim erfolgreichen einbinden über eine Callback-Methode der weitere Verlauf definiert.
-Die Root-Activity speichert dann die Referenz auf den Service und der Service die Referenz auf die Root-Activity.
+In der RootActivity werden anfänglich alle UI-Elemente zur programmatischen Ansteuerung eingebunden.
+Anschließend werden die zwei Konfigurationsdaten config.json und protocol.json eingelesen.
+In Ersterer sind grundlegende Konfigurationsparameter wie Hostname und Port des MQTT-Brokers oder der Name des Topics definiert.
+In der Datei protocol.json werden neben den Schlüsselwörtern und Abkürzungen für Sensortypen und Ausgabekommandos auch Vorlagen für Nachrichtenformate aufgeführt.
+
+Nach dem Einlesen der Konfigurationen wird der zur Kommunikation verwendete MQTT Service gestartet und asynchron eingebunden.
+Über eine ServiceConnection wird beim erfolgreichen Einbinden über eine Callback-Methode der weitere Verlauf definiert.
+Die RootActivity und Service tauschen jeweils ihre Objekt-Referenzen aus.
 Grund für dieses gegenseitige Einbinden ist, dass Nachrichten im MQTT Service in einem seperaten Thread behandelt werden.
 Bei RPC-Requests müssen jedoch UI-Elemente verändert werden können.
 Dies ist ohne weiteres nicht aus dem Service heraus möglich.
