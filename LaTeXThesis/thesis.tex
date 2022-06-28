@@ -336,12 +336,8 @@ Die Bibliothek sendet ein rpc\_request per UDP an das Kontrollprogramm.
 Dieses leitet die Nachricht per MQTT weiter an die Smartphone-App, wo das Kommando ausgeführt wird.
 Ein eventuell anfallender Rückgabewert wird durch eine rpc\_response vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet, welche die Nachricht dann per UDP weiter an die Bibliothek weiterleitet.
 
-\chapter{Implementierung der Komponenten}
-In diesem Kapitel werden die Designentscheidungen in der Implementierung der drei Komponenten Android-Anwendung, Kontrollanwendung und Programmierumgebung detailliert erörtert.
-Der Fokus liegt auf der internen Struktur und der Schnittstellen der Komponenten.
-Startabläufe werden dargelegt und die Funktionsweisen vermittelt.
 
-\section{Android Anwendung}\label{chap:app}
+\chapter{Android Anwendung}\label{chap:app}
 Die Android-Anwendung ist eine der drei Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
 Für diese bietet Sie eine Signal-LED, ein Textfeld und zwei Buttons in einer RootActivity an.
@@ -350,6 +346,7 @@ Die Anwendung initiiert zum Start Sensormessprozesse und sendet unter Verwendung
 Verwendete Sensoren sind beispielsweise der Lagesensor oder das Gyroskop des Smartphones.
 Die gemessenen Werte werden über einen im Hintergrund ausgeführten MQTT-Service versandt, welcher ebenfalls auf eingehende Nachrichten reagiert, um Ausgaben auf dem Smartphone auszulösen.
 
+\section{Startvorgang}
 Ein Ablaufplan des Startvorgangs ist in Abbildung \ref{fig:app_flow} zu sehen.
 %Todo: Hier fehlen noch die Schritte der EInbindung und Gedöns das ursprünglich nicht rein solte
 \begin{figure}[htbp]
@@ -383,7 +380,7 @@ Die Funktionsweise der Sensormeessung wird in Abbildung \ref{fig:sensor_event_li
   \caption{Ablauf SensorEventListener}
   \label{fig:sensor_event_listener}
 \end{figure}
-SensorEventListener werden, nach Prüfung der Verfügbarkeit der jeweiligen Sensoren, gestartet und zentral in einem \texitit{SmartBitEventListenerContainer} gespeichert.
+SensorEventListener werden, nach Prüfung der Verfügbarkeit der jeweiligen Sensoren, gestartet und zentral in einem \texttt{SmartBitEventListenerContainer} gespeichert.
 Diese Klasse beeinhaltet SensorEventListener für alle untertstützten Sensoren und dient der Datenhaltung der einzelnen SensorEventListener.
 Aufgabe der SensorEventListener ist es auf Sensorwert-Änderungen zu reagieren und eine entsprechende Callback-Funktion in der die Sensorwerte über den MQTT-Service per update\_requests an die Kontrollanwendung übermittelt werden.
 Statische Methoden der Klasse \textit{JSONMessageWrapper} ermöglichen die Erstellung der Nachrichtenformate und setzen das Messergebniss in das korrekte Feld ein.
@@ -398,6 +395,8 @@ Verluste von update\_requests sind unproblematisch, da je nach Taktung der Senso
 Eine exakte Zustellung ist hier nicht notwendig.
 Höhere QoS-Stufen würden den Übertraungsprozess verlangsamen und Latenzen erhöhen.
 
+
+\section{Sensoren}
 Smartphones beeinhalten Sensoren die Daten über die Umgebungseigenschaften erfassen.
 Dazu zählen Beispielsweise Bewegung, Näherung, aber auch Temperatur oder Luftdruck.
 In der Lösung besteht ihr Zweck darin auf Änderungen der Werte zu reagieren.
@@ -445,7 +444,7 @@ Daher wird beim Start überprüft ob der Sensor auch wirklich vorhanden ist.
 Ist er es nicht, wird auch keine Messung gestartet.
 
 
-\section{Kontrollanwendung}\label{chap:server_software}
+\chapter{Kontrollanwendung}\label{chap:server_software}
 
 Für Vermittlung zwischen den Komponenten fungiert eine Server-Anwendung.
 Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen Seite vom Client aus und MQTT-Anfragen vom Smartphone auf der anderen Seite.
@@ -512,7 +511,7 @@ Hierfür gibt es den AnswerQueueWorker, dessen einzige Aufgabe es ist Antworten 
 Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues des queue-Moduls\cite{python_queue} der cpython Implementierung.
 Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
 
-\section{Programmierumgebung}\label{chap:libs}
+\chapter{Programmierumgebung}\label{chap:libs}
 Die Programmierumgebung ist die Schnittstelle, die Programmierer für die Interaktion mit dem Smartphone verwenden.
 Sie besteht aus einer Bibliothek, die Funktionen anbietet mit denen Programmierer Sensorwerte einlesen, oder Ausgaben auf dem Smartphone tätigen können.
 Sie können die Funktionen in ihren bestehenden Quellcode einbinden und die Funktionen dort verwenden.
@@ -553,7 +552,14 @@ Diese Lösung verringert die Anzahl der Lesevorgänge und die damit verbundenen 
 Der Inhalt ist ab dem Einlesezeitpunkt auf dem Heap des Arbeitsspeichers gespeichert.
 Der Programmierer muss diesen am Ende seines Programms durch den Aufruf der \texttt{free}-Funktion wieder freigeben.
 
-\chapter{Verwendung der Lösung}
+Die Ausgabe erscheint als direkter Grund der Annäherung.
+
+
+\chapter{Evaluation}\label{chap:eval}
+In diesem Kapitel wird überprüft, ob die implementierte Lösung die Anforderungen erfüllt.
+Überprüft wird die qualitive Nutzbarkeit der Lösung anhand der spezifizierten Anforderungen.
+Für verschiedene Nutzungszenarien wie der Labor- oder Heimarbeit werden Latenzuverhalten gemessen.
+
 In disem Kapitel wird die Verwendung des Frameworks anhand dem Beispiel \textit{Alarmanlage} vorgestellt.
 Gezeigt wird, wie die Aufgabe in der Programmierumgebung gelöst wurde und wie sich die Aufgabe auf dem Smartphone äußert.
 In der Programmierumgebung wird dabei die Python-Bibliothek verwendet.
@@ -635,13 +641,7 @@ Hierfür dient jedoch die Vorgangs-LED.
 Sie ist auch hilfreich um bei Smartphones mit sanften Vibrationsausgaben eine Ausgabe zu erkennen.
 
 Die Reaktionszeit liegt unter einer Sekunde.
-Die Ausgabe erscheint als direkter Grund der Annäherung.
 
-
-\chapter{Evaluation}\label{chap:eval}
-In diesem Kapitel wird überprüft, ob die implementierte Lösung die Anforderungen erfüllt.
-Überprüft wird die qualitive Nutzbarkeit der Lösung anhand der spezifizierten Anforderungen.
-Für verschiedene Nutzungszenarien wie der Labor- oder Heimarbeit werden Latenzuverhalten gemessen.
 
 Transportwege müssen berücksichtigt werden.
 Die Zeiten werden in drei verschiedenen Umgebungen überprüft: In nächster Nähe zum MQTT-Server, in mittlerer Nähe und in einer virtuellen Umgebung über ein simuliertes NAT-Netzwerk.
