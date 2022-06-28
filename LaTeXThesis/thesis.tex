@@ -15,7 +15,7 @@
 \newcommand{\thesisofwas}{of Science}
 \newcommand{\studiengang}{Technische Informatik}
 % \newcommand{\studiengang}{Medizintechnik}
-\newcommand{\titel}{Smartphones als Sensor- und Aktor}
+\newcommand{\titel}{Entwicklung einer Softwarelösung zur Nutzung von Smartphones als Sensor- und Aktor}
 \newcommand{\kurztitel}{Template Abschlussarbeit}
 \newcommand{\autor}{Marius Cerwenetz}
 \newcommand{\datum}{08. Juli 2022} % Abgabedatum
@@ -212,8 +212,8 @@ Durch zwei Tasten muss der Nutzer außerdem mit der Anwendung interargieren kön
 Neben den optischen Ausgaben bzw. Bedienelementen muss die Smartphone-App auch haptische Ausgaben wie Vibrationen umsetzen können.
 Für die Einstellung von Vibrationsmustern muss eine Vibrationszeitdauer konfigurierbar sein.
 \chapter{Architektur} \label{chap:architektur}
-Insgesamt besteht die Lösung aus einer Programmierumgebung, einem Kontrollprogramm zur Nachrichtenkoordinierung und einer mobilen Android-Anwendung für die Sensordatenerhebung und für die Anzeige der Ausgaben.
-Der Aufbau ist in Abbildung \ref{fig:design} dargestellt.
+Die Lösung besteht aus den drei Komponenten Programmierumgebung, Kontrollprogramm und Android-Anwendung die zur korrekten Funktionsweise miteinander kommunizieren.
+Eine Übersicht des Aufbaus ist in Abbildung \ref{fig:design} dargestellt.
 \begin{figure}[htbp]
 \centering
 % \includegraphics[width=.9\textwidth]{zeichnung.eps}
@@ -221,27 +221,23 @@ Der Aufbau ist in Abbildung \ref{fig:design} dargestellt.
 \caption{System-Aufbau}
 \label{fig:design}
 \end{figure}
-Die Programmierumgebung besteht aus einer programmiersprachenunabhänigen Bibliothek und dem vom Entwickler geschriebenen Programm.
-Der Entwickler kann die Funktionalität der Lösung nach Einbindung der Bibliothek nutzen
-Neben der Programmierumgebung läuft auf dem lokalen PC auch das Kontrollprogramm.
-Dieses ist für die Koordinierung des Nachrichtenaustauschs zwischen der Android-App und der Programmierumgebung zuständig.
-Startet ein Entwickler einen Aufruf der Bibliothek, kommuniziert diese ihn per UDP dem Kontrollprogramm.
-Das Kontrollprogramm kommunziert dann weiter über MQTT mit dem Smartphone.
+Um mit dem Smartphone zu interargieren bietet die Programmierumgebung eine Bibliothek mit Schnittstellen in Form von Funktionen.
+Eine Einbindung in bestehenden Programmcode des Programmierers ermöglicht deren Nutzung.
+Zur Unterstützung der Verständlichkeit für angehende Programmierer wurde bei der Entwicklung auf die Implementierung von Funktionen mit asynchronem Verhalten verzichtet.
+Die Kontrollanwendung, welche ebenfalls auf dem lokalen PC betrieben wird, dient der Nachrichtenvermittlung zwischen Smartphone-App und Programmierumgebung. 
+Führt ein Programmierer einen Funktionsaufruf der Bibliothek aus, übermittelt die Bibliothek diesen per UDP dem Kontrollprogramm welches über die weitere Verfahrensweise entscheidet und die Nachricht gegebenenfalls per MQTT an das Smartphone überträgt, wie dies zum Beispiel bei einer Ausgabeanfrage der Fall ist.
+Zusätzlich bietet die Bibliothek indes Funktionen die Sensormessdaten zurückgeben.
+Diese werden von der Smartphone-App in regelmäßigen Abständen zur Zwischenspeicherung an die Kontrollanwendung gesendet.
+Bei Eingang einer Sensorwert-Anfrage sendet die Kontrollanwendung den zuletzt von der Smartphone-App übermittelten Wert an die Bibliothek zurück.
+Die Smartphone-Anwendung beginnt zum Startvorgang mit der Erhebung sowie Übermittlung der Sensordaten und reagiert auf Ausgabe-Anfragen seitens der Kontrollanwendung.
+
+Für die Übermittlung der Nachrichten werden die Protokolle MQTT und UDP verwendet.
 MQTT ist ein auf TCP basierendens Client-Server-Protokoll.
 Durch einen 2 Byte großen Header und maximalen Payload-Größe von 260 MB ist es leichtgewichtig und gleichzeitig flexibel.
 Nachrichten werden an einen MQTT Broker gesendet, der die Nachrichten dann an alle Clients weiterreicht die das Topic auf dem die Nachricht gesendet wurde abboniert haben.
-Die UDP-Kommunikation zwischen Bibliothek und Kontrollprogramm verläuft auf dem lokalen PC über ein Loopback-Interface.
-Das Kontrollprogramm erfüllt drei Aufgaben: Die Beantwortung von Sensoranfragen der Bibliothek, dem Zwischenspeichern von Sensorwerten in einem Pufferspeicher und dem Weiterleiten von Ausgabe-Kommandos auf das Smartphone.
-Bei Sensoranfragen werden von der Bibliothek aus an die Kontrollanwendung gesendet.
-Dieses beantwortet Sie mit dem aktuell vorliegenden Sensorwert.
-Die Sensorwerte werden fortlaufend durch das Smartphone aktualisiert.
-Es sendet fortwährend aktuelle Sensordaten an das Kontrollprogramm.
-Dieses nimmt Sie entgegen und sichert Sie in einem internen Puffer.
-Ausgabe-Anfragen für das Smartphone werden ebenfalls über das Kontrollprogramm an das Smartphone per MQTT gesendet.
-Die Smartphone-Anwendung beginnt sobald Sie startet mit der Erhebung der Sensordaten, welche sie anschließend an die Kontrollanwendung sendet.
-Daneben reagiert Sie auf Ausgabeanfragen von der Bibliothek, welche bei Eingang ausführt werden.
-
-
+Die UDP-Kommunikation zwischen Bibliothek und Kontrollprogramm auf dem lokalen PC wird über ein Loopback-Interface umgesetzt um die Latenzzeiten zwischen Programmierumgebung und Kontrollprogramm zu minimieren.
+Als Nachrichtenformat wird JSON verwendet.
+Das menschlesbare, kompakte Nachrichtenformat ist weit verbreitet und wird von vielen Softwarebibliotheken unterstützt.
 
 \chapter{Nachrichtenformate}\label{chap:message_formats}
 Ein einheitliches Kommunikationsformat ist für den Nachrichtenaustausch unabdingbar.
