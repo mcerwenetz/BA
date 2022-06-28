@@ -221,34 +221,33 @@ Eine Übersicht des Aufbaus ist in Abbildung \ref{fig:design} dargestellt.
 \caption{System-Aufbau}
 \label{fig:design}
 \end{figure}
-Um mit dem Smartphone zu interargieren bietet die Programmierumgebung eine programmiersprachenunabhängige Bibliothek mit Schnittstellen in Form von Stub-Funktionen, die die API der Kontrollanwendung nutzen.
+Um mit dem Smartphone zu interargieren bietet die Programmierumgebung eine programmiersprachenunabhängige Bibliothek mit Schnittstellen in Form von Stub-Funktionen an, die die API der Kontrollanwendung nutzen.
 Die Bibliothek kann in bestehenden Programmcode zum Zweck der Nutzung eingebunden werden.
-Zur Unterstützung der Verständlichkeit für angehende Programmierer wurde bei der Entwicklung auf die Implementierung von Funktionen mit asynchronen Rückgabewerten verzichtet.
+Zur Unterstützung der Verständlichkeit für angehende Programmierer wurde bei der Entwicklung der Bibliothek auf die Implementierung von Funktionen mit asynchronen Rückgabewerten, wie beispielsweise Futures, verzichtet.
 Die in der Programmiersprache Python imlementierte Kontrollanwendung, welche ebenfalls auf dem lokalen PC betrieben wird, dient der Nachrichtenvermittlung zwischen Smartphone-App und Programmierumgebung.
 Führt ein Programmierer einen Funktionsaufruf der Bibliothek aus, übermittelt die Bibliothek diesen per UDP dem Kontrollprogramm welches über die weitere Verfahrensweise entscheidet.
-Die Nachricht wird zum Beispiel bei einer Ausgabeanfrage per MQTT an das Smartphone übertragen.
-Die Kontrollanwendung speichert zudem Sensormesswerte unpersistent in einem assoziativen Feld mit Key-Value-Einträgen um sie gegenüber der Bibliothek zu cachen.
-Diese werden Messwerte von der Smartphone-App in regelmäßigen Abständen an die Kontrollanwendung übermittelt.
-Bei Eingang einer Sensorwert-Anfrage seitens der Bibliothek sendet die Kontrollanwendung den zuletzt von der Smartphone-App übermittelten Wert an die Bibliothek zurück.
-Die Smartphone-Anwendung beginnt zum Startvorgang mit der Erhebung sowie Übermittlung der Sensordaten und reagiert auf Ausgabe-Anfragen seitens der Kontrollanwendung.
+Bei einer Ausgabeanfrage wird die Nachricht beispielsweise per MQTT an das Smartphone übertragen.
+Die Kontrollanwendung speichert zudem Sensormesswerte unpersistent in einem Key-Value-Store um Sie zu cachen.
+Zum Cachen werden Messwerte in regelmäßigen Abständen von der Smartphone-App an die Kontrollanwendung übermittelt.
+Bei Eingang einer Sensorwert-Anfrage der Bibliothek sendet die Kontrollanwendung den zuletzt von der Smartphone-App übermittelten Wert an die Bibliothek zurück.
 
 Zur Übermittlung der Nachrichten werden die Protokolle MQTT und UDP eingesetzt.
-MQTT ist ein auf TCP basierendens Client-Server-Protokoll.
+MQTT ist ein auf einem Observer-Pattern basierendens Client-Server-Protokoll.
 Durch einen 2 Byte großen Header und maximalen Payload-Größe von 260 MB ist es leichtgewichtig und gleichzeitig flexibel.
-Nachrichten werden an einen MQTT Broker gesendet, der die Nachrichten dann an alle Clients weiterreicht die das Topic auf dem die Nachricht gesendet wurde abboniert haben.
+Nachrichten werden zur Publizierung auf einem Topic an einen MQTT Broker gesendet.
+Dieser leitet Sie dann an alle Clients weiter die das Topic abboniert haben.
 Die UDP-Kommunikation zwischen Bibliothek und Kontrollprogramm auf dem lokalen PC wird über ein Loopback-Interface umgesetzt um die Latenzzeiten zwischen Programmierumgebung und Kontrollprogramm zu minimieren.
 Als Nachrichtenformat wird JSON verwendet.
 Das menschlesbare, kompakte Nachrichtenformat ist weit verbreitet und wird von vielen Softwarebibliotheken unterstützt.
 
 \chapter{Nachrichtenformate}\label{chap:message_formats}
-Ein einheitliches Kommunikationsformat ist für den Nachrichtenaustausch unabdingbar.
+Ein einheitliches Nachrichtenformat ist Voraussetzung für den Nachrichtenaustausch.
 Der zur Übermittlung ausgearbeitete Standard definiert die Nachrichten in einem Klartextformat.
-Die im JSON Format gespeicherten Nachrichten-Vorlagen sind in einer Datei gespeichert.
-Sie werden in der Bibliothek, dem Kontrollprogramm und in der Smartphone-App eingelesen.
-So sind die Nachrichten in jeder Komponente gleich.
-Es gibt unterschiedliche Nachrichtenformate, welche in Tabelle \ref{tab:message_types} aufgeführt sind werden für verschiedene Zwecke eingesetzt.
+Die im JSON Format gespeicherten Nachrichten-Vorlagen sind in einer Datei gespeichert und werden in der Bibliothek, dem Kontrollprogramm und in der Smartphone-App eingelesen.
+Die Nachrichtenformate sind dadurch in allen Komponenten kongruent.
+Es gibt unterschiedliche Nachrichtenformate, welche in Tabelle \ref{tab:message_types} aufgeführt sind.
 Zur besseren Nachvollziehbarkeit der Kommunikation sind außerdem Quelle, Ziel und das verwendete Netzwerkprotokoll angegeben.
-Eine Liste aller Nachrichtenformate, inklusive ihrer Felder, ist im Anhang aufgeführt.
+Eine Liste der vollständigen Nachrichtenformate, inklusive ihrer Felder, ist im Anhang aufgeführt.
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|l|p{30mm}|c|c|}
@@ -272,7 +271,7 @@ Eine Liste aller Nachrichtenformate, inklusive ihrer Felder, ist im Anhang aufge
 
 \textit{Sensor\_request}s kommen bei Sensormesswert-Abfragen zum Einsatz.
 Die Nachricht wird von der Bibliothek an das Kontrollprogramm gesendet, welches die vom Smartphone übermittelten Sensorwerte zwischengespeichert hat.
-Nach Eingang ermittelt das Kontrollprogramm durch Angabe des den gewünschten Sensortyps im Feld \texttt{sensor\_type} den gespeicherten Sensormesswert.
+Nach Eingang ermittelt das Kontrollprogramm, durch Angabe des gewünschten Sensortyp-Kürzels im Feld \texttt{sensor\_type}, den gespeicherten Sensormesswert.
 Sensortyp-Kürzel sind für alle Sensoren definiert und dienen in der Kontrollanwendung als Schlüssel der Addressierung der Messwerte im Key-Value-Speicher.
 Die Kürzel sind in Tabelle \ref{tab:sensor_types} aufgelistet. 
 \begin{table}[htbp]
@@ -338,20 +337,21 @@ Dieses leitet die Nachricht per MQTT weiter an die Smartphone-App, wo das Komman
 Ein eventuell anfallender Rückgabewert wird durch eine rpc\_response vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet, welche die Nachricht dann per UDP weiter an die Bibliothek weiterleitet.
 
 \chapter{Implementierung der Komponenten}
-In diesem Kapitel werden die Designentscheidungen in der Implementierung der drei Komponenten Android-Anwendung, Kontrollanwendung und Programmierumgebung erörtert.
-Der Fokus liegt auf der internen Struktur der jeweiligen Komponenten ihrer jeweiligen Schnittstellen.
-Startabläufe werden dargelegt und die Funktionsweisen der einzelnen Komponenten vermittelt.
+In diesem Kapitel werden die Designentscheidungen in der Implementierung der drei Komponenten Android-Anwendung, Kontrollanwendung und Programmierumgebung detailliert erörtert.
+Der Fokus liegt auf der internen Struktur und der Schnittstellen der Komponenten.
+Startabläufe werden dargelegt und die Funktionsweisen vermittelt.
 
 \section{Android Anwendung}\label{chap:app}
-Die Android-Anwendung ist eine der drei zentralen Bestandteile des Frameworks.
+Die Android-Anwendung ist eine der drei Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
 Für diese bietet Sie eine Signal-LED, ein Textfeld und zwei Buttons in einer RootActivity an.
 Neben UI Elementen gibt es zusätzlich noch eine Vibrationsausgabe. 
-Die Anwendung initiiert zum Start die Sensormessprozesse und sendet unter Verwendung von SensorEventListenern die Sensormessdaten in periodischen Zeitabständen an die Kontrollanwendung.
-Verwendete Sensoren sind beispielsweise der Lagesensor oder das Gyroskop.
+Die Anwendung initiiert zum Start Sensormessprozesse und sendet unter Verwendung von SensorEventListenern die Sensormessdaten in periodischen Zeitabständen an die Kontrollanwendung.
+Verwendete Sensoren sind beispielsweise der Lagesensor oder das Gyroskop des Smartphones.
 Die gemessenen Werte werden über einen im Hintergrund ausgeführten MQTT-Service versandt, welcher ebenfalls auf eingehende Nachrichten reagiert, um Ausgaben auf dem Smartphone auszulösen.
 
-Ein Ablaufplan ist in Abbildung \ref{fig:app_flow} zu sehen.
+Ein Ablaufplan des Startvorgangs ist in Abbildung \ref{fig:app_flow} zu sehen.
+%Todo: Hier fehlen noch die Schritte der EInbindung und Gedöns das ursprünglich nicht rein solte
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{images/app_ablauf}
@@ -363,39 +363,40 @@ Anschließend werden die zwei Konfigurationsdaten config.json und protocol.json 
 In Ersterer sind grundlegende Konfigurationsparameter wie Hostname und Port des MQTT-Brokers oder der Name des Topics definiert.
 In der Datei protocol.json werden neben den Schlüsselwörtern und Abkürzungen für Sensortypen und Ausgabekommandos auch Vorlagen für Nachrichtenformate aufgeführt.
 
-Nach dem Einlesen der Konfigurationen wird der zur Kommunikation verwendete MQTT Service gestartet und asynchron eingebunden.
-Über eine ServiceConnection wird beim erfolgreichen Einbinden über eine Callback-Methode der weitere Verlauf definiert.
-Die RootActivity und Service tauschen jeweils ihre Objekt-Referenzen aus.
-Grund für dieses gegenseitige Einbinden ist, dass Nachrichten im MQTT Service in einem seperaten Thread behandelt werden.
-Bei RPC-Requests müssen jedoch UI-Elemente verändert werden können.
-Dies ist ohne weiteres nicht aus dem Service heraus möglich.
-Mit einer Referenz auf die Activity kann der Service UI-Ändernde Funtionen auf der Activity ausrufen.
-Android unterbindet jedoch UI-Manipulationen durch Threads die nicht der UI-Thread sind.
-Dieses Problem wird durch die Methode \textit{runOnUiThread} umgangen, welche die Änderung in der Ausführungswarteschlange des UIThreads einreiht.
-Der Service baut eine Verbindung zu einem MQTT Server auf.
-Beim Einbinden des MQTT Servers stellt dieser eine Verbindung zu einem in config.json definierten MQTT-Broker und Topic her.
-Ist der Service final eingebunden können die Sensormessprozesse gestartet werden, da Messdaten nun zuverlässig gesendet werden können.
-Verschiedene SensorEventListener werden nun gestartet und zentral in einem SensorEventListenerContainer gesammelt gespeichert und die Messprozesse jeweils angestoßen.
-Somit ist die Startroutine der Mobilen Anwendung abgeschlossen.
-Auf Nachrichten wird nun nur noch im MQTT-Service in einem MessageListener mit entsprechendem Callback reagiert.
+Nach dem Einlesen der Konfigurationen wird der zur Kommunikation verwendete MQTT-Service gestartet und asynchron eingebunden.
+Über eine ServiceConnection wird beim erfolgreichen Einbinden über eine Callback-Methode der weitere Ablauf der Anwendung definiert, der erst ausgeführt werden soll, wenn eine MQTT-Verbindung hergestellt ist.
+RootActivity und MQTT-Service tauschen jeweils ihre Objekt-Referenzen aus.
+Methoden des MQTT-Service rufen zum Zweck der Ausgabe Methoden der RootActivity auf.
+SensorEventListener benötigen eine Referenz auf den MQTT-Service, da sie bei Sensorwerten über diesen update\_requests versenden.
 
-Die Funktionsweise der Sensordatenübertragung wird in Abbildung \ref{fig:sensor_event_listener} nocheinmal zusammenfassend dargestellt.
+Der Nachrichtenempfang im MQTT-Service wird nicht im UI-Thread behandelt.
+Dies ist jedoch Voraussetzung um UI-Elemente wie die Signal-LED im Service verändern zu können.
+Android unterbindet Änderungen der UI-Elemente wenn der verändernde Thread nicht der UI-Thread ist.
+Dieses Problem wird durch die Methode \textit{runOnUiThread} umgangen, welche die Änderung in der Ausführungswarteschlange des UI-Threads einreiht.
+
+Der MQTT-Service baut eine Verbindung zu einem in Datei config.json definierten MQTT-Broker auf und abboniert ein ebenfalls in der Konfigurationsdatei angegebenes Topic.
+Ist der MQTT-Service eingebunden sind alle Voraussetzungen für eine Übertragung erfüllt und  Sensormessprozesse können gestartet werden.
+Die Funktionsweise der Sensormeessung wird in Abbildung \ref{fig:sensor_event_listener} dargestellt.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.9\textwidth]{images/sensor_event_listener.png}
-  \caption{Ablaufdiagramm SensorEventListener}
+  \includegraphics[width=.8\textwidth]{images/sensor_event_listener.png}
+  \caption{Ablauf SensorEventListener}
   \label{fig:sensor_event_listener}
 \end{figure}
-Die Klasse \textit{SmartBitEventListenerContainer} beeinhaltet SensorEventListener für alle Arten von untertstützten Sensoren.
-Der Container dient lediglich der Datenhaltung.
-Aufgabe der SensorEventListener ist es auf Sensorwert-Änderungen zu reagieren und eine entsprechende Callback-Funktion aufzurufen.
-In dieser werden dann über statische Methoden der Klasse \textit{JSONMessageWrapper} update\_requests generiert und der gemessene Wert eingesetzt.
+SensorEventListener werden, nach Prüfung der Verfügbarkeit der jeweiligen Sensoren, gestartet und zentral in einem \texitit{SmartBitEventListenerContainer} gespeichert.
+Diese Klasse beeinhaltet SensorEventListener für alle untertstützten Sensoren und dient der Datenhaltung der einzelnen SensorEventListener.
+Aufgabe der SensorEventListener ist es auf Sensorwert-Änderungen zu reagieren und eine entsprechende Callback-Funktion in der die Sensorwerte über den MQTT-Service per update\_requests an die Kontrollanwendung übermittelt werden.
+Statische Methoden der Klasse \textit{JSONMessageWrapper} ermöglichen die Erstellung der Nachrichtenformate und setzen das Messergebniss in das korrekte Feld ein.
 Die so generierte Nachricht wird anschließend über den gebundenen MQTT-Service an das vorher definierte Topic versendet.
 
-Die Anwendung ist nun betriebsbereit und beginnt bereits erste Nachrichten an die Kontrollanwendung zu senden.
-Übermittelt werden die Sensordaten an den Broker mit einer QOS-Stufe von 0.
-Verluste von update\_requests sind unproblematisch, da es je nach Taktung sehr schnell neue Sensorwerte gibt die übertragen werden können.
-Eine exakte Zustellung ist hier nicht notwendig und verlangsamt eher den Übertragungsprozess.
+Anschließend ist die Startroutine der Mobilen Anwendung abgeschlossen.
+Auf Nachrichten wird nun nur noch im MQTT-Service in einem MessageListener mit entsprechendem Callback reagiert und gegebenenfalls eine Ausgabe ausgeführt.
+Die Anwendung ist nun betriebsbereit und sendet update\_requests an die Kontrollanwendung.
+Übermittelt werden die Sensordaten an den Broker mit einer QoS-Stufe von 0.
+Auf dieser Stufe wird der Empfang der Nachricht von den Kommunikationspartnern nicht bestätigt.
+Verluste von update\_requests sind unproblematisch, da je nach Taktung der SensorEventListener innerhalb kurzer Zeit neue Sensormesswerte zur Übertragung vorliegen.
+Eine exakte Zustellung ist hier nicht notwendig.
+Höhere QoS-Stufen würden den Übertraungsprozess verlangsamen und Latenzen erhöhen.
 
 Smartphones beeinhalten Sensoren die Daten über die Umgebungseigenschaften erfassen.
 Dazu zählen Beispielsweise Bewegung, Näherung, aber auch Temperatur oder Luftdruck.
@@ -641,8 +642,6 @@ Die Ausgabe erscheint als direkter Grund der Annäherung.
 In diesem Kapitel wird überprüft, ob die implementierte Lösung die Anforderungen erfüllt.
 Überprüft wird die qualitive Nutzbarkeit der Lösung anhand der spezifizierten Anforderungen.
 Für verschiedene Nutzungszenarien wie der Labor- oder Heimarbeit werden Latenzuverhalten gemessen.
-
-
 
 Transportwege müssen berücksichtigt werden.
 Die Zeiten werden in drei verschiedenen Umgebungen überprüft: In nächster Nähe zum MQTT-Server, in mittlerer Nähe und in einer virtuellen Umgebung über ein simuliertes NAT-Netzwerk.
