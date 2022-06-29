@@ -24,9 +24,11 @@
 \newcommand{\korreferent}{Prof.\ Dr.\ Jens-Matthias Bohli}
 
 \begin{document}
+%todo: Rechtschreibprüfung Paula reinbringen
 \include{vorspann} % Titelseite, Erklärungen, etc.
 
 \begin{abstract}
+  %todo: Ergebnisse rein.
 Um Programmieraufgaben interaktiv zu gestalten eignen sich Projekte mit Microcontrollern besonders gut.
 Smartphones bieten einen vergleichbaren Funktionsumfang und müssen meist nicht zusätzlich beschafft werden.
 In dieser Arbeit wurde eine Softwarelösung erstellt, um Smartphonesensoren über eine Programmierumgebung auszulesen und Ausgaben auf dem Smartphone auszuführen.
@@ -39,7 +41,7 @@ Programmierer schreiben Programme auf dem PC, welche auf Änderungen von Smartph
 \tableofcontents
 
 \chapter{Einführung} \label{chap:intro}
-Viele Programmierer oder Programmierwillige Anfänger mühen sich beim Programmierenlernen mit der Semantik von Programmiersprachen und grundlegenden algorithmischen Konzepten.
+Viele Programmierer oder programmierwillige Anfänger mühen sich beim Programmierenlernen mit der Semantik von Programmiersprachen und grundlegenden algorithmischen Konzepten.
 Akademische Übungsaufgaben senken die Lernmotivation durch rein virtuelle Aufgabenstellungen ohne Interaktionsmöglichkeiten.
 Projekte mit Microcontrollern dagegen bieten eine praktische, fordernde und spielerische Einstiegsmöglichkeit.
 Es werden kleine Projekte realisiert, die durch die Verwendung von Sensoren Programmierer einladen sich an Programmieraufgaben auszuprobieren.
@@ -59,7 +61,7 @@ Ein Großteil der Kosten entfällt zwar auf den eigentlichen Microcontroller, ei
 Die Peripherie-Anbindung setzt daneben Hintergrundwissen in elektrotechnischen Bereichen voraus, wie zum Beispiel den Verschaltungskonventionen bei Breadboards.
 Dies stellt ebenfalls eine Einstiegshürde dar, die die eigentliche interaktive Lernerfahrung herauszögert und die Motivation senkt.
 
-Smartphones dienen als Alternative für Microcontroller-Projekte für Einstiegs-Programmierer.
+Smartphones dienen für Einstiegs-Programmierer als als Alternative zu herkömmlichen Microcontrollern.
 Integriert sind zahlreiche Sensoren wie Lagesensoren, Gyroskop oder Näherungssensoren.
 Der Sensoren-Umfang ist vergleichbar mit dem von Microcontrollern.
 Elektrische Bauteile konventioneller Microcontroller-Sets erlauben einen Fehlgebrauch, der im schlimmsten Fall in der Zerstörung von Komponenten enden kann.
@@ -76,12 +78,12 @@ Die Geräte sind zudem batteriebetrieben, was Lösungen ermöglicht die von eine
 Eine Einbindung von Smartphones ist in den meisten Entwicklungsumgebungen jedoch nicht möglich.
 Visuelle und haptische Ausgaben auf dem Smartphone erfordern zudem eine mobile Anwendung, da Smartphone-Betriebssysteme keine nativen Ausgabemethoden außerhalb von Apps bieten.
 
-Ziel der Arbeit ist es, eine Smartphone-Anwendung für visuelle Ausgaben sowie der Messung und Übertragung von Sensorwerten zu entwickeln.
-Außerdem werden Schnittstellen in einer Programmierumgebung geschaffen, die die Interaktionsmöglichkeiten von Smartphones nutzbar macht.
-Hierfür stellen Softwarebibliotheken Funktionsaufrufe zur Verfügung um Ausgaben auf dem Smartphone zu tätigen oder Sensorwerte auszulesen.
-Das Smartphone reagiert auf die empfangen Anfragen und führt die entsprechenden Kommandos aus.
-Zusammengesetzt besteht die Lösung aus einer programmiersprachenunabhängigen Programmierumgebung, einer Kontroll-Anwendung und einer mobilen Anwendung für Android Smartphones.
-Für die Verwendung werden angehenden Programmiereren Beispielaufgaben gereicht.
+%todo: Ziel klingt noch whack. Am Titel orientieren.
+Ziel dieser Arbeit ist die Entwicklung einer Softwarelösung, die die Möglichkeiten von Smartphones für die Entwicklung von interaktiven Projekten nutzbar macht.
+Sensoren sollen ausgelesen und Ausgaben auf dem Smartphone ausgelöst werden können.
+%check: Wenn sich die Struktur ändert muss das hier angepasst werden.
+%todo: gereicht raus. hört sich kacke an.
+Für die Verwendung der Lösung werden angehenden Programmiereren Beispielaufgaben gereicht.
 Um die Beispielaufgaben zu bewältigen muss die Lösung auch Benutzungsmöglichkeiten bereitstellen.
 Hierdurch werden Anforderungen an die in dieser Arbeit implementierte Lösung gestellt.
 Die Aufgaben, Anforderungen und Rahmenbedingungen sind in Kapitel \ref{chap:Experimente} zu finden.
@@ -116,6 +118,7 @@ Die Aufgabenstellungen sind in Tabelle \ref{tab:excercises} aufgeführt.
 Für jede Aufgabe werden die benötigen Sensortypen und Ausgabeschnittstellen beschrieben.
 Leserinnen und Leser werden in der Entscheidungsfindung durch die Angabe eines dreistufigen Schwierigkeitsgrades unterstützt.
 Dies soll verhindern, dass sich unerfahrene Programmierer mit komplizierten Aufgaben zu Anfang überfordern.
+%todo: + ersetzen mit einfach, mittel, sschwer
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|l|c|p{2cm}|c|}
@@ -137,14 +140,16 @@ Dies soll verhindern, dass sich unerfahrene Programmierer mit komplizierten Aufg
   \label{tab:excercises}
 \end{table}
 
-In der Aufgabe \textit{Disco} soll eine virtuelle LED für eine Zeitdauer von 500 ms grün und anschließen 500ms rot leuchten.
-Sensoren sind in dieser Aufgabe überflüssig, da die LED-Ausgabe unabhängig von Sensormesswertänderungen ausgeführt wird.
+In der Aufgabe \textit{Disco} soll eine virtuelle LED für eine Zeitdauer von 500 ms grün und anschließend 500ms rot leuchten.
+Die Verwendung Sensoren ist in dieser Aufgabe nicht nötig, da die LED-Ausgabe unabhängig von Sensormesswertänderungen ausgeführt wird.
+%todo: schwierigkeit kursiv
 Aus diesem Grund ist die Aufgabe als Einfach eingestuft.
 
 In der Aufgabe \textit{Würfeln} soll ein Schütteln des Geräts erkannt werden.
 Zur Verwendung kommt dabei ein Lagesensor zum Einsatz welcher Gerätebeschleunigungen messen kann.
 Wird ein Schütteln erkannt, soll auf dem PC eine Zufallszahl generiert werden.
 Anschließend wird diese auf dem Gerät in einem Textfeld ausgegeben.
+%todo: schwierkigkeit kursiv
 Der Schwierigkeitsgrad wird ebenfalls auf Einfach eingeschätzt, da die Aufgabe unter Verwendung eines Sensors und einer Ausgabe lösbar ist.
 
 In der Aufgabe \textit{Diebstahl-Alarm} wird unter Verwendung des Näherungssensors das örtliche Umfeld des Geräts auf eine Annäherung kontrolliert.
@@ -152,6 +157,7 @@ Wird eine Annäherung festgestellt, wird ein alarmierender Text im Textfeld ausg
 Zusätzlich soll die LED die wie in Aufgabe \textit{Disco} die Farbe wechseln.
 Neben den visuellen ausgaben wird die Vibrationsfunktion als haptisches Feedback benötigt.
 Im Falle einer Annäherung, soll das Gerät fünf mal vibrieren.
+%todo: schwierkigkeit kursiv
 Der Schwierigkeitsgrad der Aufgabe ist als Mittel eingestuft, da hier zwischen Alarm- und Normalzustand unterschieden werden muss.
 Entfernt sich eine Person, muss der Alarm-Zustand verlassen werden können.
 Alle Ausgaben werden auf ihren initialwert zurückgesetzt.
@@ -166,11 +172,13 @@ Eine Visualisierung der Messdaten kann bei dieser Festlegung helfen.
 Bei der letzen Aufgabe \textit{Drehzähler} soll der Programmierer das Device innerhalb eines definierten Zeitraums drehen und anhand der Messdaten die Anzahl der Umdrehungen ermitteln.
 Diese Anzahl soll anschließend im Textfeld auf dem Gerät ausgegeben werden.
 Zur Verwendung kommen hier ebenfalls der Lagesensor als Sensoreingabe und das Textfeld als Ausgabe.
+%todo: schwierkigkeit kursiv
 Die Aufgabe ist als Schwer bewertet, da hier Wiederholungen in einer Werteabfolge erkannt werden müssen, welche jedoch wie bei der Aufgabe \textit{Klatsch-Zähler} in ihrer Größe variieren können.
 Abhängigkeiten zwischen den Messwertergebnissen erschweren eine Umdrehungserkennung zusätzlich.
 
 \section{Anforderungen der Implementierung}\label{sec:anforderungen}
-Aus den Beispielaufgaben leiten sich Anforderungen an die implementierte Lösung ab.
+Aus den Beispielaufgaben leiten sich Anforderungen an die Lösung der ab.
+
 Geringe Latenzen sind bei der Sensordatenübermittlung für ein responsives Verhalten von Programmen nötig.
 Sie tragen zur Lernerfahrung bei, da sich physikalische Änderungen unmittelbar auf das Verhalten des entwickelten Progamms auswirken.
 Eine Verkürzung der Latenzen ist von mehreren Faktoren abhängig.
@@ -181,6 +189,7 @@ Sensormessungen sollten daher nicht erst nach einer Anfrage oder einem Ereignis,
 Der Versand der Sensorwerte wird durch den Transportweg zwischen Smartphone und Programmierumgebung und deren lokale Gegebenheiten verzögert.
 Smartphones bieten keine kabelgebundenen Netzwerkschnittstellen.
 Latenzen können je nach Mobilfunk- bzw WLAN Standard, Umwelteinflüssen und der Geräteanzahl in Funkzellen variieren.
+%todo: Abkürzungsverzeichnis muss rein. Waaay too much Abkürzungen.
 Für Latenzen dient die Round-Trip-Time (RTT) als Messgröße.
 Sie beschreibt die Zeitdauer der Übermittlung einer Nachricht über Hin- und Rückweg eines Hosts zu einem Anderen.
 Präventionsprinzipen wie CSMA/CA verhindern bei WLAN Verbindungen Interferenzen, erhöhen allerdings die Latenzen.
@@ -211,6 +220,7 @@ Zur Ausgabe von Texten und Zeichen muss ein Textfeld implementiert werden.
 Durch zwei Tasten muss der Nutzer außerdem mit der Anwendung interargieren können.
 Neben den optischen Ausgaben bzw. Bedienelementen muss die Smartphone-App auch haptische Ausgaben wie Vibrationen umsetzen können.
 Für die Einstellung von Vibrationsmustern muss eine Vibrationszeitdauer konfigurierbar sein.
+
 \chapter{Architektur} \label{chap:architektur}
 Die implementierte Lösung besteht aus den drei Komponenten Programmierumgebung, Kontrollprogramm und Android-Anwendung, die zur korrekten Funktionsweise miteinander kommunizieren.
 Eine Übersicht des Aufbaus ist in Abbildung \ref{fig:design} dargestellt.
@@ -225,29 +235,31 @@ Um mit dem Smartphone zu interargieren bietet die Programmierumgebung eine progr
 Die Bibliothek kann in bestehenden Programmcode zum Zweck der Nutzung eingebunden werden.
 Zur Unterstützung der Verständlichkeit für angehende Programmierer wurde bei der Entwicklung der Bibliothek auf die Implementierung von Funktionen mit asynchronen Rückgabewerten, wie beispielsweise Futures, verzichtet.
 Die in der Programmiersprache Python imlementierte Kontrollanwendung, welche ebenfalls auf dem lokalen PC betrieben wird, dient der Nachrichtenvermittlung zwischen Smartphone-App und Programmierumgebung.
+%todo: das hier ist Prozess. Abtrennen?
 Führt ein Programmierer einen Funktionsaufruf der Bibliothek aus, übermittelt die Bibliothek diesen per UDP dem Kontrollprogramm welches über die weitere Verfahrensweise entscheidet.
 Bei einer Ausgabeanfrage wird die Nachricht beispielsweise per MQTT an das Smartphone übertragen.
 Die Kontrollanwendung speichert zudem Sensormesswerte unpersistent in einem Key-Value-Store um Sie zu cachen.
 Zum Cachen werden Messwerte in regelmäßigen Abständen von der Smartphone-App an die Kontrollanwendung übermittelt.
 Bei Eingang einer Sensorwert-Anfrage der Bibliothek sendet die Kontrollanwendung den zuletzt von der Smartphone-App übermittelten Wert an die Bibliothek zurück.
+%todo: wo wird erwähnt in welcher Programmiersprache die App geschrieben ist?
 
 Zur Übermittlung der Nachrichten werden die Protokolle MQTT und UDP eingesetzt.
 MQTT ist ein auf einem Observer-Pattern basierendens Client-Server-Protokoll.
 Durch einen 2 Byte großen Header und maximalen Payload-Größe von 260 MB ist es leichtgewichtig und gleichzeitig flexibel.
 Nachrichten werden zur Publizierung auf einem Topic an einen MQTT Broker gesendet.
-Dieser leitet Sie dann an alle Clients weiter die das Topic abboniert haben.
+Dieser leitet sie dann an alle Clients weiter die das Topic abboniert haben.
+%todo: MQTT Nutzung wurde vom Prof vorausgesetz reinbringen.
 Die UDP-Kommunikation zwischen Bibliothek und Kontrollprogramm auf dem lokalen PC wird über ein Loopback-Interface umgesetzt um die Latenzzeiten zwischen Programmierumgebung und Kontrollprogramm zu minimieren.
 Als Nachrichtenformat wird JSON verwendet.
 Das menschlesbare, kompakte Nachrichtenformat ist weit verbreitet und wird von vielen Softwarebibliotheken unterstützt.
 
 \chapter{Nachrichtenformate}\label{chap:message_formats}
 Ein einheitliches Nachrichtenformat ist Voraussetzung für den Nachrichtenaustausch.
-Der zur Übermittlung ausgearbeitete Standard definiert die Nachrichten in einem Klartextformat.
-Die im JSON Format gespeicherten Nachrichten-Vorlagen sind in einer Datei gespeichert und werden in der Bibliothek, dem Kontrollprogramm und in der Smartphone-App eingelesen.
-Die Nachrichtenformate sind dadurch in allen Komponenten kongruent.
-Es gibt unterschiedliche Nachrichtenformate, welche in Tabelle \ref{tab:message_types} aufgeführt sind.
+Der ausgearbeitete Nachrichtenstandard definiert die Nachrichten in einem Klartextformat.
+Nachrichten-Vorlagen sind in einer Datei gespeichert und werden in der Bibliothek, dem Kontrollprogramm und in der Smartphone-App eingelesen, wodurch Sie in allen Komponenten kongruent vorliegen.
+Es gibt unterschiedliche Nachrichtentypen, welche in Tabelle \ref{tab:message_types} aufgeführt sind.
 Zur besseren Nachvollziehbarkeit der Kommunikation sind außerdem Quelle, Ziel und das verwendete Netzwerkprotokoll angegeben.
-Eine Liste der vollständigen Nachrichtenformate, inklusive ihrer Felder, ist im Anhang aufgeführt.
+Eine Liste der vollständigen Nachrichtentypen, inklusive ihrer Felder, ist im Anhang aufgeführt.
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|l|p{30mm}|c|c|}
@@ -270,7 +282,8 @@ Eine Liste der vollständigen Nachrichtenformate, inklusive ihrer Felder, ist im
 \end{table}
 
 \textit{Sensor\_request}s kommen bei Sensormesswert-Abfragen zum Einsatz.
-Die Nachricht wird von der Bibliothek an das Kontrollprogramm gesendet, welches die vom Smartphone übermittelten Sensorwerte zwischengespeichert hat.
+%todo: zwischengespeichert hat hört sich kacke an. 
+Dieser Nachrichttyp wird von der Bibliothek an das Kontrollprogramm gesendet, wo die vom Smartphone übermittelten Sensorwerte zwischengespeichert wurden.
 Nach Eingang ermittelt das Kontrollprogramm, durch Angabe des gewünschten Sensortyp-Kürzels im Feld \texttt{sensor\_type}, den gespeicherten Sensormesswert.
 Sensortyp-Kürzel sind für alle Sensoren definiert und dienen in der Kontrollanwendung als Schlüssel der Addressierung der Messwerte im Key-Value-Speicher.
 Die Kürzel sind in Tabelle \ref{tab:sensor_types} aufgelistet. 
@@ -311,14 +324,14 @@ Neben Nachrichten die die Sensordatenübermittlung betreffen, existieren zur Ums
 Die Appseitigen Ausgaben sind unterscheidbar in Ausgaben mit und ohne Rückgabewert.
 Für erstere gibt es den Nachrichtentyp \textit{rpc\_request}.
 
-RPC steht ist das Akronym für Remote Procedure Call und bezeichnet clientseitige Funktionsaufrufe, die auf einem Server ausgeführt werden.
-Die Bezeichnung entspricht nicht exakt dem Konzept, da die die Smartphone-App in diesem Fall die Rolle des Servers einnehmen würde.
+RPC steht ist ein Akronym für Remote Procedure Call und bezeichnet clientseitige Funktionsaufrufe, die auf einem Server ausgeführt werden.
+Die Bezeichnung entspricht nicht exakt dem Konzept, da ein Kommunikationspartner, Smartphone-App oder Kontrollanwendung, in diesem Fall die Rolle des Servers einnehmen würde.
 Die Voraussetzung einer Client-Server-Anwendung ist durch die beidseitige Nachrichtenübertragung zwischen Smartphone-App und Kontrollanwendung nicht gegeben.
 Die Bezeichnung wurde unter dem Fokus auf der entfernten Ausführung einer Funktion gewählt und entspricht eher einer Remote Method Invocation (RMI).
 
 Der Nachrichtentyp rpc\_request enthält die Felder \texttt{command} und \texttt{value}.
 Diese spezifizieren die Ausgabe und falls vorgesehen eine mit der Ausgabe verbundene Größe.
-Für die Vibrationsausgabe vibrate wären die Inhalte für eine Vibration von einer Sekunde beispielsweise \textit{vibrate} und \textit{1000}.
+Für die Vibrationsausgabe wären die Inhalte des rpc\_requests für eine Vibration von einer Sekunde beispielsweise \textit{vibrate} und \textit{1000}.
 Die Nachricht wird von der Bibliothek per UDP an die Kontrollanwendung und von dort aus per MQTT an das Smartphone gesendet.
 Die Smartphone-App nimmt die Anfrage an und führt die Ausgabe aus.
 Manche Ausgabe-Anweisungen geben zusätzlich einen Rückgabewert zurück.
@@ -395,11 +408,11 @@ Verluste von update\_requests sind unproblematisch, da je nach Taktung der Senso
 Eine exakte Zustellung ist hier nicht notwendig.
 Höhere QoS-Stufen würden den Übertraungsprozess verlangsamen und Latenzen erhöhen.
 
-
 \section{Sensoren}
-Smartphones beeinhalten Sensoren die Daten über die Umgebungseigenschaften erfassen.
-Dazu zählen Beispielsweise Bewegung, Näherung, aber auch Temperatur oder Luftdruck.
-In der Lösung besteht ihr Zweck darin auf Änderungen der Werte zu reagieren.
+Smartphones beeinhalten Sensoren, die Daten über die Umgebungseigenschaften erfassen.
+Dazu zählen Beispielsweise Bewegung, Annäherung, aber auch Temperatur oder Luftdruck.
+%todo: stimmt nicht. die messen einfach. reagiert wird wo anders.
+Ihr Zweck besteht darin auf Änderungen der Werte zu reagieren.
 Für unterschiedliche Aufgaben werden unterschiedliche Sensoren benötigt.
 Beispielsweise word für \textit{Diebstahl-Alarm} nur der Näherungssensor verwendet, für \textit{Dreh-Zähler} der Lagesensor.
 Insgesamt werden in der Android Anwendung werden folgende Sensortypen verwendet: Lineare Beschleunigungssensoren, Gyroskop und Annäherungssensor.
@@ -407,6 +420,7 @@ Insgesamt werden in der Android Anwendung werden folgende Sensortypen verwendet:
 Beschleunigungs- bzw. Lagesensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
 Die Erdbeschleunigung ist auch in diesen Messwerten enthalten.
 Diese muss für die bereinigten, realen Werte von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
+% todo: einheiten
 Messeinheiten unterscheiden sich je nach Sensor.
 Das Gyroskop misst keine Beschleunigung sondern die aktuelle Geschwindigkeit in $rad/s$ der gleichen Achsen.
 Zur Übersicht sind diese in Abbildung \ref{fig:and_axes} zu dargestellt.
@@ -436,24 +450,24 @@ Hierfür stehen vier Stufen zur Auswahl.
   \caption{Sensor-Taktgeschwindigkeiten\cite{sensor-takt}}
   \label{tab:sensor_speeds}
 \end{table}
-In der Android-APP erfolgen alle Messungen mit SENSOR\_DELAY\_NORMAL.
-Die Stufe gilt jedoch nicht als festes Limit, sondern eher als Richt-Frequenz.
+In der Android-App erfolgen alle Messungen mit SENSOR\_DELAY\_NORMAL.
+Die Stufe gilt für Android jedoch nicht als festes Limit, sondern wird eher als Richt-Frequenz behandelt.
 Android kann die reale Frequenz auch erhöhen.
 Nicht alle Smartphones besitzen alle Sensoren.
 Daher wird beim Start überprüft ob der Sensor auch wirklich vorhanden ist.
 Ist er es nicht, wird auch keine Messung gestartet.
 
-
 \chapter{Kontrollanwendung}\label{chap:server_software}
-
-Für Vermittlung zwischen den Komponenten fungiert eine Server-Anwendung.
+%todo: se chapter needs some more sciency lingu
+Zur Vermittlung zwischen den Komponenten fungiert als Middleware eine Kontrollanwendung.
 Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen Seite vom Client aus und MQTT-Anfragen vom Smartphone auf der anderen Seite.
 User können über die Library RPC-Anfragen oder Sensor-Anfragen an den Server stellen.
 Dies geschieht in form von JSON-Anfragen die per UDP übermittelt werden.
 Der Server ist unter der localhost-Adresse 127.0.0.1 auf dem Port 5006 erreichbar.
-Für die MQTT-Verbindung kommt dabei die unter OpenSource-Liznenz stehende MQTT-Library Paho der Eclipse-Foundation zum Einsatz. \cite{paho}
+Für die MQTT-Verbindung kommt dabei die unter OpenSource-Liznenz stehende MQTT-Library Paho \cite{paho} der Eclipse-Foundation zum Einsatz. 
 
-Die Serveranwendung mit dem Namen server.py ist aufgeteilt in einen Datenverwaltungsteil, DataHandler, und eine MQTT Anbindung, MQTTHandlerThread.
+Die Kontrollanwendung ist aufgeteilt in einen Datenverwaltungsteil, DataHandler, und eine MQTT Anbindung, MQTTHandlerThread.
+%todo: SensorDB ist Key-Value-Store
 Da die Sensorwerte des Smartphoens vorrätig gehalten werden, wird außerdem eine Datenklasse für diese, SensorDB, intern gehalten.
 Eine Übersicht über die Komponenten ist Abbildung \ref{fig:serverUml} zu entnehmen.
 \begin{figure}[htbp]
@@ -466,14 +480,13 @@ DataHandler wiederrum teilt sich nochmal auf in vier seperate Funktionen, die al
 
 Die Funktionsweise und Zwecke dieser Threads wird im Folgenden an zwei Beispielen erläutert.
 Für das erste Beispiel wird Abbildung \ref{fig:serverMqttReqPath} betrachtet.
-Zu sehen ist ein MQTT-Request, also eine Anfragen des Smartphones, dass über MQTT an den Server gesendet wird.
-Schnittstellen zu MQTT sind in der Abbildung grün, Schnittstellen zur Library per UDP, sind blau markiert.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/MqttRequestServerPath}
   \caption{Ablaufdiagramm MQTT Request}
   \label{fig:serverMqttReqPath}
 \end{figure}
+Zu sehen ist ein MQTT-Request, also eine Anfrage des Smartphones, dass über MQTT an den Server gesendet wird.
 Erreicht ein MQTT Request den Server wird es im MQTTHandlerThread entgegengenommen.
 Dieser setzt die Nachricht in eine MQTTRequestQueue ein.
 Der MQTTRequestHandler des DataHandlers wartet bis ein Eintrag in der Queue vorhanden ist und nimmt gegebenenfalls eine Nachricht.
@@ -482,9 +495,8 @@ Handelt sich um ein Sensorupdate muss nur der Sensorwert in der Datenbank aktual
 Handelt es sich um eine rpc\_response, also um eine Antwort auf eine vorausgegangenes rpc\_request, dass einen Rückgabewert fordert, wird das request in eine udp\_answer\_queue eingefügt.
 Der AnswerQueue Worker wartet, ähnlich wie der MQTT Request Handler, bis eine neue Nachricht vorhanden ist die per UDP an den Client gesendet werden soll und sendet diese dann gegebenfalls ab.
 
-Das zweite Beispiel befasst sich mit dem Ablauf eines UDP-Requests, also einer Anfrage die mithilfe der Library gesendet wurde.
+Das zweite Beispiel befasst sich mit dem Ablauf eines UDP-Requests, also einer Anfrage die mithilfe der Bibliothek gesendet wurde.
 Der Ablauf ist in Abbildung \ref{fig:serverUDPReqPath} dargestellt.
-Wie auch schon in der letzten Abbildung sind alle Schnittstellen zum Smartphone grün und alle Schnittstellen zur Library blau markiert.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/UDPRequestServerPath}
@@ -497,7 +509,7 @@ Handelt es sich um eine Anfrage des Types RPC\_Request soll sie Aktionen auf dem
 Sie muss an das Smartphone gesendet werden, was über MQTT möglich ist.
 Dafür wird Sie ineine MqttAnswerQueue eingesetzt.
 Der MQTTHandlerThread entnimmt Sie und sendet Sie per MQTT ab.
-Ist Request hingegen ein SensorRequest, also eine Anfrage auf die ein Sensorwert geantwortet werden soll wird der nachgefragte Sensorwert über die Klasse SensorDB entnommen und in die Udp\_answer\_queue eingetragen.
+Ist Request hingegen ein SensorRequest, also eine Anfrage auf die ein Sensorwert geantwortet werden soll, wird der nachgefragte Sensorwert über die Klasse SensorDB entnommen und in die Udp\_answer\_queue eingetragen.
 Der AnswerQueueWorker entnimmt die Anfrage und sendet Sie per udp an die Library zurück.
 
 Zusammenfassend erfüllen die Komponenten folgende Aufgaben.
@@ -512,7 +524,7 @@ Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues
 Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
 
 \chapter{Programmierumgebung}\label{chap:libs}
-Die Programmierumgebung ist die Schnittstelle, die Programmierer für die Interaktion mit dem Smartphone verwenden.
+Die Programmierumgebung ist die Schnittstelle, die die Programmierer für die Interaktion mit dem Smartphone in ihren Programmen verwenden.
 Sie besteht aus einer Bibliothek, die Funktionen anbietet mit denen Programmierer Sensorwerte einlesen, oder Ausgaben auf dem Smartphone tätigen können.
 Sie können die Funktionen in ihren bestehenden Quellcode einbinden und die Funktionen dort verwenden.
 Die Bibliothek ist in den Programmiersprachen C, Java und Python vorhanden, damit Sie mit verschiedenen Programmiersprachen genutzt werden kann.
@@ -536,7 +548,7 @@ Beide kommunizieren über die localhost-Adresse 127.0.0.1.
 Dadurch werden Datagramme über das Loopback-Interface gesendet.
 Das Loopback-Interface ist eine virtuelle Netzwerk-Schnittstelle des Betriebssystems eines PCs.
 Pakete werden nicht über externe Netzwerk-Schnittstellen wie Netzwerkkarten versendet, sondern verbleiben im Netzwerk-Stack des Betriebssystems.
-Die Latenzen sind dadurch mit weniger als 1 ms äußerst gering.
+Die Latenzen sind dadurch mit weniger als 1 ms zur Verwendung der Lösung gering genug.
 Zum Senden und Empfangen von Anfragen werden Sockets verwendet.
 Für das Empfangen von Paketen müssen diese gebunden werden, für Sendevorgänge nicht.
 
@@ -551,11 +563,14 @@ Zurückgegeben wird der Inhalt als cstring.
 Diese Lösung verringert die Anzahl der Lesevorgänge und die damit verbundenen durch IO verursachten Latenzen.
 Der Inhalt ist ab dem Einlesezeitpunkt auf dem Heap des Arbeitsspeichers gespeichert.
 Der Programmierer muss diesen am Ende seines Programms durch den Aufruf der \texttt{free}-Funktion wieder freigeben.
-
+%todo: klingt whack.
 Die Ausgabe erscheint als direkter Grund der Annäherung.
 
 
 \chapter{Evaluation}\label{chap:eval}
+%todo: Messwerte stimmen noch nicht. Messung unter Vodaphone. Verzerrt. Check unter DSL.
+%todo: auch gerne nochmal sprachlich drübergehen.
+%todo: Intro fehlt. Worum geht's im Chapter? Qualitative und quantitative Bewertung.
 In diesem Kapitel wird überprüft, ob die implementierte Lösung die Anforderungen erfüllt.
 Überprüft wird die qualitive Nutzbarkeit der Lösung anhand der spezifizierten Anforderungen.
 Für verschiedene Nutzungszenarien wie der Labor- oder Heimarbeit werden Latenzuverhalten gemessen.
@@ -635,13 +650,14 @@ Nähert man sich dem Smartphone geht es über in den Alarmzustand der in Abbildu
 Erkennbar ist, dass das Textfeld den Wert \textit{ALARM} darstellt.
 Die Farbe der LED hat sich von grün auf rot und wieder auf grün geändert.
 Das ist erkennbar an der kleinen Screenshot-Vorschau links unten die unmittelbar vor dem in der Abbildung zu sehenden Screenshot zu sehen ist.
-Die Vorgangs-LED leuchtet tief rot um zu signalisieren dass gerade eine Ausgabe ausgeführt wird.
+Die Vorgangs-LED leuchtet rot um zu signalisieren dass gerade eine Ausgabe ausgeführt wird.
 Nicht sichtbar ist das haptische vibrationsfeedback.
 Hierfür dient jedoch die Vorgangs-LED.
 Sie ist auch hilfreich um bei Smartphones mit sanften Vibrationsausgaben eine Ausgabe zu erkennen.
-
 Die Reaktionszeit liegt unter einer Sekunde.
 
+\section{Latenzmessung}
+%todo: introsatz fehlt. liest sich unrund.
 
 Transportwege müssen berücksichtigt werden.
 Die Zeiten werden in drei verschiedenen Umgebungen überprüft: In nächster Nähe zum MQTT-Server, in mittlerer Nähe und in einer virtuellen Umgebung über ein simuliertes NAT-Netzwerk.
@@ -725,10 +741,12 @@ Sollten sich die Startzeiten der Sensormessprozesse nicht wesentlich auf die Lat
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
 % Meist ist das aber unnötig.
-% \listoffigures % Liste der Abbildungen 
-% \listoftables % Liste der Tabellen
+% List of abbrev
+\listoffigures % Liste der Abbildungen 
+\listoftables % Liste der Tabellen
 \newpage
 
+%check: hat das hier geklappt?
 \bibliographystyle{plain} % Literaturverzeichnis
 \begin{btSect}{thesis} % mit bibtopic Quellen trennen
 \addcontentsline{toc}{chapter}{Literaturverzeichnis und Online-Quellen}
