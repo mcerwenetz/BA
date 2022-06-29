@@ -580,148 +580,150 @@ Die Ausgabe erscheint als direkter Grund der Annäherung.
 \chapter{Evaluation}\label{chap:eval}
 %todo: auch gerne nochmal sprachlich drübergehen.
 %todo: Intro fehlt. Worum geht's im Chapter? Qualitative und quantitative Bewertung.
-Es wird überprüft, o
-Überprüft wird die qualitive Nutzbarkeit der Lösung anhand der spezifizierten Anforderungen.
-Für verschiedene Nutzungszenarien wie der Labor- oder Heimarbeit werden Latenzuverhalten gemessen.
+Die Umsetung der an die implementierte Anwendung gestellten Anforderungen wird in diesem Kapitel überprüft.
+Durch Betrachtung eines Verwendungsbeispiels werden die Anforderungen qualitativ untersucht.
+Geringen Latenzzeiten wurden in der Konzeptionsphase eine hohe Priorität zugeordnet.
+Diese werden anhand der implementierten Lösung für drei Nutzungsszenarien gemessen und bewertet.
 
-In disem Kapitel wird die Verwendung des Frameworks anhand dem Beispiel \textit{Alarmanlage} vorgestellt.
+
 \section{Verwendungsbeispiel}
-Gezeigt wird, wie die Aufgabe in der Programmierumgebung gelöst wurde und wie sich die Aufgabe auf dem Smartphone äußert.
-In der Programmierumgebung wird dabei die Python-Bibliothek verwendet.
+Die Verwendung der Lösung wird anhand der Beispielaufgabe \textit{Alarmanlage} vorgestellt.
+Gezeigt wird wie die Aufgabe in der Programmierumgebung unter Verwendung der Python-Bibliothek gelöst wurde und wie sich Ausgaben auf dem Smartphone äußern.
 
-Damit Nachrichten ausgetauscht werden können muss zuerst das Kontrollprogramm gestartet werden.
-Es wird mit dem Befehl \texttt{python ./server.py} in einer lokalen Shell gestartet.
+Eine gestartete Kontrollanwendung ist Voraussetzung für einen Nachrichtenaustausch.
+Mit dem Befehl \texttt{python ./server.py} wird sie in einer Shell gestartet.
 Der Vorgang wird in Abbildung \ref{fig:start_controll_app} dargestellt.
-Es handelt sich um das Python-Skript \textit{server.py}.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.8\textwidth]{images/server_logging}
   \caption{Start der Kontrollanwendung}
   \label{fig:start_controll_app}
 \end{figure}
-Die Anwendung meldet, dass sie sich erfolgreich mit dem MQTT-Broker verbunden und das korrekte Topic abboniert hat.
-Die Kontrollanwendung loggt neben diesen Informationen auch rpc-requests und responses.
-Sensor-requests und responses werden wegen ihrer hohen Anzahl nicht geloggt.
+Die Anwendung meldet eine erfolgreiche Verbindung mit dem MQTT-Broker und gibt das abbonierte Topic aus.
+Neben diesen Start-Informationen werden auch eigehende rpc\_requests und rpc\_responses ausgegeben.
+Sensor\_requests, sensor\_responses und update\_requests werden wegen ihrer Häufigkeit nicht geloggt.
 
-Die Implementierung der Lösung der Aufgabe ist in Listing \ref{lis:alarm} vorgestellt.
-
+Die Implementierung der Lösung der Aufgabe ist in Listing \ref{lis:alarm} dargestellt.
 \lstset{language=python, captionpos=b, frame=single, numberstyle=\tiny, style=customcs}
 \lstinputlisting[label=lis:alarm, caption=Alarmanlage-Beispiel]{listings/code_examples/alarm.py}
-Die Bibliothek wird in Zeile 2 importiert.
-Dafür muss die Datei \texttt{smartbit.py} im gleichen Ordner wie das Programm gespeichert sein.
-In Zeile 4 wird ein Phone-Objekt erstellt, über das Sensor-Auslesemethoden wie \texttt{get\_x\_accel()} oder Smartphone-Ausgaben wie \texttt{vibrate()} augerufen werden können.
-Da das Programm nie abbrechen soll, außer wenn es in der shell gestoppt wird, wird in einer While-True Schleife der Näherungssensor immer wieder abgefragt.
-Anschließend wird eine halbe Sekunde gewartet um den Server nicht mit Anfragen zu überlasten.
-Ist der abgerfragte Näherungssensorwert wie in der achten Zeile überprüft wird 0.0, dann liegt eine Näherung vor.
-Auf dem Smartphone wird dann mit der  Methode \texttt{write\_text()} der Text ALARM usgegeben.
-Das Smartphone vibriert 5 mal hintereinander im Abstand von 200 ms für eine Sekunde und lässt die Signal-LED blinken.
-Insgesamt werden die RPC-Funktionen vibrate, toggle\_button und write\_text aufgerufen.
-Keine dieser Funktionen liefert einen Rückgabewert.
+Die Bibliothek wird in Zeile 2 in das vom Programmierer geschriebene Programm importiert, wofür sich die Datei \texttt{smartbit.py} und das entwickelte Programm im gleichen Ordner befinden müssen.
+In Zeile 4 wird ein Phone-Objekt erstellt, über welches Sensor-Auslesemethoden wie \texttt{get\_x\_accel()} oder Smartphone-Ausgaben wie \texttt{vibrate()} aufgerufen werden können.
+Das Programm soll nur im Falle eines KeyboardInterrupts angehalten werden.
+In einer Endlosschleife wird der Näherungssensorwert kontinuierlich abgefragt.
+Außerdem wird der Ablauf für 500 ms pausiert um einer Nachrichtenflut und somit einer Nichtverfügbarkeit der Kontrollanwendung vorzubeugen.
+Der Annäherungssensor sendet im Falle einer Annäherung den Wert 0.0 zurück auf den in Zeile 8 reagiert wird.
+Ist die Bedingung erfüllt, wird mit der Methode \texttt{write\_text()} der Text \textit{ALARM} usgegeben.
+Die Methode \textit{vibrate} lässt das Smartphone für die Dauter von 1000 ms vibrieren.
+Zum Schluss wird mit der Methode \textit{toggle\_led} noch der Farbwert der Signal-LED von grün auf rot geändert.
 
-Die Bibliothek sendet die Nachrichten an das Smartphone.
-Nähert sich eine Person dem Smartphone wird der Code in der If-Bedingung ausgeführt.
-Die jeweiligen Nachrichten werden als rpc\_request per UDP an die Kontrollanwendung gesendet.
-Dort werden sie angenommen, geloggt und per MQTT an das Smartphone weitergereicht.
-Eine Übersicht der gesendeten Nachrichten ist in Abbildung \ref{fig:req_controll_app} zu sehen.
+Die Bibliothek übermittelt für jede Ausgabe korrespondierende rpc\_requests über die Kontrollanwendung an das Smartphone.
+Bei Empfang werden die Anfragen in der Kontrollanwendung geloggt.
+Eine Übersicht der gesendeten Nachrichten des Beispiels ist in Abbildung \ref{fig:req_controll_app} aufgeführt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/server_requests}
   \caption{Nachrichtenversand der Kontrollanwendung}
   \label{fig:req_controll_app}
 \end{figure}
-Die Nachrichten werden im JSON Format übertragen.
-rpc\_requests haben ein Typ-Feld, ein Kommando und einen Paramterwert für das Kommando.
-Write\_text ist für Textausgaben auf dem Smartphone, vibrate um das Smartphone vibrieren zu lassen und led\_toggle um die LED anzusprechen.
-Für write\_text wird der gibt der Parameter-Wert den anzuzeigenden Text an.
-Vibrate erwartet für value die Zeitdauer der vibrierung in ms.
-led\_toggle erwartet keinen Parameterwert, da der gesamte Aufruf lediglich die Farbe der LED wechselt.
-Es ist nicht vorgesehen, dass die Farbe manuell gesetzt werden kann.
+Zu erkennen sind die unterschiedlichen Ausgabekürzel der Anfragen, welche im Feld \texttt{command} abgebildet sind.
+Für die Textausgabe entspricht das Kürzel \texttt{write\_text}, für Vibrationen \texttt{vibrate} und für das Umschalten der LED-Farbe \texttt{led\_toggle}.
+Pro Ausgabe-Kommando kann zusätzlich ein Parameterwert angegeben werden.
+Für \texttt{write\_text} bestimmt er den anzuzeigenden Text und für \texttt{vibrate} die Vibrationsdauer in Millisekunden.
+Da es nicht vorgesehen ist die Farbe der Signal-LED manuell festzulegen, wird für \texttt{led\_toggle} kein Parameterwert angegeben.
 
-Auf dem Smartphone ist die App zu Anfang im Initialmodus.
-Dieser ist in Abbildung \ref{fig:initial_app} dargestellt.
+Wird die App auf dem Smartphone gestartet, befindet Sie sich im Initialmodus in dem Sie bereits Sensorwerte misst und an die Kontrollanwendung sendet.
+Das Userinterface ist in Abbildung \ref{fig:initial_app} dargestellt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[height=0.4\textheight]{images/app_initial}
   \caption{Initialzustand der Anwendung}
   \label{fig:initial_app}
 \end{figure}
-Zu sehen sind zwei Buttons, beschriftet mit A und B.
-Das textfeld liegt in der Mitte und zeigt zum Start den Text \textit{output} an.
-Daneben gibt es noch eine Vorgangs-LED die ausgegraut oben rechts über der Signal-LED liegt.
-Sie leuchtet, wenn gerade ein Vorgang wie das Ausführen einer Vibration auf dem Smartphone ausgeführt wird.
+Es besteht aus zwei mit A und B beschrifteten Buttons, einem Textfeld in der Mitte, einer Signal-LED welche zu Beginn grün leuchtet und einer Vorgangs-LED, welche während der Ausführung von Ausgaben aufleuchtet.
 
-Nähert man sich dem Smartphone geht es über in den Alarmzustand der in Abbildung \ref{fig:app_alarm} dargestellt ist.
+Im Alarmfall werden die vom Programm gesendeten Ausgaben entsprechend umgesetzt und das Aussehen des Userinterfaces verändert.
+Das Resultat ist in Abbildung \ref{fig:app_alarm} dargestellt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[height=0.4\textheight]{images/app_alarm}
   \caption{Initialzustand der Anwendung}
   \label{fig:app_alarm}
 \end{figure}
-Erkennbar ist, dass das Textfeld den Wert \textit{ALARM} darstellt.
-Die Farbe der LED hat sich von grün auf rot und wieder auf grün geändert.
-Das ist erkennbar an der kleinen Screenshot-Vorschau links unten die unmittelbar vor dem in der Abbildung zu sehenden Screenshot zu sehen ist.
+Das Textfeld stellt nun den Text \textit{ALARM} dar und die Farbe der Signal-LED hat sich von grün auf rot geändert.
 Die Vorgangs-LED leuchtet rot um zu signalisieren dass gerade eine Ausgabe ausgeführt wird.
-Nicht sichtbar ist das haptische vibrationsfeedback.
-Hierfür dient jedoch die Vorgangs-LED.
-Sie ist auch hilfreich um bei Smartphones mit sanften Vibrationsausgaben eine Ausgabe zu erkennen.
+Diese ist nicht sichtbar, denn es handelt sich um das haptische vibrationsfeedback.
+
 Die Reaktionszeit liegt unter einer Sekunde.
+%todo: hier noch dicke fette qualitative Bewertung der Anforderung.
+
+Latenzprobleme per MQTT treten nicht auf.
+Trotz einem QOS-Level 0 werden auch Ausgabeanfragen sicher übertragen und ausgeführt.
+Da die Nachrichten über TLS übertragen werden ist der Austausch sicher.
+Logging-Möglichkeiten in der Kontrollanwendung und der Android-App erleichterten die Entwicklung sehr und halfen bei der Fehlersuche.
+
 
 \section{Latenzmessung}
 %todo: introsatz fehlt. liest sich unrund.
+Im Zuge der Konzeption wurden Latenzen eine besondere Bedeutung zugemessen.
+Erhöhte Latenzzeiten führen zu einem verzögerten Verhalten und einer schlechteren Benutzbarkeit.
+Zum Zwecke der Evalutation der Latenzen werden für drei Nutzungsszenarien Messungen durchgeführt.
+Da sensor\_requests lediglich über die local-loopback Schnittstelle zwischen Bibliothek und Kontrollanwendung ausgetauscht werden ist anzunehmen, dass diese Verbindung in der implementierten Lösung keine Limitierung darstellt.
+Auf die Untersuchung der Latenzzeiten zwischen dem Absenden eines sensor\_requests und dem Erhalt einer sensor\_response wird daher verzichtet.
 
-Transportwege müssen berücksichtigt werden.
-Die Zeiten werden in drei verschiedenen Umgebungen überprüft: In nächster Nähe zum MQTT-Server, in mittlerer Nähe und in einer virtuellen Umgebung über ein simuliertes NAT-Netzwerk.
+Unbekannt ist indes die Latenz zwischen Smartphone-App und Kontrollprogramm.
+Über diesen Transportweg werden die Nachrichtenformate rpc\_request, rpc\_response und update\_request übermittelt.
+Durch die marginale Latenz zwischen Kontrollanwendung und Bibliothek können Sensorwerte zwar häufig abgefragt werden, jedoch wird bis zum Eintreffen eines neuen Sensormesswerts der zuletzt Eingespeicherte zurückgegeben.
+Sensordatenabfragen sind daher abhängig von der MQTT-Verbindung zwischen Smartphone und Kontrollanwendung.
+Um ein realistisches Nutzungsverhalten zu simulieren, wird für die Messungen der Transportweg zwischen Bibliothek und Smartphone-App betrachtet.
+Gemessen wird die Zeitdauer nach Versand eines rpc\_requests bis zum Erhalt einer rpc\_response von der Smartphone-App.
+Die Smartphone-App sendet währenddessen fortlaufend update\_requests per MQTT umd reguläre Last auf der Kontrollanwendung zu simulieren.
+Messungen finden für drei verschiedene Nutzungsszenarien statt: Der Verwendung im Labor des SWT-Instituts an der Hochschule, der Heimarbeit über eine DSL-Verbindung und der Verwendung in einer virtuellen Umgebung.
+Für alle Messungen erfolgen Internetzugriffe seitens des lokalen PCs kabelgebunden und seitens des Smartphones über WLAN.
+Die Anzahl der verbunden Geräte des AccessPoints sind für die Übertragungszeit ebenfalls ausschlaggebend.
+Die bei CSMA/CA zum Kollisionsschutz verwendeten randomisierte Sendefenster limitieren mit steigender Geräteanzahl die Sendezeit und erhöhen die Latenzen.
+Um signifikante Ergebnisse zu diskutieren werden pro Nutzungsszenario 100 Messwerte erhoben und in einem Boxplot dargestellt.
 
-Damit die Benutzbarkeit sichergestellt ist, müssen Latenzzeiten zwischen Smartphone und Programmierumgebung in einem akzeptablen Rahmen liegen.
-Um dies herauszufinden werden die Latenzzeiten gemessen.
-In diesem Kapitel wird die Latenzzeit von drei Standorten aus gemessen.
+Mit dem SWT-Labor befindet sich der lokale PC im ersten Nutzungsszenario im gleichen Netzbereich wie der MQTT-Broker, was den Transportweg reduziert.
+Die Messergebnisse sind in Abbildung \ref{fig:measure_institute} dargestellt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{images/timing_institute.pdf}
+  \caption{Zeitmessungen im Labor}
+  \label{fig:measure_institute}
+\end{figure}
+Die Latenzen sind mit Maximalwerten von 138 ms sehr gering  
+SensorEventListener erheben Daten mit einer eine Verzögerung von maximal 200 ms.
+Hier könnte auch die eigentliche Sensormessung auf dem Smartphone die Übertragungs begrenzen.
+Im Labor-Szenario kann die imlementierte Lösung eingesetzt werden.
 
-Der erste Einsatzort ist im gleichen Netzbereich wie der MQTT-Broker wodurch die Transferstrecke reduziert wird.
-Neben der Latenzzeit zum Broker ist jedoch auch die Anzahl der angemeldeten Geräte am gleichen AccessPoint interessant.
-Da die Geräte in direktem Wettbewerb um Sendezeit stehen bedeuten mehr Geräte an einem AccessPoint größere Latenzen.
-In den Messungen werden nur WLAN-Verbindungen nach dem Standard WLAN 802.11n berücksichtigt.
-Es sind dabei stets beide Geräte, Lokaler PC und Smartphone per WLAN mit dem Internet verbunden.
-Untersucht wird lediglich die Zeitspanne zwischen rpc\_request und rpc\_response.
-Sensor\_requests kommunizieren stets per loopback-interface mit der Kontrollanwendung.
-Daher die Latenzzeiten gering.
-Im Durchschnitt belaufen sie sich auf unter 1ms.
-Die Messungen sind  für den Fall interessant, für den Studierende an der Hochschule die Lösung nutzen möchten.
-Zum Beispiel in Laboren.
-
-Der zweite Einsatzort ist ein Heimnetz, das etwa 8 Hops entfernt vom MQTT-Broker liegt.
-Etwa 8 Geräte sind dabei auf dem Access Point angemeldet.
-Die Messergebnisse sind relevant für die Heimarbeit oder das Erledigen von Hausaufgaben.
+Die Messung des zweiten Szenarios erfolgt aus einem Heimnetz mit acht Hops zwischen Broker und lokalem PC. 
+Auf dem Access Point sind zur Zeit der Messung acht Geräte registriert.
+Die Messergebnisse sind relevant für die Heimarbeit oder für die Verwendung beim Erledigen von Hausaufgaben.
 Die Ergebnisse sind in Abbildung \ref{fig:measure_home} dargestellt.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.6\textwidth]{images/timing_at_home}
+  \includegraphics[width=0.7\textwidth]{images/timing_at_home}
   \caption{Zeitmessungen im Heimnetz}
   \label{fig:measure_home}
 \end{figure}
-Insgesamt wurden 100 Messungen durchgeführt.
-Im Mittel beträgt die Reaktionszeit 537 ms.
-Die Streuung ist bei einer Standardabweichung von 238ms allerdings auch sehr breit gestreut.
-Alle Messungen blieben jedoch unter 1s Reaktionszeit.
+Die Messwerte fallen mit einem Median von etwa 175 ms deutlich höher als im Labor aus, befinden sich allerdings immer noch im tolerablen Bereich und stellen keine gravierende Beeinträchtigung in der Benutzung der Lösung dar.
 
-Der letzte Einsatzort ist in einer virtuellen Maschine auf dem lokalen PC das über den virtuellen Netzwerkkontroller aus einem NAT-Netzbereich auf das Internet zugreift.
-Das Smartphone befindet sich direkt im Netzbereich des lokalen PCs.
-Die gemessenen Daten sind in Abbildung \ref{fig:measure_vm} dargestellt.
+Im dritten Szenario wird die Messung von einer in VirtualBox gestarteten, virtuellen Maschine auf dem lokalen PC aus gestartet.
+Sowohl Bibliothek und Kontrollanwendung werden in der virtuellen Maschine betrieben.
+Relevant ist das Szenario ebenfalls für die Heimarbeit.
+Es bildet die Verwendung der virtuellen Maschine zum Programmieren ab.
+In den Lehrveranstaltungen des Instituts wird dies häufig angewandt um Studierenden auf simplem Wege eine vollständige Programmierumgebung zur Verfügung zu stellen. 
+Untersucht wird, ob die Latenzzeiten sich durch die NAT-Funktionalität von VirtualBox signifikant vergrößern.
+Die Messergebnisse sind in Abbildung \ref{fig:measure_vm} dargestellt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.6\textwidth]{images/timing_vm}
   \caption{Zeitmessungen in der virtuellen Maschine}
   \label{fig:measure_vm}
 \end{figure}
-Wieder wurden 100 Messungen vorgenommen.
-Im Mittel beträgt die Reaktionszeit nun 3255 ms.
-Die Streuung ist mit einer Standardabweichung von 845 ms relativ gleichgroß.
-Die Reaktionszeit ist also im Durchschnitt sehr hoch, etwa sechs mal langsamer als bei einer Verwendung der Programmierumgebung auf dem Hostsystem.
-Eine direkte Assoziation zwischen Eingabe und Ausgabe kann nicht garantiert werden.
-
-Latenzprobleme per MQTT treten nicht auf.
-Trotz einem QOS-Level 0 werden auch Ausgabeanfragen sicher übertragen und ausgeführt.
-Da die Nachrichten über TLS übertragen werden ist der Austausch sicher.
-Logging-Möglichkeiten in der Kontrollanwendung und der Android-App erleichterten die Entwicklung sehr und halfen bei der Fehlersuche.
+Die Latenzzeiten sind im Vergleich zur Messung auf dem Host-PC nicht wesentlich angestiegen.
+Dadurch ist ebenfalls von keiner maßgeblichen Beeinträchtigung der Nutzung auszugehen.
+Sie kann auch in virtuellen Entwicklungsumgebungen verwendet werden.
 
 \chapter{Fazit}\label{chap:fazit}
 Die implementierte Lösung erfüllt die Anforderungen zufriedenstellend.
