@@ -190,10 +190,10 @@ Der Versand der Sensorwerte wird durch den Transportweg zwischen Smartphone und 
 Smartphones bieten keine kabelgebundenen Netzwerkschnittstellen.
 Latenzen können je nach Mobilfunk- bzw WLAN Standard, Umwelteinflüssen und der Geräteanzahl in Funkzellen variieren.
 %todo: Abkürzungsverzeichnis muss rein. Waaay too much Abkürzungen.
-Für Latenzen dient die Round-Trip-Time (RTT) als Messgröße.
+Für Latenzen dient die Round-Trip-Time (\acrshort{rtt}) als Messgröße.
 Sie beschreibt die Zeitdauer der Übermittlung einer Nachricht über Hin- und Rückweg eines Hosts zu einem Anderen.
-Präventionsprinzipen wie CSMA/CA verhindern bei WLAN Verbindungen Interferenzen, erhöhen allerdings die Latenzen.
-Während sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt, kann Sie bei UMTS auf 300 ms bis 400 ms ansteigen \cite{network_latencies} .
+Präventionsprinzipen wie \acrshort{csmaca} verhindern bei WLAN Verbindungen Interferenzen, erhöhen allerdings die Latenzen.
+Während sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt, kann Sie bei \acrshort{umts} auf 300 ms bis 400 ms ansteigen \cite{network_latencies} .
 Zudem ist Sie variabel, was bei einer synchronen Übertragung zu ungewollten Verzögerungen führt.
 Um die Latenz des Transportweges geringer darzustellen müssen Sensorwerte zwischengespeichert werden, um einen Puffer aufzubauen auf den in Fällen erhöhter Latenz zugegriffen werden kann.
 Eine weitere Latenz-Optimierung ist durch den Einsatz effizienter Protokolle möglich.
@@ -209,7 +209,7 @@ Funktionen müssen Rückgabewerte in Form von primitiven Datentypen zurückgeben
 Für die Bedienung aller Ausgabemöglichkeiten des Smartphones wird muss die Lösung eine Funktion zur programmierung bereitstellen.
 Das Einbinden in bestehende Entwicklungsumgebungen ist neben der benutzerfreundlichen Schnittstellengestaltung Voraussetzung für die Nutzung der Lösung.
 Die Entwicklungsumgebung Eclipse ist im Labor-Kontext weit verbreitet.
-Da es sich um eine plattformunabhängige IDE handelt, muss auch die Lösung plattformübergreifend in diese Entwicklungsumgebung integrierbar sein.
+Da es sich um eine plattformunabhängige \acrshort{ide} handelt, muss auch die Lösung plattformübergreifend in diese Entwicklungsumgebung integrierbar sein.
 Nachrichtenabläufe sollen nachvollziehbar sein um fehlerhafte Konfigurationen rasch zu identifizieren und zu korrigieren.
 Hierfür muss es eine Logging-Funktion geben die den Nachrichtenverlauf aufzeichnet und ausgibt.
 Programmierer können anhand der Logeinträge den Versand nachvollziehen wodurch Fehler ersichtlich werden.
@@ -231,13 +231,13 @@ Eine Übersicht des Aufbaus ist in Abbildung \ref{fig:design} dargestellt.
 \caption{System-Aufbau}
 \label{fig:design}
 \end{figure}
-Um mit dem Smartphone zu interargieren bietet die Programmierumgebung eine programmiersprachenunabhängige Bibliothek mit Schnittstellen in Form von Stub-Funktionen an, die die API der Kontrollanwendung nutzen.
+Um mit dem Smartphone zu interargieren bietet die Programmierumgebung eine programmiersprachenunabhängige Bibliothek mit Schnittstellen in Form von Stub-Funktionen an, die die \acrshort{api} der Kontrollanwendung nutzen.
 Die Bibliothek kann in bestehenden Programmcode zum Zweck der Nutzung eingebunden werden.
 Zur Unterstützung der Verständlichkeit für angehende Programmierer wurde bei der Entwicklung der Bibliothek auf die Implementierung von Funktionen mit asynchronen Rückgabewerten, wie beispielsweise Futures, verzichtet.
 Die in der Programmiersprache Python imlementierte Kontrollanwendung, welche ebenfalls auf dem lokalen PC betrieben wird, dient der Nachrichtenvermittlung zwischen Smartphone-App und Programmierumgebung.
 %todo: das hier ist Prozess. Abtrennen?
-Führt ein Programmierer einen Funktionsaufruf der Bibliothek aus, übermittelt die Bibliothek diesen per UDP dem Kontrollprogramm welches über die weitere Verfahrensweise entscheidet.
-Bei einer Ausgabeanfrage wird die Nachricht beispielsweise per MQTT an das Smartphone übertragen.
+Führt ein Programmierer einen Funktionsaufruf der Bibliothek aus, übermittelt die Bibliothek diesen per \acrshort{udp} dem Kontrollprogramm welches über die weitere Verfahrensweise entscheidet.
+Bei einer Ausgabeanfrage wird die Nachricht beispielsweise per \acrshort{mqtt} an das Smartphone übertragen.
 Die Kontrollanwendung speichert zudem Sensormesswerte unpersistent in einem Key-Value-Store um Sie zu cachen.
 Zum Cachen werden Messwerte in regelmäßigen Abständen von der Smartphone-App an die Kontrollanwendung übermittelt.
 Bei Eingang einer Sensorwert-Anfrage der Bibliothek sendet die Kontrollanwendung den zuletzt von der Smartphone-App übermittelten Wert an die Bibliothek zurück.
@@ -250,7 +250,7 @@ Nachrichten werden zur Publizierung auf einem Topic an einen MQTT Broker gesende
 Dieser leitet sie dann an alle Clients weiter die das Topic abboniert haben.
 %todo: MQTT Nutzung wurde vom Prof vorausgesetz reinbringen.
 Die UDP-Kommunikation zwischen Bibliothek und Kontrollprogramm auf dem lokalen PC wird über ein Loopback-Interface umgesetzt um die Latenzzeiten zwischen Programmierumgebung und Kontrollprogramm zu minimieren.
-Als Nachrichtenformat wird JSON verwendet.
+Als Nachrichtenformat wird \acrshort{json} verwendet.
 Das menschlesbare, kompakte Nachrichtenformat ist weit verbreitet und wird von vielen Softwarebibliotheken unterstützt.
 
 \chapter{Nachrichtenformate}\label{chap:message_formats}
@@ -293,9 +293,9 @@ Die Kürzel sind in Tabelle \ref{tab:sensor_types} aufgelistet.
       \hline
       \textbf{TYPE-Kürzel} & \textbf{Beschreibung} \\
       \hline
-      accel\_\{xyz\} & Lagesensor für die X, Y oder Z-Richtung \\
+      accel\_\{x,y,z\} & Lagesensor für die X, Y oder Z-Richtung \\
       \hline
-       gyro\_\{xyz\} & Gyroskopsensor für die X, Y oder Z-Richtung \\
+       gyro\_\{x,y,z\} & Gyroskopsensor für die X, Y oder Z-Richtung \\
       \hline
       prox & Näherungssensor \\
       \hline
@@ -311,7 +311,7 @@ Die Android-App sendet daher in periodischen Abständen Nachrichten des Typs \te
 Der gesamte Ablauf der Sensordatenübertratung ist in Abbildung \ref{fig:message_flow_requests} dargestellt.
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=.8\textwidth]{images/message_flow_sensor.pdf}
+\includegraphics[width=.6\textwidth]{images/message_flow_sensor}
 \caption{Nachrichtenablauf der Sensordatenübermittlung}
 \label{fig:message_flow_requests}
 \end{figure}
@@ -324,10 +324,10 @@ Neben Nachrichten die die Sensordatenübermittlung betreffen, existieren zur Ums
 Die Appseitigen Ausgaben sind unterscheidbar in Ausgaben mit und ohne Rückgabewert.
 Für erstere gibt es den Nachrichtentyp \textit{rpc\_request}.
 
-RPC steht ist ein Akronym für Remote Procedure Call und bezeichnet clientseitige Funktionsaufrufe, die auf einem Server ausgeführt werden.
+\acrshort{rpc} (Remote Procedure Call) und bezeichnet clientseitige Funktionsaufrufe, die auf einem Server ausgeführt werden.
 Die Bezeichnung entspricht nicht exakt dem Konzept, da ein Kommunikationspartner, Smartphone-App oder Kontrollanwendung, in diesem Fall die Rolle des Servers einnehmen würde.
 Die Voraussetzung einer Client-Server-Anwendung ist durch die beidseitige Nachrichtenübertragung zwischen Smartphone-App und Kontrollanwendung nicht gegeben.
-Die Bezeichnung wurde unter dem Fokus auf der entfernten Ausführung einer Funktion gewählt und entspricht eher einer Remote Method Invocation (RMI).
+Die Bezeichnung wurde unter dem Fokus auf der entfernten Ausführung einer Funktion gewählt und entspricht eher einer Remote Method Invocation (\acrshort{rmi}).
 
 Der Nachrichtentyp rpc\_request enthält die Felder \texttt{command} und \texttt{value}.
 Diese spezifizieren die Ausgabe und falls vorgesehen eine mit der Ausgabe verbundene Größe.
@@ -340,7 +340,7 @@ Eine Nachricht dieser Nachrichtenart wird erst per MQTT an das Kontrollprogramm 
 Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} dargestellt.
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=.8\textwidth]{images/message_flow_rpc.pdf}
+\includegraphics[width=.6\textwidth]{images/message_flow_rpc.pdf}
 \caption{Nachrichtenablauf der RPC-Anfragen}
 \label{fig:message_flow_rpc}
 \end{figure}
@@ -354,7 +354,7 @@ Ein eventuell anfallender Rückgabewert wird durch eine rpc\_response vom Smartp
 Die Android-Anwendung ist eine der drei Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
 Für diese bietet Sie eine Signal-LED, ein Textfeld und zwei Buttons in einer RootActivity an.
-Neben UI Elementen gibt es zusätzlich noch eine Vibrationsausgabe. 
+Neben UI-Elementen gibt es zusätzlich noch eine Vibrationsausgabe. 
 Die Anwendung initiiert zum Start Sensormessprozesse und sendet unter Verwendung von SensorEventListenern die Sensormessdaten in periodischen Zeitabständen an die Kontrollanwendung.
 Verwendete Sensoren sind beispielsweise der Lagesensor oder das Gyroskop des Smartphones.
 Die gemessenen Werte werden über einen im Hintergrund ausgeführten MQTT-Service versandt, welcher ebenfalls auf eingehende Nachrichten reagiert, um Ausgaben auf dem Smartphone auszulösen.
@@ -402,7 +402,7 @@ Die so generierte Nachricht wird anschließend über den gebundenen MQTT-Service
 Anschließend ist die Startroutine der Mobilen Anwendung abgeschlossen.
 Auf Nachrichten wird nun nur noch im MQTT-Service in einem MessageListener mit entsprechendem Callback reagiert und gegebenenfalls eine Ausgabe ausgeführt.
 Die Anwendung ist nun betriebsbereit und sendet update\_requests an die Kontrollanwendung.
-Übermittelt werden die Sensordaten an den Broker mit einer QoS-Stufe von 0.
+Übermittelt werden die Sensordaten an den Broker mit einer \acrshort{qos}-Stufe von 0.
 Auf dieser Stufe wird der Empfang der Nachricht von den Kommunikationspartnern nicht bestätigt.
 Verluste von update\_requests sind unproblematisch, da je nach Taktung der SensorEventListener innerhalb kurzer Zeit neue Sensormesswerte zur Übertragung vorliegen.
 Eine exakte Zustellung ist hier nicht notwendig.
@@ -462,14 +462,14 @@ Ist er es nicht, wird auch keine Messung gestartet.
 Zur Vermittlung zwischen den Komponenten fungiert als Middleware eine Kontrollanwendung.
 Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen Seite vom Client aus und MQTT-Anfragen vom Smartphone auf der anderen Seite.
 User können über die Library RPC-Anfragen oder Sensor-Anfragen an den Server stellen.
-Dies geschieht in form von JSON-Anfragen die per UDP übermittelt werden.
+Dies geschieht in Form von JSON-Anfragen die per UDP übermittelt werden.
 Der Server ist unter der localhost-Adresse 127.0.0.1 auf dem Port 5006 erreichbar.
 Für die MQTT-Verbindung kommt dabei die unter OpenSource-Liznenz stehende MQTT-Library Paho \cite{paho} der Eclipse-Foundation zum Einsatz. 
 
 Die Kontrollanwendung ist aufgeteilt in einen Datenverwaltungsteil, DataHandler, und eine MQTT Anbindung, MQTTHandlerThread.
-%todo: SensorDB ist Key-Value-Store
-Da die Sensorwerte des Smartphoens vorrätig gehalten werden, wird außerdem eine Datenklasse für diese, SensorDB, intern gehalten.
-Eine Übersicht über die Komponenten ist Abbildung \ref{fig:serverUml} zu entnehmen.
+Der zur Sensordatenpufferung dienende Key-Value-Store wird durch die Klasse SensorDB implementiert.
+Diese Wrapper-Klasse bietet threadsichere Zufriffsfunktionen auf ein intern gespeichertes Python-Dictionary.
+Eine Übersicht über die Komponenten der Kontrollanwendung ist in Abbildung \ref{fig:serverUml} dargestellt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/ServerUml}
@@ -486,7 +486,7 @@ Für das erste Beispiel wird Abbildung \ref{fig:serverMqttReqPath} betrachtet.
   \caption{Ablaufdiagramm MQTT Request}
   \label{fig:serverMqttReqPath}
 \end{figure}
-Zu sehen ist ein MQTT-Request, also eine Anfrage des Smartphones, dass über MQTT an den Server gesendet wird.
+Dargestellt ist ein MQTT-Request, also eine Anfrage des Smartphones, dass über MQTT an den Server gesendet wird.
 Erreicht ein MQTT Request den Server wird es im MQTTHandlerThread entgegengenommen.
 Dieser setzt die Nachricht in eine MQTTRequestQueue ein.
 Der MQTTRequestHandler des DataHandlers wartet bis ein Eintrag in der Queue vorhanden ist und nimmt gegebenenfalls eine Nachricht.
@@ -576,6 +576,7 @@ In diesem Kapitel wird überprüft, ob die implementierte Lösung die Anforderun
 Für verschiedene Nutzungszenarien wie der Labor- oder Heimarbeit werden Latenzuverhalten gemessen.
 
 In disem Kapitel wird die Verwendung des Frameworks anhand dem Beispiel \textit{Alarmanlage} vorgestellt.
+\section{Verwendungsbeispiel}
 Gezeigt wird, wie die Aufgabe in der Programmierumgebung gelöst wurde und wie sich die Aufgabe auf dem Smartphone äußert.
 In der Programmierumgebung wird dabei die Python-Bibliothek verwendet.
 
@@ -744,9 +745,13 @@ Sollten sich die Startzeiten der Sensormessprozesse nicht wesentlich auf die Lat
 % List of abbrev
 \listoffigures % Liste der Abbildungen 
 \listoftables % Liste der Tabellen
+\printglossary[type=\acronymtype, title={Abkürzungsverzeichnis}]
+
 \newpage
 
 %check: hat das hier geklappt?
+
+
 \bibliographystyle{plain} % Literaturverzeichnis
 \begin{btSect}{thesis} % mit bibtopic Quellen trennen
 \addcontentsline{toc}{chapter}{Literaturverzeichnis und Online-Quellen}

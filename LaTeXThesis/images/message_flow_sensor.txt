@@ -1,0 +1,12 @@
+@startuml
+participant Bibliothek #green
+participant Kontrollanwendung #yellow
+participant App #red
+
+App ->> Kontrollanwendung: update_request 
+Bibliothek -> Kontrollanwendung: sensor_request
+App ->> Kontrollanwendung: update_request
+Kontrollanwendung --> Bibliothek: sensor_response
+App ->> Kontrollanwendung: update_request 
+App ->> Kontrollanwendung: update_request
+@enduml

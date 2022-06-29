@@ -1,0 +1,11 @@
+@startuml
+participant Bibliothek #green
+participant Kontrollanwendung #yellow
+participant App #red
+
+Bibliothek -> Kontrollanwendung: rpc_request
+Kontrollanwendung -> App: rpc_request
+App -[#grey]-> Kontrollanwendung: rpc_response
+Kontrollanwendung -[#grey]-> Bibliothek: rpc_response 
+
+@enduml
