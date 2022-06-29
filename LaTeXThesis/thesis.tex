@@ -338,6 +338,7 @@ Manche Ausgabe-Anweisungen geben zusätzlich einen Rückgabewert zurück.
 Damit dieser vom Smartphone zurück an die Bibliothek gesendet werden kann, gibt es das Nachrichtenformat \textit{rpc\_response}.
 Eine Nachricht dieser Nachrichtenart wird erst per MQTT an das Kontrollprogramm und von dort aus per UDP an die Bibliothek gesendet.
 Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} dargestellt.
+%todo: schreiben antwort ist hier grau gestrichelt dargestellt
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=.6\textwidth]{images/message_flow_rpc.pdf}
@@ -384,6 +385,7 @@ Dies ist jedoch Voraussetzung um UI-Elemente wie die Signal-LED im Service verä
 Android unterbindet Änderungen der UI-Elemente wenn der verändernde Thread nicht der UI-Thread ist.
 Dieses Problem wird durch die Methode \textit{runOnUiThread} umgangen, welche die Änderung in der Ausführungswarteschlange des UI-Threads einreiht.
 Eine Übersicht des Vorgangs in in Abbildung \ref{fig:runOnUiThread} dargestellt.
+%todo: check: bild genug beschrieben
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{images/runOnUiThread.pdf}
@@ -394,6 +396,7 @@ Eine Übersicht des Vorgangs in in Abbildung \ref{fig:runOnUiThread} dargestellt
 Der MQTT-Service baut eine Verbindung zu einem in Datei config.json definierten MQTT-Broker auf und abboniert ein ebenfalls in der Konfigurationsdatei angegebenes Topic.
 Ist der MQTT-Service eingebunden sind alle Voraussetzungen für eine Übertragung erfüllt und  Sensormessprozesse können gestartet werden.
 Die Funktionsweise der Sensormeessung wird in Abbildung \ref{fig:sensor_event_listener} dargestellt.
+%todo: still need to describe onSensorChanged
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.8\textwidth]{images/sensor_event_listener}
