@@ -1,0 +1,24 @@
+@startuml
+
+skinparam componentStyle rectangle
+
+component sel [Sensor
+EventListener]
+component selc [SensorEventListener
+Container]
+interface onSensorChanged as callback
+component jmw [JSON
+Message
+Wrapper]
+component [MQTT-Service] as ms
+cloud "MQTT-Broker" as mb
+
+selc -down-> sel: startet
+sel -down-> callback : wartet auf
+callback <-left-> jmw : (1) Vorlage generieren
+callback -right-> ms : (2) Nachricht senden
+ms -down-> mb
+
+
+
+@enduml

@@ -383,13 +383,20 @@ Der Nachrichtenempfang im MQTT-Service wird nicht im UI-Thread behandelt.
 Dies ist jedoch Voraussetzung um UI-Elemente wie die Signal-LED im Service verändern zu können.
 Android unterbindet Änderungen der UI-Elemente wenn der verändernde Thread nicht der UI-Thread ist.
 Dieses Problem wird durch die Methode \textit{runOnUiThread} umgangen, welche die Änderung in der Ausführungswarteschlange des UI-Threads einreiht.
+Eine Übersicht des Vorgangs in in Abbildung \ref{fig:runOnUiThread} dargestellt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/runOnUiThread.pdf}
+  \caption{Ausführung auf dem UI-Thread}
+  \label{fig:runOnUiThread}
+\end{figure}
 
 Der MQTT-Service baut eine Verbindung zu einem in Datei config.json definierten MQTT-Broker auf und abboniert ein ebenfalls in der Konfigurationsdatei angegebenes Topic.
 Ist der MQTT-Service eingebunden sind alle Voraussetzungen für eine Übertragung erfüllt und  Sensormessprozesse können gestartet werden.
 Die Funktionsweise der Sensormeessung wird in Abbildung \ref{fig:sensor_event_listener} dargestellt.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.8\textwidth]{images/sensor_event_listener.png}
+  \includegraphics[width=.8\textwidth]{images/sensor_event_listener}
   \caption{Ablauf SensorEventListener}
   \label{fig:sensor_event_listener}
 \end{figure}

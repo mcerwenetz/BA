@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="243px" preserveAspectRatio="none" style="width:560px;height:243px;background:#FFFFFF;" version="1.1" viewBox="0 0 560 243" width="560px" zoomAndPan="magnify"><defs/><g><!--MD5=[1e8bee6fd98f1b576447670340efae84]
+cluster Nebenthread--><g id="cluster_Nebenthread"><path d="M154.2594,6 L247.2594,6 A3.75,3.75 0 0 1 249.7594,8.5 L256.7594,29.6094 L293.2594,29.6094 A2.5,2.5 0 0 1 295.7594,32.1094 L295.7594,225.5 A2.5,2.5 0 0 1 293.2594,228 L154.2594,228 A2.5,2.5 0 0 1 151.7594,225.5 L151.7594,8.5 A2.5,2.5 0 0 1 154.2594,6 " style="stroke:#000000;stroke-width:1.5;fill:none;"/><line style="stroke:#000000;stroke-width:1.5;fill:none;" x1="151.7594" x2="256.7594" y1="29.6094" y2="29.6094"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="92" x="155.7594" y="22.5332">Nebenthread</text></g><!--MD5=[17a25400f0e4706401875fe4fa0a28f0]
+cluster UIThread--><g id="cluster_UIThread"><path d="M397.2594,130 L461.2594,130 A3.75,3.75 0 0 1 463.7594,132.5 L470.7594,153.6094 L551.2594,153.6094 A2.5,2.5 0 0 1 553.7594,156.1094 L553.7594,233.5 A2.5,2.5 0 0 1 551.2594,236 L397.2594,236 A2.5,2.5 0 0 1 394.7594,233.5 L394.7594,132.5 A2.5,2.5 0 0 1 397.2594,130 " style="stroke:#000000;stroke-width:1.5;fill:none;"/><line style="stroke:#000000;stroke-width:1.5;fill:none;" x1="394.7594" x2="470.7594" y1="153.6094" y2="153.6094"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="63" x="398.7594" y="146.5332">UIThread</text></g><!--MD5=[a123a8ccc15e08ee16fcc8282d27f235]
+entity onMessageListener--><g id="elem_onMessageListener"><ellipse cx="223.7594" cy="51" fill="#F1F1F1" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="124" x="161.7594" y="82.5332">onMessageListener</text></g><!--MD5=[34f47140c8203ef6adf2758fe98b3149]
+entity MQTT-Service--><g id="elem_MQTT-Service"><rect fill="#F1F1F1" height="37.6094" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="112" x="167.7594" y="174"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="92" x="177.7594" y="198.5332">MQTT-Service</text></g><!--MD5=[3649ba7c01213c92c0f2c7d361953178]
+entity RootActivty--><g id="elem_RootActivty"><rect fill="#F1F1F1" height="37.6094" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="91" x="438.2594" y="174"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="71" x="448.2594" y="198.5332">RootActivty</text></g><!--MD5=[3b3935250ccf29e149ce53dd70b60f84]
+entity MQTTBroker--><g id="elem_MQTTBroker"><path d="M18.9016,35.0166 C21.9764,28.9818 27.3135,28.4055 30.8891,34.5225 C33.7909,27.5353 40.695,26.8465 44.9591,33.0717 C48.5417,28.0235 53.2346,27.7409 56.7752,33.1192 C58.8324,26.051 64.1643,26.1504 68.7743,30.4166 C72.6854,25.5529 77.0529,27.3319 79.2765,32.2318 C83.9189,25.9961 88.6749,26.9215 92.8404,32.7672 C97.1255,27.8272 101.5247,29.2316 103.2418,35.213 C108.0164,29.8671 111.5603,30.7906 115.1364,36.5022 C124.4504,37.5738 127.3781,44.3426 123.1657,52.2923 C127.1791,58.9839 124.6226,65.946 116.2479,66.6821 C113.2593,73.9027 108.6577,74.834 102.8396,69.7705 C100.1374,75.0986 96.8361,76.3313 92.3894,71.579 C89.6561,78.1548 84.5986,78.1718 80.0815,73.5377 C76.9555,80.556 71.6225,79.903 67.2328,74.8868 C63.2984,79.4339 57.0662,79.8092 54.8687,72.9963 C50.6621,77.785 45.6482,76.8716 43.406,70.9031 C39.0174,76.5616 33.3157,75.0026 30.8393,68.8658 C26.9789,74.2605 22.4484,72.7701 19.4458,67.9125 C9.2619,66.1658 7.595,60.8352 12.6502,52.4088 C6,44.7972 8.8541,36.6264 18.9016,35.0166 " fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="82" x="25.7594" y="56.5332">MQTTBroker</text></g><!--MD5=[916e395e686f636bd35580062b268cd8]
+link MQTTBroker to onMessageListener--><g id="link_MQTTBroker_onMessageListener"><path d="M122.9994,51 C154.0394,51 190.1494,51 209.5994,51 " fill="none" id="MQTTBroker-to-onMessageListener" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="214.6294,51,205.6294,47,209.6294,51,205.6294,55,214.6294,51" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="55" x="141.2594" y="44.4951">Nachricht</text></g><!--MD5=[77fe98385f35fe719d0a36134ec0e81e]
+link onMessageListener to MQTT-Service--><g id="link_onMessageListener_MQTT-Service"><path d="M223.7594,60.34 C223.7594,81.26 223.7594,136.59 223.7594,168.47 " fill="none" id="onMessageListener-to-MQTT-Service" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="223.7594,173.75,227.7594,164.75,223.7594,168.75,219.7594,164.75,223.7594,173.75" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[23f10494cd37adcbfe505c3204f546f5]
+link MQTT-Service to UIThread--><g id="link_MQTT-Service_UIThread"><path d="M279.9094,193 C304.9244,193 333.9969,193 357.5794,193 C369.3707,193 379.7894,193 387.6422,193 C389.6054,193 391.4083,193 393.0321,193 C393.438,193 393.8328,193 394.2161,193 C394.3119,193 394.407,193 394.5014,193 " fill="none" id="MQTT-Service-to-UIThread" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="394.5014,193,385.5014,189,389.5014,193,385.5014,197,394.5014,193" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="86" x="298.0794" y="186.4951">runOnUiThread</text></g><!--MD5=[66773556dcb0e7b8597cc8ac4d610cbc]
+@startuml
+skinparam componentStyle rectangle
+
+
+cloud "MQTTBroker"
+
+package "Nebenthread" {
+  ()onMessageListener
+  [MQTT-Service]
+}
+
+
+package UIThread {
+  [RootActivty]
+}
+
+
+MQTTBroker -right-> onMessageListener : Nachricht
+onMessageListener -down-> [MQTT-Service]
+[MQTT-Service] -right-> UIThread : runOnUiThread
+
+@enduml
+
+PlantUML version 1.2022.6(Tue Jun 21 19:34:49 CEST 2022)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: Cp1252
+Language: en
+Country: US
+--></g></svg>

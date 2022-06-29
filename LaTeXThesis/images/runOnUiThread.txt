@@ -1,0 +1,22 @@
+@startuml
+skinparam componentStyle rectangle
+
+
+cloud "MQTTBroker"
+
+package "Nebenthread" {
+  ()onMessageListener
+  [MQTT-Service]
+}
+
+
+package UIThread {
+  [RootActivty]
+}
+
+
+MQTTBroker -right-> onMessageListener : Nachricht
+onMessageListener -down-> [MQTT-Service]
+[MQTT-Service] -right-> UIThread : runOnUiThread
+
+@enduml

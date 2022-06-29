@@ -1,4 +1,8 @@
 @startuml
+start
+:UI Elemente einbinden;
+:Konfigurationsdateien einlesen;
+:MQTT-Service starten und einbinden;
 :SensorEventListener starten und binden;
 fork
 	:Sensordaten übermitteln;
@@ -7,7 +11,7 @@ fork again
 	:Auf Anfrage warten;
 	:Ausgabe ausführen;
 	:Auf Anfrage warten;
-	endwhile (false)
+	endwhile (Nein)
 	stop
 end fork
 stop
