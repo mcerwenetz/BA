@@ -72,7 +72,7 @@ Sie sind gerade unter Kindern, Jugendlichen und jungen Erwachsenen weit verbreit
 Kinder besitzen häufig bereits mit 10 Jahren ein Smartphone \cite{bitkom_smartphones}.
 Im Alltag wird es für Chats, Social-Media oder Spiele verwendet.
 Sie sind also häufig bereits in Gebrauch und müssten für die Nutzung von Programmierprojekten nicht zusätzlich beschafft werden.
-Durch Ihre eingesetzten Sensoren können Sie zuverlässig physikalische Umgebungseigenschaften messen.
+Durch Ihre eingesetzten Sensoren können sie zuverlässig physikalische Umgebungseigenschaften messen.
 Neben kabelgebundenen Übertragungsschnittstellen wie USB besteht auch die Möglichkeit sich mit drahtlosen Verbindungsmöglichkeiten wie WLAN zu verbinden.
 Die Geräte sind zudem batteriebetrieben, was Lösungen ermöglicht die von einer Spannungsversorgung unabhängig sind.
 Eine Einbindung von Smartphones ist in den meisten Entwicklungsumgebungen jedoch nicht möglich.
@@ -166,7 +166,7 @@ Bei der Aufgabenstellung \textit{Klatsch-Zähler} muss für einen definierten Ze
 Diese Anzahl wird anschließend im Textfeld des Geräts ausgegeben.
 Zur Verwendung kommen hierfür das Mikrophon als Ein- und das Textfeld als Ausgabe.
 Die Schwierigkeit ist auf \textit{Mittel} angesetzt, da die Messwerte von Händeklatschern unterschiedliche Intensitäten aufweisen.
-Um einen Händeklatscher zu identifizieren ist es nötig Grenzwerte zu ermitteln um Sie von normalen Hintergrundgeräuschen abzugrenzen.
+Um einen Händeklatscher zu identifizieren ist es nötig Grenzwerte zu ermitteln um sie von normalen Hintergrundgeräuschen abzugrenzen.
 Eine Visualisierung der Messdaten kann bei dieser Festlegung helfen.
 
 Bei der letzen Aufgabe \textit{Drehzähler} soll der Programmierer das Device innerhalb eines definierten Zeitraums drehen und anhand der Messdaten die Anzahl der Umdrehungen ermitteln.
@@ -193,8 +193,8 @@ Latenzen können je nach Mobilfunk- bzw WLAN Standard, Umwelteinflüssen und der
 Für Latenzen dient die Round-Trip-Time (\acrshort{rtt}) als Messgröße.
 Sie beschreibt die Zeitdauer der Übermittlung einer Nachricht über Hin- und Rückweg eines Hosts zu einem Anderen.
 Präventionsprinzipen wie \acrshort{csmaca} verhindern bei WLAN Verbindungen Interferenzen, erhöhen allerdings die Latenzen.
-Während sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt, kann Sie bei \acrshort{umts} auf 300 ms bis 400 ms ansteigen \cite{network_latencies} .
-Zudem ist Sie variabel, was bei einer synchronen Übertragung zu ungewollten Verzögerungen führt.
+Während sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt, kann sie bei \acrshort{umts} auf 300 ms bis 400 ms ansteigen \cite{network_latencies} .
+Zudem ist sie variabel, was bei einer synchronen Übertragung zu ungewollten Verzögerungen führt.
 Um die Latenz des Transportweges geringer darzustellen müssen Sensorwerte zwischengespeichert werden, um einen Puffer aufzubauen auf den in Fällen erhöhter Latenz zugegriffen werden kann.
 Eine weitere Latenz-Optimierung ist durch den Einsatz effizienter Protokolle möglich.
 Der Verlust weniger Sensorwerte ist für die Funktionsweise des Programms unerheblich.
@@ -238,7 +238,7 @@ Die in der Programmiersprache Python imlementierte Kontrollanwendung, welche ebe
 %todo: das hier ist Prozess. Abtrennen?
 Führt ein Programmierer einen Funktionsaufruf der Bibliothek aus, übermittelt die Bibliothek diesen per \acrshort{udp} dem Kontrollprogramm welches über die weitere Verfahrensweise entscheidet.
 Bei einer Ausgabeanfrage wird die Nachricht beispielsweise per \acrshort{mqtt} an das Smartphone übertragen.
-Die Kontrollanwendung speichert zudem Sensormesswerte unpersistent in einem Key-Value-Store um Sie zu cachen.
+Die Kontrollanwendung speichert zudem Sensormesswerte unpersistent in einem Key-Value-Store um sie zu cachen.
 Zum Cachen werden Messwerte in regelmäßigen Abständen von der Smartphone-App an die Kontrollanwendung übermittelt.
 Bei Eingang einer Sensorwert-Anfrage der Bibliothek sendet die Kontrollanwendung den zuletzt von der Smartphone-App übermittelten Wert an die Bibliothek zurück.
 %todo: wo wird erwähnt in welcher Programmiersprache die App geschrieben ist?
@@ -354,7 +354,7 @@ Ein eventuell anfallender Rückgabewert wird durch eine rpc\_response vom Smartp
 \chapter{Android Anwendung}\label{chap:app}
 Die Android-Anwendung ist eine der drei Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
-Für diese bietet Sie eine Signal-LED, ein Textfeld und zwei Buttons in einer RootActivity an.
+Für diese bietet sie eine Signal-LED, ein Textfeld und zwei Buttons in einer RootActivity an.
 Neben UI-Elementen gibt es zusätzlich noch eine Vibrationsausgabe. 
 Die Anwendung initiiert zum Start Sensormessprozesse und sendet unter Verwendung von SensorEventListenern die Sensormessdaten in periodischen Zeitabständen an die Kontrollanwendung.
 Verwendete Sensoren sind beispielsweise der Lagesensor oder das Gyroskop des Smartphones.
@@ -517,16 +517,16 @@ Erreicht ein UDP Request den Server wird es vom UDPRequestQueue-Worker in eine U
 Der UDPRequestHandler-Thread entnimmt die Nachricht und bestimmt den Anfragentyp.
 Handelt es sich um eine Anfrage des Types RPC\_Request soll sie Aktionen auf dem Smartphone auslösen.
 Sie muss an das Smartphone gesendet werden, was über MQTT möglich ist.
-Dafür wird Sie ineine MqttAnswerQueue eingesetzt.
-Der MQTTHandlerThread entnimmt Sie und sendet Sie per MQTT ab.
+Dafür wird sie in eine MqttAnswerQueue eingesetzt.
+Der MQTTHandlerThread entnimmt sie und sendet sie per MQTT ab.
 Ist Request hingegen ein SensorRequest, also eine Anfrage auf die ein Sensorwert geantwortet werden soll, wird der nachgefragte Sensorwert über die Klasse SensorDB entnommen und in die Udp\_answer\_queue eingetragen.
-Der AnswerQueueWorker entnimmt die Anfrage und sendet Sie per udp an die Library zurück.
+Der AnswerQueueWorker entnimmt die Anfrage und sendet sie per udp an die Library zurück.
 
 Zusammenfassend erfüllen die Komponenten folgende Aufgaben.
 Der MQTTHandlerThread nimmt Nachrichten direkt per MQTT an und gibt die Anfrage weiter.
 Außerdem sendet er Nachrichten per MQTT, falls welche anfallen.
 Der MQTTRequestHandler kümmert sich um das Verfahren von MQTT Requests.
-Der UDPRequestQueue Worker nimmt wie der MQTTHandlerThread Anfragen die per UDP übermittelt wurden an und gibt Sie zur Behandlung entsprechend weiter.
+Der UDPRequestQueue Worker nimmt wie der MQTTHandlerThread Anfragen die per UDP übermittelt wurden an und gibt sie zur Behandlung entsprechend weiter.
 Er sendet jedoch im Gegensatz keine Responses zurück.
 Hierfür gibt es den AnswerQueueWorker, dessen einzige Aufgabe es ist Antworten per UDP zurück zu übermitteln.
 
@@ -537,8 +537,8 @@ Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zu
 Die Programmierumgebung ist die Schnittstelle, die die Programmierer für die Interaktion mit dem Smartphone in ihren Programmen verwenden.
 Sie besteht aus einer Bibliothek, die Funktionen anbietet mit denen Programmierer Sensorwerte einlesen, oder Ausgaben auf dem Smartphone tätigen können.
 Sie können die Funktionen in ihren bestehenden Quellcode einbinden und die Funktionen dort verwenden.
-Die Bibliothek ist in den Programmiersprachen C, Java und Python vorhanden, damit Sie mit verschiedenen Programmiersprachen genutzt werden kann.
-In Java und Python ist Sie zudem Plattformunabhängig.
+Die Bibliothek ist in den Programmiersprachen C, Java und Python vorhanden, damit sie mit verschiedenen Programmiersprachen genutzt werden kann.
+In Java und Python ist sie zudem Plattformunabhängig.
 Für C gibt es zwei Bibliotheken: Eine für Unix- und eine für Windows-Systeme.
 In C ist die Bibliothek prozedural mit statischen Methoden, in Java und Python objektorientiert implementiert.
 
@@ -578,10 +578,9 @@ Die Ausgabe erscheint als direkter Grund der Annäherung.
 
 
 \chapter{Evaluation}\label{chap:eval}
-%todo: Messwerte stimmen noch nicht. Messung unter Vodaphone. Verzerrt. Check unter DSL.
 %todo: auch gerne nochmal sprachlich drübergehen.
 %todo: Intro fehlt. Worum geht's im Chapter? Qualitative und quantitative Bewertung.
-In diesem Kapitel wird überprüft, ob die implementierte Lösung die Anforderungen erfüllt.
+Es wird überprüft, o
 Überprüft wird die qualitive Nutzbarkeit der Lösung anhand der spezifizierten Anforderungen.
 Für verschiedene Nutzungszenarien wie der Labor- oder Heimarbeit werden Latenzuverhalten gemessen.
 
@@ -600,7 +599,7 @@ Es handelt sich um das Python-Skript \textit{server.py}.
   \caption{Start der Kontrollanwendung}
   \label{fig:start_controll_app}
 \end{figure}
-Die Anwendung meldet, dass Sie sich erfolgreich mit dem MQTT-Broker verbunden und das korrekte Topic abboniert hat.
+Die Anwendung meldet, dass sie sich erfolgreich mit dem MQTT-Broker verbunden und das korrekte Topic abboniert hat.
 Die Kontrollanwendung loggt neben diesen Informationen auch rpc-requests und responses.
 Sensor-requests und responses werden wegen ihrer hohen Anzahl nicht geloggt.
 
@@ -622,7 +621,7 @@ Keine dieser Funktionen liefert einen Rückgabewert.
 Die Bibliothek sendet die Nachrichten an das Smartphone.
 Nähert sich eine Person dem Smartphone wird der Code in der If-Bedingung ausgeführt.
 Die jeweiligen Nachrichten werden als rpc\_request per UDP an die Kontrollanwendung gesendet.
-Dort werden Sie angenommen, geloggt und per MQTT an das Smartphone weitergereicht.
+Dort werden sie angenommen, geloggt und per MQTT an das Smartphone weitergereicht.
 Eine Übersicht der gesendeten Nachrichten ist in Abbildung \ref{fig:req_controll_app} zu sehen.
 \begin{figure}[htbp]
   \centering
@@ -685,7 +684,7 @@ Es sind dabei stets beide Geräte, Lokaler PC und Smartphone per WLAN mit dem In
 Untersucht wird lediglich die Zeitspanne zwischen rpc\_request und rpc\_response.
 Sensor\_requests kommunizieren stets per loopback-interface mit der Kontrollanwendung.
 Daher die Latenzzeiten gering.
-Im Durchschnitt belaufen Sie sich auf unter 1ms.
+Im Durchschnitt belaufen sie sich auf unter 1ms.
 Die Messungen sind  für den Fall interessant, für den Studierende an der Hochschule die Lösung nutzen möchten.
 Zum Beispiel in Laboren.
 
