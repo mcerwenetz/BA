@@ -1,4 +1,4 @@
 {
-    "type":"sensor_request",
-    "sensor_type": "TYPE"
+    "type": "sensor_request",
+    "sensor_type": ""
 }
