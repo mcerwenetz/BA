@@ -20,5 +20,7 @@ print("mittelwert: %d" % statistics.mean(ms))
 print("standardabweichung %d" % statistics.pstdev(ms))
 
 plt.boxplot(ms)
-plt.ylabel("reaktionszeit in ms")
+plt.ylabel("RTT rpc [ms]")
+frame = plt.gca()
+frame.axes.get_xaxis().set_visible(False)
 plt.show()
