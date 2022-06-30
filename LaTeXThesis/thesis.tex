@@ -26,30 +26,33 @@
 \begin{document}
 %todo: Rechtschreibprüfung Paula reinbringen
 %todo: Jedes Chappter außer Einführung und Fazit benötigen ein Intro.
+%todo: kein 'außerdem'
+
 \include{vorspann} % Titelseite, Erklärungen, etc.
 
-\begin{abstract}
 
-Um Programmieraufgaben interaktiv zu gestalten eignen sich Projekte mit Microcontrollern besonders gut.
-Smartphones bieten einen vergleichbaren Funktionsumfang und müssen meist nicht zusätzlich beschafft werden.
-In dieser Arbeit wurde eine Softwarelösung erstellt, um Smartphonesensoren über eine Programmierumgebung auszulesen und Ausgaben auf dem Smartphone auszuführen.
+\begin{abstract}
+%todo: zu kurz
+Um Programmieraufgaben interaktiv zu gestalten, eignen sich Projekte mit Microcontrollern besonders gut.
+Smartphones bieten einen vergleichbaren Sensorumfang und können Ausgaben virtuell darstellen.
+In dieser Arbeit wurde eine Softwarelösung namens Smartbit erstellt, um Smartphonesensoren über eine Programmierumgebung auszulesen und Ausgaben auf dem Smartphone auszuführen.
 Hierfür wurde eine Android-Anwendung, eine Kontrollanwendung und eine programiersprachenunabhängige Softwarebibliothek erstellt.
 
-Für die Nutzung der Lösung werden Beispiel-Programmieraufgaben dazugereicht.
-Programmierer schreiben Programme auf dem PC, welche auf Änderungen von Smartphonesensorwerten wie beispielsweise Beschleunigungssensoren reagieren und die Ausgabemöglichkeiten des Smartphones nutzen.
-  %todo: Ergebnisse rein.
+Die Benutzung wurde unter Verwendung einer Programmierbeispielaufgabe evaluiert.
+Auftretende Latenzen sind vernachlässigbar und die Benutzbarkeit gegeben.
 \end{abstract}
 
 \tableofcontents
 
 \chapter{Einführung} \label{chap:intro}
-Viele angehenden Programmierer mühen sich beim Programmierenlernen mit der Semantik von Programmiersprachen und grundlegenden algorithmischen Konzepten.
+%todo: Irgendwie muss implementierte Lösung = Smartbit-Lösung heißen. Hier introducen.
+Viele angehende Programmiererinnen und Programmierer mühen sich beim Programmierenlernen zum Anfang mit der Semantik von Programmiersprachen und grundlegenden algorithmischen Konzepten.
 Akademische Übungsaufgaben senken die Lernmotivation durch rein virtuelle Aufgabenstellungen ohne Interaktionsmöglichkeiten.
 Projekte mit Microcontrollern dagegen bieten eine praktische, fordernde und spielerische Einstiegsmöglichkeit.
-Es werden kleine Projekte realisiert, die durch die Verwendung von Sensoren Programmierer einladen sich an Programmieraufgaben auszuprobieren.
-Sinnvoll sind diese Eigenschaften insbesondere bei Projekten für Programmierer mit wenig Vorwissen wie Schüler oder Erstemester-Studierende, da Gelerntes direkt angewandt werden kann.
+Es werden kleine Projekte realisiert, die durch die Verwendung von Sensoren Programmierer einladen, sich an Programmieraufgaben auszuprobieren.
+Sinnvoll sind diese Eigenschaften insbesondere bei Projekten für Programmierer mit wenig Vorwissen wie Schüler oder Erstsemester-Studierende, da Gelerntes direkt angewandt werden kann.
 Praktische Programmieraufgaben bieten für Programmieranfänger den besten Lerneffekt und die  höchste Motivation \cite{learning_computer_programming}.
-Die in Microcontroller-Schaltungen verwendeten Sensoren sind Voraussetzung um physikalische Eigenschaften in der realen Welt zu messen.
+Die in Microcontroller-Schaltungen verwendeten Sensoren sind Voraussetzung, um physikalische Eigenschaften in der realen Welt zu messen.
 Programme auf dem Microcontroller können die verbundenen Sensoren auslesen und auf Änderungen der gemessenen Werte reagieren.
 Sensoren, Microcontroller und das entwickelte Programm ermöglichen zusammen eine Bedienung durch Nutzer.
 
@@ -69,53 +72,50 @@ In die Geräte sind zahlreiche Sensoren wie Lagesensoren, Gyroskop oder Annäher
 Der Sensoren-Umfang ist vergleichbar mit dem von Microcontrollern.
 Elektrische Bauteile konventioneller Microcontroller-Sets erlauben einen Fehlgebrauch, der im schlimmsten Fall in der Zerstörung von Komponenten enden kann.
 Projekte in stattdessen Smartphones statt Microcontroller verwendet werden reduzieren dieses Risiko dadurch, dass elektrische Schaltungen bereits intern gefertigt und somit von äußerlicher Fehlverwendung geschützt sind.
-Ein weiterer Vorteil der Verwendung von Smartphones gegebüber Microcontrollern bei Programmierprojekten liegt in der Verfügbarkeit.
-Weltweit besaßen 2022 5,2 Mrd. Menschen ein Smartphone \cite{smartphone_users}.
+Ein weiterer Vorteil der Verwendung von Smartphones gegenbüber Microcontrollern bei Programmierprojekten liegt in der Verfügbarkeit.
+2022 besaßen Weltweit 5,2 Mrd. Menschen ein Smartphone \cite{smartphone_users}.
 Sie sind gerade bei Kindern, Jugendlichen und jungen Erwachsenen weit verbreitet.
 Kinder besitzen häufig bereits mit 10 Jahren ein Smartphone \cite{bitkom_smartphones}.
 Im Alltag wird es für Chats, Social-Media oder Spiele verwendet.
 Sie sind also häufig bereits in Gebrauch und müssten für die Nutzung von Programmierprojekten nicht zusätzlich beschafft werden.
-Durch Ihre eingesetzten Sensoren können sie zuverlässig physikalische Umgebungseigenschaften messen.
-Neben kabelgebundenen Übertragungsschnittstellen wie USB besteht auch die Möglichkeit sich mit drahtlosen Verbindungsmöglichkeiten wie WLAN zu verbinden.
-Die Geräte sind zudem batteriebetrieben, was Lösungen ermöglicht die von einer Spannungsversorgung unabhängig sind.
+Durch ihre eingesetzten Sensoren können sie zuverlässig physikalische Umgebungseigenschaften messen.
+Neben kabelgebundenen Übertragungsschnittstellen wie USB besteht auch die Möglichkeit, drahtlose Verbindungsmöglichkeiten wie WLAN zu nutzen.
+Die Geräte sind zudem batteriebetrieben, was Lösungen ermöglicht, die von einer Spannungsversorgung unabhängig sind.
 Eine Einbindung von Smartphones ist in den meisten Entwicklungsumgebungen jedoch nicht möglich.
 Visuelle und haptische Ausgaben auf dem Smartphone erfordern zudem eine mobile Anwendung, da Smartphone-Betriebssysteme keine nativen Ausgabemethoden außerhalb von Apps bieten.
 
 %todo: Ziel klingt noch whack. Am Titel orientieren.
-Ziel dieser Arbeit ist die Entwicklung einer Softwarelösung, die die Möglichkeiten von Smartphones für die Entwicklung von interaktiven Projekten nutzbar macht.
+Ziel dieser Arbeit ist die Entwicklung einer Softwarelösung namens Smartbit, die die Möglichkeiten von Smartphones für die Entwicklung von interaktiven Projekten nutzbar macht.
 Sensoren sollen ausgelesen und Ausgaben auf dem Smartphone ausgelöst werden können.
 %check: Wenn sich die Struktur ändert muss das hier angepasst werden.
 %todo: gereicht raus. hört sich kacke an.
-Für die Verwendung der Lösung werden angehenden Programmiereren Beispielaufgaben gereicht.
-Um die Beispielaufgaben zu bewältigen muss die Lösung auch Benutzungsmöglichkeiten bereitstellen.
-Hierdurch werden Anforderungen an die in dieser Arbeit implementierte Lösung gestellt.
+Für die Verwendung der Smartbit-Lösung werden angehenden Programmiereren Beispielaufgaben dargelegt, deren Bewältigung eine Bereitstellung von Benutzungsmöglichkeiten erfordert.
+Hierdurch werden Anforderungen an die Smartbit-Lösung gestellt.
 Die Aufgaben, Anforderungen und Rahmenbedingungen sind in Kapitel \ref{chap:Experimente} zu finden.
 Die drei Komponenten Smartphone-App, Kontrollanwendung und Programmierumgebung und ihr Zusammenspiel werden
 in Kapitel \ref{chap:architektur} vorgestellt.
 Die dafür benötigten Nachrichtenformate werden in Kapitel \ref{chap:message_formats} gezeigt.
-Ihr Zweck wird erklärt und und der Nachrichtenaustausch dort exemplarisch veranschaulicht.
+Ihr Zweck wird erklärt und der Nachrichtenaustausch dort exemplarisch veranschaulicht.
 Kapitel \ref{chap:app} behandelt die Funktionsweise und den Aufbau der Android-App im Detail.
 Diese tauscht Nachrichten mit der Programmierumgebung aus.
 Als Zwischenvermittlung fungiert das zentrale Kontrollprogramm, was in Kapitel \ref{chap:server_software} erklärt wird.
 Einbindung, Nutzung, und externe Schnittstellen der Bibliotheken zur Android-App und dem Kontrollprogramm werden in Kapitel \ref{chap:libs} erklärt.
-In Kapitel wird \ref{chap:eval} untersucht, ob die vorgegebenen Anforderungen erfüllt wurden.
-Dort wird zudem die Verwendung der Lösung anhand einer Beispielaufgabe vorgestellt.
-Schwierigkeiten die bei der Entwicklung auftraten werden in Kapitel \ref{chap:fazit} diskutiert.
-Erweiterungsmöglichkeiten und Verbesserungen werden diskutiert.
+In Kapitel \ref{chap:eval} wird untersucht, ob die vorgegebenen Anforderungen erfüllt wurden.
+Dort wird zudem die Verwendung der Smartbit-Lösung anhand einer Beispielaufgabe vorgestellt.
+Bei der Entwicklung aufgetretene Schwierigkeiten sowie mögliche Erweitungen und Verbessungen der Smartbit-Lösung werden in Kapitel \ref{chap:fazit} diskutiert.
 
 \chapter{Smartphones als Microcontroller-Ersatz} \label{chap:Experimente}
-Smartphones sind in sich geschlossene technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB-Port, WLAN und Bluetooth keine weiteren Schnittstellen bieten um externe Hardware und Schaltungen anzuschließen und fernzusteuern.
-Microcontroller-Schaltungen zum Programmierenlernen bieten meistens mehrere Ausgabemöglichkeiten wie LEDs, Lautsprecher oder Piepser.
-Smartphones können diese Bausteine nicht anschließen aber virtuell darstellen.
-Gewohnte Ausgabeelmente können virtualisiert werden.
-Die Funktionen sind außerdem nicht nur von Mehrzweck-Ausgaben, wie LED-Grids begrenzt, die zum Beispiel für die Text- oder Bildanzeige verwendet werden können.
-Zweckgebundene Elemente wie Textfelder, Textausgaben oder Bildausgaben in der App können beliebig kombiniert werden.
-Darüber hinaus ist die Anordnung der jeweiligen Elemente frei wählbar, so dass das Layout anders als bei Microcontrollern auch im Nachhinein noch geändert werden kann.
-Die Ausgabemöglichkeiten können in Kombination mit Sensor-Daten verwendet werden, um kleine Programmieraufgaben zu lösen.
-Einige Beispiele werden in diesem Kapitel vorgestellt.
-Da diese nicht auf einem Microcontroller, sondern einem Smartphone ausgeführt werden, müssen gewisse Rahmenbedingungen erfüllt sein, wie beispielsweise geringe Latenzen in der Sensordatenübertragung.
+Smartphones sind in sich geschlossene technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB- bzw. Lightning-Port, WLAN und Bluetooth keine weiteren Schnittstellen bieten, um externe Hardware und Schaltungen anzuschließen.
+Gegenüber Microcontroller-Schaltungen bieten Sie jedoch einen vergleichbaren Sensorumfang.
+Integrierte Lautsprecher können die in einer Microcontroller-Schaltung  manuell angeschlossenen Piepser ersetzen.
+Zudem müssen Smartphones bei der Ausgabe nicht auf Mehrzweck-Ausgabemöglichkeiten wie LED-Grids zurückgreifen, da zweckgebundene Elemente wie Textfelder, Textausgaben oder Bildausgaben während der App-Entwicklung beliebig platziert werden können.
+
+In diesem Kapitel werden Beispielprogrammieraufgaben dargelegt.
+Diese können sowohl mit Microcontroller-Schaltungen, als auch mit der in dieser Arbeit implementierten Smartbit-Lösung gelöst werden.
+Des Weiteren werden die aus den Beispielprogrammieraufgaben hervorgehenden Anforderungen aufgestellt und erörtert.
+
 \section{Beispielprogrammieraufgaben}\label{sec:activities}
-Praxisnahe Programmieraufgaben mit interessanten Aufgabestellungen motivieren Softwareentwickler.
+Praxisnahe Programmieraufgaben mit interessanten Aufgabenstellungen motivieren Softwareentwickler.
 Die in diesem Abschnitt vorgestellten Beispielaufgaben definieren das von Sensormesswerten abhängige Verhalten interaktiver Programme.
 Die Aufgabenstellungen sind in Tabelle \ref{tab:excercises} aufgeführt.
 Für jede Aufgabe werden die benötigen Sensortypen und Ausgabeschnittstellen beschrieben.
@@ -124,19 +124,19 @@ Dies soll verhindern, dass sich unerfahrene Programmierer mit komplizierten Aufg
 %todo: + ersetzen mit einfach, mittel, sschwer
 \begin{table}[htbp]
   \centering
-  \begin{tabular}{|l|c|p{2cm}|c|}
+  \begin{tabular}{|l|c|p{2.3cm}|c|}
       \hline
       \textbf{Name der Aufgabe} & \textbf{Benötigte Sensoren} & \textbf{Verwendete Ausgaben} & \textbf{Schwierigkeitsgrad} \\
       \hline
-      Disco & - & Led & + \\
+      Disco & - & LED & Einfach \\
       \hline
-      Würfeln & Lagesensor & Textfeld &+ \\
+      Würfeln & Lagesensor & Textfeld & Einfach \\
       \hline
-      Diebstahl-Alarm & Näherungssensor & Textfeld, Led, Vibration & ++ \\
+      Diebstahl-Alarm & Näherungssensor & Textfeld, LED, Vibration & Mittel \\
       \hline
-      Klatsch-Zähler & Mikrofon & Textfeld & ++ \\
+      Klatsch-Zähler & Mikrofon & Textfeld & Mittel \\
       \hline
-      Dreh-Zähler & Lagesensor & Textfeld & +++ \\
+      Dreh-Zähler & Lagesensor & Textfeld & Schwer \\
       \hline
   \end{tabular}
   \caption{Beispielprogrammieraufgaben}
@@ -149,7 +149,7 @@ Die Verwendung Sensoren ist in dieser Aufgabe nicht nötig, da die LED-Ausgabe u
 Aus diesem Grund ist die Aufgabe als Einfach eingestuft.
 
 In der Aufgabe \textit{Würfeln} soll ein Schütteln des Geräts erkannt werden.
-Zur Verwendung kommt dabei ein Lagesensor zum Einsatz welcher Gerätebeschleunigungen messen kann.
+Zur Verwendung kommt dabei ein Lagesensor zum Einsatz, welcher Gerätebeschleunigungen messen kann.
 Wird ein Schütteln erkannt, soll auf dem PC eine Zufallszahl generiert werden.
 Anschließend wird diese auf dem Gerät in einem Textfeld ausgegeben.
 %todo: schwierkigkeit kursiv
@@ -158,21 +158,21 @@ Der Schwierigkeitsgrad wird ebenfalls auf Einfach eingeschätzt, da die Aufgabe 
 In der Aufgabe \textit{Diebstahl-Alarm} wird unter Verwendung des Näherungssensors das örtliche Umfeld des Geräts auf eine Annäherung kontrolliert.
 Wird eine Annäherung festgestellt, wird ein alarmierender Text im Textfeld ausgegeben.
 Zusätzlich soll die LED die wie in Aufgabe \textit{Disco} die Farbe wechseln.
-Neben den visuellen ausgaben wird die Vibrationsfunktion als haptisches Feedback benötigt.
-Im Falle einer Annäherung, soll das Gerät fünf mal vibrieren.
+Neben den visuellen Ausgaben wird die Vibrationsfunktion als haptisches Feedback benötigt.
+Im Falle einer Annäherung soll das Gerät fünf mal vibrieren.
 %todo: schwierkigkeit kursiv
 Der Schwierigkeitsgrad der Aufgabe ist als Mittel eingestuft, da hier zwischen Alarm- und Normalzustand unterschieden werden muss.
 Entfernt sich eine Person, muss der Alarm-Zustand verlassen werden können.
-Alle Ausgaben werden auf ihren initialwert zurückgesetzt.
+Alle Ausgaben werden auf ihren Initialwert zurückgesetzt.
 
 Bei der Aufgabenstellung \textit{Klatsch-Zähler} muss für einen definierten Zeitraum die Anzahl der Händeklatscher gemessen werden.
 Diese Anzahl wird anschließend im Textfeld des Geräts ausgegeben.
-Zur Verwendung kommen hierfür das Mikrophon als Ein- und das Textfeld als Ausgabe.
+Zur Verwendung kommen hierfür das Mikrofon als Ein- und das Textfeld als Ausgabe.
 Die Schwierigkeit ist auf \textit{Mittel} angesetzt, da die Messwerte von Händeklatschern unterschiedliche Intensitäten aufweisen.
-Um einen Händeklatscher zu identifizieren ist es nötig Grenzwerte zu ermitteln um sie von normalen Hintergrundgeräuschen abzugrenzen.
+Um einen Händeklatscher zu identifizieren, ist es nötig Grenzwerte zu ermitteln um sie von normalen Hintergrundgeräuschen abzugrenzen.
 Eine Visualisierung der Messdaten kann bei dieser Festlegung helfen.
 
-Bei der letzen Aufgabe \textit{Drehzähler} soll der Programmierer das Device innerhalb eines definierten Zeitraums drehen und anhand der Messdaten die Anzahl der Umdrehungen ermitteln.
+Bei der Aufgabe \textit{Drehzähler} soll der Programmierer das Device innerhalb eines definierten Zeitraums drehen und anhand der Messdaten die Anzahl der Umdrehungen ermitteln.
 Diese Anzahl soll anschließend im Textfeld auf dem Gerät ausgegeben werden.
 Zur Verwendung kommen hier ebenfalls der Lagesensor als Sensoreingabe und das Textfeld als Ausgabe.
 %todo: schwierkigkeit kursiv
@@ -180,7 +180,7 @@ Die Aufgabe ist als Schwer bewertet, da hier Wiederholungen in einer Werteabfolg
 Abhängigkeiten zwischen den Messwertergebnissen erschweren eine Umdrehungserkennung zusätzlich.
 
 \section{Anforderungen der Implementierung}\label{sec:anforderungen}
-Aus den Beispielaufgaben leiten sich Anforderungen an die Lösung der ab.
+Aus den Beispielaufgaben leiten sich Anforderungen an die Smartbit-Lösung ab.
 
 Geringe Latenzen sind bei der Sensordatenübermittlung für ein responsives Verhalten von Programmen nötig.
 Sie tragen zur Lernerfahrung bei, da sich physikalische Änderungen unmittelbar auf das Verhalten des entwickelten Progamms auswirken.
@@ -195,37 +195,38 @@ Latenzen können je nach Mobilfunk- bzw WLAN Standard, Umwelteinflüssen und der
 %todo: Abkürzungsverzeichnis muss rein. Waaay too much Abkürzungen.
 Für Latenzen dient die Round-Trip-Time (\acrshort{rtt}) als Messgröße.
 Sie beschreibt die Zeitdauer der Übermittlung einer Nachricht über Hin- und Rückweg eines Hosts zu einem Anderen.
-Präventionsprinzipen wie \acrshort{csmaca} verhindern bei WLAN Verbindungen Interferenzen, erhöhen allerdings die Latenzen.
-Während sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt, kann sie bei \acrshort{umts} auf 300 ms bis 400 ms ansteigen \cite{network_latencies} .
-Zudem ist sie variabel, was bei einer synchronen Übertragung zu ungewollten Verzögerungen führt.
-Um die Latenz des Transportweges geringer darzustellen müssen Sensorwerte zwischengespeichert werden, um einen Puffer aufzubauen auf den in Fällen erhöhter Latenz zugegriffen werden kann.
+Präventionsprinzipen wie \acrshort{csmaca} (Carrier Sense Multiple Access/Collision Avoidance) verhindern bei WLAN-Verbindungen Interferenzen, erhöhen allerdings die Latenzen.
+Während sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt, kann sie bei \acrshort{umts}-Verbindungen (Universal Mobile Telecommunications System) auf 300 ms bis 400 ms ansteigen \cite{network_latencies} .
+Zudem kann sie variieren, was bei einer synchronen Übertragung zu nicht nachvollziehbaren Verzögerungen führt.
+Um die Latenz des Transportweges geringer darzustellen, müssen Sensorwerte zwischengespeichert werden, um einen Puffer aufzubauen, auf den in Fällen erhöhter Latenz zugegriffen werden kann.
 Eine weitere Latenz-Optimierung ist durch den Einsatz effizienter Protokolle möglich.
 Der Verlust weniger Sensorwerte ist für die Funktionsweise des Programms unerheblich.
-Verbindungsorientierte Protokolle erhöhen die Menge der zu sendenen Nachrichten pro Sensorwert.
+Verbindungsorientierte Protokolle erhöhen die Menge der zu sendenden Nachrichten pro Sensorwert.
 Verbindungslose Protokolle sind deshalb zu bevorzugen.
 
-Die implementierte Lösung muss einen benutzerfreundlichen Nutzungszugang  für Programmierer und die Anbindung ihrer Programme bieten.
+Die Smartbit-Lösung muss einen benutzerfreundlichen Nutzungszugang für Programmierer und die Anbindung ihrer Programme bieten.
 Boilerplate-Code soll reduziert werden, um die Verwendung zu erleichtern.
 Die angebotene Funktionalität soll mit möglichst wenig Vorwissen nutzbar sein.
 Auf serialisierte Ausgabeformate muss verzichtet werden.
 Funktionen müssen Rückgabewerte in Form von primitiven Datentypen zurückgeben.
-Für die Bedienung aller Ausgabemöglichkeiten des Smartphones wird muss die Lösung eine Funktion zur programmierung bereitstellen.
-Das Einbinden in bestehende Entwicklungsumgebungen ist neben der benutzerfreundlichen Schnittstellengestaltung Voraussetzung für die Nutzung der Lösung.
+Für die Bedienung aller Ausgabemöglichkeiten des Smartphones muss die Smartbit-Lösung eine Funktion zur Programmierung bereitstellen.
+Das Einbinden in bestehende Entwicklungsumgebungen ist neben der benutzerfreundlichen Schnittstellengestaltung Voraussetzung für die Nutzung.
 Die Entwicklungsumgebung Eclipse ist im Labor-Kontext weit verbreitet.
-Da es sich um eine plattformunabhängige \acrshort{ide} handelt, muss auch die Lösung plattformübergreifend in diese Entwicklungsumgebung integrierbar sein.
+Da es sich um eine plattformunabhängige \acrshort{ide} (Integrated Development Environment) handelt, muss auch die Smartbit-Lösung plattformübergreifend in diese Entwicklungsumgebung integrierbar sein.
 Nachrichtenabläufe sollen nachvollziehbar sein um fehlerhafte Konfigurationen rasch zu identifizieren und zu korrigieren.
-Hierfür muss es eine Logging-Funktion geben die den Nachrichtenverlauf aufzeichnet und ausgibt.
-Programmierer können anhand der Logeinträge den Versand nachvollziehen wodurch Fehler ersichtlich werden.
+Hierfür muss es eine Logging-Funktion geben, die den Nachrichtenverlauf aufzeichnet und ausgibt.
+Programmierer können anhand der Logeinträge den Versand nachvollziehen, wodurch Fehler ersichtlich werden.
 
-Neben den Netzwerktechnischen- und Nutzungsbezogenen Anforderungen muss die Lösung auch Ausgabemöglichkeiten über die grafische Benutzeroberfläche einer Smartphone-App bereitstellen.
+Neben den netzwerktechnischen und nutzungsbezogenen Anforderungen muss die Smartbit-Lösung auch Ausgabemöglichkeiten über die grafische Benutzeroberfläche einer Smartphone-App bereitstellen.
 Teil dieser Oberfläche ist eine farbwechselbare Signal-LED.
 Zur Ausgabe von Texten und Zeichen muss ein Textfeld implementiert werden.
-Durch zwei Tasten muss der Nutzer außerdem mit der Anwendung interargieren können.
+Durch zwei Tasten muss der Nutzer zudem mit der Anwendung interagieren können.
 Neben den optischen Ausgaben bzw. Bedienelementen muss die Smartphone-App auch haptische Ausgaben wie Vibrationen umsetzen können.
 Für die Einstellung von Vibrationsmustern muss eine Vibrationszeitdauer konfigurierbar sein.
 
-\chapter{Architektur der implementierten Lösung} \label{chap:architektur}
-Die implementierte Lösung besteht aus den drei Komponenten Programmierumgebung, Kontrollprogramm und Android-Anwendung, die zur korrekten Funktionsweise miteinander kommunizieren.
+\chapter{Architektur der Smartbit-Lösung} \label{chap:architektur}
+Die implementierte Smartbit-Lösung besteht aus den drei Komponenten Programmierumgebung, Kontrollprogramm und Android-Anwendung, die zur korrekten Funktionsweise miteinander kommunizieren.
+%todo: kurzer absatz was steht in diesem kapitel
 Eine Übersicht des Aufbaus ist in Abbildung \ref{fig:design} dargestellt.
 \begin{figure}[htbp]
 \centering
@@ -234,13 +235,13 @@ Eine Übersicht des Aufbaus ist in Abbildung \ref{fig:design} dargestellt.
 \caption{System-Aufbau}
 \label{fig:design}
 \end{figure}
-Um mit dem Smartphone zu interargieren bietet die Programmierumgebung eine programmiersprachenunabhängige Bibliothek mit Schnittstellen in Form von Stub-Funktionen an, die die \acrshort{api} der Kontrollanwendung nutzen.
+Um mit dem Smartphone zu interargieren bietet die Programmierumgebung eine programmiersprachenunabhängige Bibliothek mit Schnittstellen in Form von Stub-Funktionen an, die die \acrshort{api} (Application Programming Interface) der Kontrollanwendung nutzen.
 Die Bibliothek kann in bestehenden Programmcode zum Zweck der Nutzung eingebunden werden.
 Zur Unterstützung der Verständlichkeit für angehende Programmierer wurde bei der Entwicklung der Bibliothek auf die Implementierung von Funktionen mit asynchronen Rückgabewerten, wie beispielsweise Futures, verzichtet.
 Die in der Programmiersprache Python imlementierte Kontrollanwendung, welche ebenfalls auf dem lokalen PC betrieben wird, dient der Nachrichtenvermittlung zwischen Smartphone-App und Programmierumgebung.
 %todo: das hier ist Prozess. Abtrennen?
-Führt ein Programmierer einen Funktionsaufruf der Bibliothek aus, übermittelt die Bibliothek diesen per \acrshort{udp} dem Kontrollprogramm welches über die weitere Verfahrensweise entscheidet.
-Bei einer Ausgabeanfrage wird die Nachricht beispielsweise per \acrshort{mqtt} an das Smartphone übertragen.
+Führt ein Programmierer einen Funktionsaufruf der Bibliothek aus, übermittelt die Bibliothek diesen per \acrshort{udp} (User Datagram Protocol) dem Kontrollprogramm welches über die weitere Verfahrensweise entscheidet.
+Bei einer Ausgabeanfrage wird die Nachricht beispielsweise per \acrshort{mqtt} (Message Queuing Telemetry Transport) an das Smartphone übertragen.
 Die Kontrollanwendung speichert zudem Sensormesswerte unpersistent in einem Key-Value-Store um sie zu cachen.
 Zum Cachen werden Messwerte in regelmäßigen Abständen von der Smartphone-App an die Kontrollanwendung übermittelt.
 Bei Eingang einer Sensorwert-Anfrage der Bibliothek sendet die Kontrollanwendung den zuletzt von der Smartphone-App übermittelten Wert an die Bibliothek zurück.
@@ -253,7 +254,7 @@ Nachrichten werden zur Publizierung auf einem Topic an einen MQTT Broker gesende
 Dieser leitet sie dann an alle Clients weiter die das Topic abboniert haben.
 %todo: MQTT Nutzung wurde vom Prof vorausgesetz reinbringen.
 Die UDP-Kommunikation zwischen Bibliothek und Kontrollprogramm auf dem lokalen PC wird über ein Loopback-Interface umgesetzt um die Latenzzeiten zwischen Programmierumgebung und Kontrollprogramm zu minimieren.
-Als Nachrichtenformat wird \acrshort{json} verwendet.
+Als Nachrichtenformat wird \acrshort{json} (JavaScript Object Notation) verwendet.
 Das menschlesbare, kompakte Nachrichtenformat ist weit verbreitet und wird von vielen Softwarebibliotheken unterstützt.
 
 \chapter{Nachrichtenformate der Komponenten}\label{chap:message_formats}
@@ -261,7 +262,7 @@ Ein einheitliches Nachrichtenformat ist Voraussetzung für den Nachrichtenaustau
 Der ausgearbeitete Nachrichtenstandard definiert die Nachrichten in einem Klartextformat.
 Nachrichten-Vorlagen sind in einer Datei gespeichert und werden in der Bibliothek, dem Kontrollprogramm und in der Smartphone-App eingelesen, wodurch Sie in allen Komponenten kongruent vorliegen.
 Es gibt unterschiedliche Nachrichtentypen, welche in Tabelle \ref{tab:message_types} aufgeführt sind.
-Zur besseren Nachvollziehbarkeit der Kommunikation sind außerdem Quelle, Ziel und das verwendete Netzwerkprotokoll angegeben.
+Zur besseren Nachvollziehbarkeit der Kommunikation sind zusätzlich Quelle, Ziel und das verwendete Netzwerkprotokoll angegeben.
 Eine Liste der vollständigen Nachrichtentypen, inklusive ihrer Felder, ist im Anhang aufgeführt.
 \begin{table}[htbp]
   \centering
@@ -415,7 +416,7 @@ Die so generierte Nachricht wird anschließend über den gebundenen MQTT-Service
 Anschließend ist die Startroutine der Mobilen Anwendung abgeschlossen.
 Auf Nachrichten wird nun nur noch im MQTT-Service in einem MessageListener mit entsprechendem Callback reagiert und gegebenenfalls eine Ausgabe ausgeführt.
 Die Anwendung ist nun betriebsbereit und sendet update\_requests an die Kontrollanwendung.
-Übermittelt werden die Sensordaten an den Broker mit einer \acrshort{qos}-Stufe von 0.
+Übermittelt werden die Sensordaten an den Broker mit einer \acrshort{qos}-Stufe (Qualitaty of Service) von 0.
 Auf dieser Stufe wird der Empfang der Nachricht von den Kommunikationspartnern nicht bestätigt.
 Verluste von update\_requests sind unproblematisch, da je nach Taktung der SensorEventListener innerhalb kurzer Zeit neue Sensormesswerte zur Übertragung vorliegen.
 Eine exakte Zustellung ist hier nicht notwendig.
@@ -428,7 +429,7 @@ Dazu zählen Beispielsweise Bewegung, Annäherung, aber auch Temperatur oder Luf
 Ihr Zweck besteht darin auf Änderungen der Werte zu reagieren.
 Für unterschiedliche Aufgaben werden unterschiedliche Sensoren benötigt.
 Beispielsweise word für \textit{Diebstahl-Alarm} nur der Näherungssensor verwendet, für \textit{Dreh-Zähler} der Lagesensor.
-Insgesamt werden in der Android Anwendung werden folgende Sensortypen verwendet: Lineare Beschleunigungssensoren, Gyroskop und Annäherungssensor.
+Für die in dieser Arbeit enthaltenen Übungsaufgaben werden folgende Sensortypen verwendet: Beschleunigungssensor, Gyroskop und Annäherungssenso.
 
 Beschleunigungs- bzw. Lagesensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
 Die Erdbeschleunigung ist auch in diesen Messwerten enthalten.
@@ -476,7 +477,7 @@ Zur Vermittlung zwischen der Smartphone-App und Programmierumgebung dient die Ko
 Die Anwendung vermittelt als Middleware zwischen Anfragen der Programmierumgebung und Anfragen der mobilen Anwendung.
 Durch Sie können Ausgaben in der Android-App ausgeführt- und Sensordaten abgefragt werden.
 Sie wurde in Python entwickelt und ist aus mehreren Komponenten aufgebaut.
-In diesem Kaptel wird der Aufbau der Anwendung anhand ihrerer zweckgebundenen Komponenten dargestellt und die Funktionswese der Bestandteile im Detail an Beispielen erläutert.
+In diesem Kapitel wird der Aufbau der Anwendung anhand ihrerer zweckgebundenen Komponenten dargestellt und die Funktionswese der Bestandteile im Detail an Beispielen erläutert.
 %Die Middleware ist unter der IP-Adresse 127.0.0.1 des localhost auf dem Port 5006 erreichbar.
 %Für die MQTT-Verbindung kommt dabei die unter OpenSource-Lizenz stehende MQTT-Library Paho \cite{paho} der Eclipse-Foundation zum Einsatz. 
 
@@ -492,10 +493,15 @@ Eine Übersicht über die Komponenten der Kontrollanwendung ist in Abbildung \re
   \label{fig:serverUml}
 \end{figure}
 Die Komponente DataHandler besteht wiederrum aus vier Sub-Komponenten, die ebenfalls als Threads nebenläufig laufen: MqttRequestHandler, UDPRequestHandler, UDPRequestQueueWorker und AnswerQueueWorker.
-Die Funktionsweise und Zwecke dieser Subkomponenten wird im Folgenden anhand zweier Beispiele erläutert.
+Ziel der Aufteilung der Arbeitsschritte in Threads ist die Gewährleistung der Verfügbarkeit für beide Kommunikationspartner.
+%todo: queue erklären. fifo lifo.
+Die Thread-Kommunikation wird durch die threadsichere queues \cite{python_queue} realisiert.
+Nachrichten werden von einem Thread in der queue abgelegt und in einem anderen aus der queue entnommen.
+Eine durch das polling verursachte hohe CPU-Last kann durch blockierende Operationen beim ablegen und herausnehmen abgewendet werden.
 
-Abbildung \ref{fig:serverMqttReqPath} wird für das erste Beispiel diskutiert.
-Dargestellt ist der Ablaufplan der Behandlung einer Nachricht, die von der mobilen Anwendung per MQTT an die Kontrollanwendung gesendet wurde.
+Die Funktionsweise und Zwecke der Subkomponenten von DataHandler werden im Folgenden anhand zweier Beispiele erläutert.
+Abbildung \ref{fig:serverMqttReqPath} wird zur Erläuterung für das erste Beispiel diskutiert.
+Dargestellt ist der Ablaufplan bei Empfang einer von der mobilen Anwendung an die Kontrollanwendung per MQTT versandten Nachricht.
 Dies könnte beispielsweise ein update\_request sein.
 %todo: startpunkt fehlt.
 \begin{figure}[htbp]
@@ -504,15 +510,16 @@ Dies könnte beispielsweise ein update\_request sein.
   \caption{Ablaufdiagramm MQTT Request}
   \label{fig:serverMqttReqPath}
 \end{figure}
-Erreicht eine Nachrciht per MQTT die Anwendung, wird es im MQTTHandlerThread entgegengenommen.
-Dieser setzt die Nachricht in eine MQTTRequestQueue ein.
-Der MQTTRequestHandler des DataHandlers wartet bis ein Eintrag in der Queue vorhanden ist und nimmt gegebenenfalls eine Nachricht.
-Daraufhin wird derTyp des Requests bestimmt.
-Handelt sich um ein Sensorupdate muss nur der Sensorwert in der Datenbank aktualisiert werden.
-Handelt es sich um eine rpc\_response, also um eine Antwort auf eine vorausgegangenes rpc\_request, dass einen Rückgabewert fordert, wird das request in eine udp\_answer\_queue eingefügt.
-Der AnswerQueue Worker wartet, ähnlich wie der MQTT Request Handler, bis eine neue Nachricht vorhanden ist die per UDP an den Client gesendet werden soll und sendet diese dann gegebenfalls ab.
+Erreicht eine Nachricht per MQTT die Anwendung, wird Sie vom MQTTHandlerThread entgegengenommen.
+Dieser hat sich mit einem MQTT-Broker unter der Hostadresse \textit{pma.inftech.hs-mannheim.de} auf ein in der Datei \textit{config.json} angegebenes Topic verbunden und reagiert mit einer Callback-Methode auf eingehende Nachrichten.
+Erreicht eine Nachricht den MQTTHandlerThread, wird die Callback-Funktion ausgelöst und die Payload der Nachricht in eine Queue eingetragen.
+Der MqttRequestHandler wartet, bis ein Eintrag in der Queue vorhanden ist, entnimmt gegebenenfalls eine Nachricht und bestimmt den Nachrichtentyp der Anfrage.
+Prinzipiell können von der Smartphone-App nur zwei Nachrichtentypen an die Kontrollanwendung versandt werden.
+Handelt sich um ein update\_request, also einen neuen Sensorwert, muss dieser in der Datenbank aktualisiert werden.
+Handelt es sich hingegen um eine rpc\_response, also um eine Antwort auf eine vorausgegangenes rpc\_request, muss diese Nachricht per UDP an die Bibliothek zurückgesendet werden, wofür Sie in eine andere queue abgelegt wird.
+Der AnswerQueueWorker wartet, bis der MqttRequestHandler die Nachricht abgelegt hat und sendet diese dann per UDP über die localhost-Adresse \textit{127.0.0.1} auf dem Port \textit{5005} zurück an die Bibliothek.
 
-Das zweite Beispiel befasst sich mit dem Ablauf eines UDP-Requests, also einer Anfrage die mithilfe der Bibliothek gesendet wurde.
+Das zweite Beispiel befasst sich mit dem Ablauf eines UDP-Requests, also einer mit UDP versandten Nachricht der Programmierumgebung.
 Der Ablauf ist in Abbildung \ref{fig:serverUDPReqPath} dargestellt.
 %todo: startpunkt fehlt
 \begin{figure}[htbp]
@@ -521,25 +528,21 @@ Der Ablauf ist in Abbildung \ref{fig:serverUDPReqPath} dargestellt.
   \caption{Ablaufdiagramm UDP Request}
   \label{fig:serverUDPReqPath}
 \end{figure}
-Erreicht ein UDP Request den Server wird es vom UDPRequestQueue-Worker in eine UDP Request Queue gelegt.
-Der UDPRequestHandler-Thread entnimmt die Nachricht und bestimmt den Anfragentyp.
-Handelt es sich um eine Anfrage des Types RPC\_Request soll sie Aktionen auf dem Smartphone auslösen.
-Sie muss an das Smartphone gesendet werden, was über MQTT möglich ist.
-Dafür wird sie in eine MqttAnswerQueue eingesetzt.
-Der MQTTHandlerThread entnimmt sie und sendet sie per MQTT ab.
-Ist Request hingegen ein SensorRequest, also eine Anfrage auf die ein Sensorwert geantwortet werden soll, wird der nachgefragte Sensorwert über die Klasse SensorDB entnommen und in die Udp\_answer\_queue eingetragen.
-Der AnswerQueueWorker entnimmt die Anfrage und sendet sie per udp an die Library zurück.
+Erreicht eine Nachricht per UDP die Anwendung, wird Sie vom UDPRequestQueueWorker entgegengenommen
+Dieser bindet beim Start einen Socket für die localhost-Adresse \textit{127.0.0.1} und den Port \textit{5005}  ein.
+Geht auf dem Socket eine Nachricht ein, wird Sie in eine queue abgelegt.
+Der UDPRequestHandler entnimmt die Nachricht aus der queue und bestimmt den Anfragentyp.
+Handelt es sich um eine Nachricht des Types rpc\_request, also einer Ausgabe-Anfrage für das Smartphone muss Sie per MQTT an das Smartphone versandt werden, wofür Sie in eine andere queue eingetragen wird.
+Der MQTTHandlerThread entnimmt die Nachricht und sendet sie per MQTT ab.
+Ist Nachricht hingegen ein SensorRequest, also die Anfrage eines Sensormesswerts, muss eine Nachricht des Typs sensor\_response erstellt und der ausgelesenene Wert eingefügt werden.
+Dieser wird unter Verwendung der SensorDB-Klasse ermittelt.
+Die erstellte, befüllte Antwort muss anschließend an die Programmierumgebung zurückgesendet werden.
+Hierfür wird die Anfrage vom UDPRequestHandler in eine Queue eingetragen, aus der der AnswerQueueWorker Sie wieder entnimmt und Sie an die Programmierumgebung zurücksendet.
 
 Zusammenfassend erfüllen die Komponenten folgende Aufgaben.
-Der MQTTHandlerThread nimmt Nachrichten direkt per MQTT an und gibt die Anfrage weiter.
-Außerdem sendet er Nachrichten per MQTT, falls welche anfallen.
-Der MQTTRequestHandler kümmert sich um das Verfahren von MQTT Requests.
-Der UDPRequestQueue Worker nimmt wie der MQTTHandlerThread Anfragen die per UDP übermittelt wurden an und gibt sie zur Behandlung entsprechend weiter.
-Er sendet jedoch im Gegensatz keine Responses zurück.
-Hierfür gibt es den AnswerQueueWorker, dessen einzige Aufgabe es ist Antworten per UDP zurück zu übermitteln.
-
-Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues des queue-Moduls\cite{python_queue} der cpython Implementierung.
-Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
+Der MQTTHandlerThread nimmt Nachrichten per MQTT an und sendet Sie ab.
+Das Gegenstück dazu bilden für UDP-Anfragen der UDPRequestQueueWorker, der Anfragen von der Programmierunmgebung annimmt und der AnswerQueueWorker, der Anfragen an diese zurücksendet.
+Aufgabe des des MqttRequestHandler ist die Bearbeitung von MQTT Requests.
 
 \chapter{Aufbau der Programmierumgebung}\label{chap:libs}
 Die Programmierumgebung ist die Schnittstelle, die die Programmierer für die Interaktion mit dem Smartphone in ihren Programmen verwenden.
@@ -566,7 +569,7 @@ Beide kommunizieren über die localhost-Adresse 127.0.0.1.
 Dadurch werden Datagramme über das Loopback-Interface gesendet.
 Das Loopback-Interface ist eine virtuelle Netzwerk-Schnittstelle des Betriebssystems eines PCs.
 Pakete werden nicht über externe Netzwerk-Schnittstellen wie Netzwerkkarten versendet, sondern verbleiben im Netzwerk-Stack des Betriebssystems.
-Die Latenzen sind dadurch mit weniger als 1 ms zur Verwendung der Lösung gering genug.
+Die Latenzen sind dadurch mit weniger als 1 ms zur Verwendung der Smartbit-Lösung gering genug.
 Zum Senden und Empfangen von Anfragen werden Sockets verwendet.
 Für das Empfangen von Paketen müssen diese gebunden werden, für Sendevorgänge nicht.
 
@@ -575,27 +578,29 @@ Die Datei muss sich im Dateisystem im gleichen Ordner befinden wie die Bibliothe
 Für die C-Bibliothek sind alle Methoden statisch definiert.
 Es gibt somit keinen Start-Punkt zu dem die Datei \texttt{protocol.json} eingelesen werden kann.
 Damit die Datei nicht für jeden Funktionsaufruf kontinuierlich eingelesen werden muss, muss Sie vom Programmierer einmal zum Start des Programms als cstring eingelesen werden.
-Anschließend muss dieser cstring für jeden Aufruf einer Funktion der Bibliothek als Parameter angegeben werden.
+Anschließend muss dieser C String für jeden Aufruf einer Funktion der Bibliothek als Parameter angegeben werden.
 Die Methode \texttt{get\_file\_content} kann, unter der Angabe des Dateipfades der \texttt{protocol.json}-Datei, aufgerufen werden um den Dateiinhalt einzulesen.
-Zurückgegeben wird der Inhalt als cstring.
+Zurückgegeben wird der Inhalt als C String.
 Diese Lösung verringert die Anzahl der Lesevorgänge und die damit verbundenen durch IO verursachten Latenzen.
 Der Inhalt ist ab dem Einlesezeitpunkt auf dem Heap des Arbeitsspeichers gespeichert.
 Der Programmierer muss diesen am Ende seines Programms durch den Aufruf der \texttt{free}-Funktion wieder freigeben.
 %todo: klingt whack.
 Die Ausgabe erscheint als direkter Grund der Annäherung.
 
+%todo: Kapitel JSON Parser.
 
-\chapter{Evaluation der implementierten Lösung}\label{chap:eval}
+
+\chapter{Evaluation der Smartbit-Lösung}\label{chap:eval}
 %todo: auch gerne nochmal sprachlich drübergehen.
 %todo: Intro fehlt. Worum geht's im Chapter? Qualitative und quantitative Bewertung.
 Die Umsetung der an die implementierte Anwendung gestellten Anforderungen wird in diesem Kapitel überprüft.
 Durch Betrachtung eines Verwendungsbeispiels werden die Anforderungen qualitativ untersucht.
 Geringen Latenzzeiten wurden in der Konzeptionsphase eine hohe Priorität zugeordnet.
-Diese werden anhand der implementierten Lösung für drei Nutzungsszenarien gemessen und bewertet.
+Diese werden anhand der Smartbit-Lösung für drei Nutzungsszenarien gemessen und bewertet.
 
 
 \section{Verwendungsbeispiel}
-Die Verwendung der Lösung wird anhand der Beispielaufgabe \textit{Alarmanlage} vorgestellt.
+Die Verwendung der Smartbit-Lösung wird anhand der Beispielaufgabe \textit{Alarmanlage} vorgestellt.
 Gezeigt wird wie die Aufgabe in der Programmierumgebung unter Verwendung der Python-Bibliothek gelöst wurde und wie sich Ausgaben auf dem Smartphone äußern.
 
 Eine gestartete Kontrollanwendung ist Voraussetzung für einen Nachrichtenaustausch.
@@ -675,7 +680,7 @@ Logging-Möglichkeiten in der Kontrollanwendung und der Android-App erleichterte
 Im Zuge der Konzeption wurden Latenzen eine besondere Bedeutung zugemessen.
 Erhöhte Latenzzeiten führen zu einem verzögerten Verhalten und einer schlechteren Benutzbarkeit.
 Zum Zwecke der Evalutation der Latenzen werden für drei Nutzungsszenarien Messungen durchgeführt.
-Da sensor\_requests lediglich über die local-loopback Schnittstelle zwischen Bibliothek und Kontrollanwendung ausgetauscht werden ist anzunehmen, dass diese Verbindung in der implementierten Lösung keine Limitierung darstellt.
+Da sensor\_requests lediglich über die local-loopback Schnittstelle zwischen Bibliothek und Kontrollanwendung ausgetauscht werden ist anzunehmen, dass diese Verbindung in der Smartbit-Lösung keine Limitierung darstellt.
 Auf die Untersuchung der Latenzzeiten zwischen dem Absenden eines sensor\_requests und dem Erhalt einer sensor\_response wird daher verzichtet.
 
 Unbekannt ist indes die Latenz zwischen Smartphone-App und Kontrollprogramm.
@@ -688,7 +693,7 @@ Die Smartphone-App sendet währenddessen fortlaufend update\_requests per MQTT u
 Messungen finden für drei verschiedene Nutzungsszenarien statt: Der Verwendung im Labor des SWT-Instituts an der Hochschule, der Heimarbeit über eine DSL-Verbindung und der Verwendung in einer virtuellen Umgebung.
 Für alle Messungen erfolgen Internetzugriffe seitens des lokalen PCs kabelgebunden und seitens des Smartphones über WLAN.
 Die Anzahl der verbunden Geräte des AccessPoints sind für die Übertragungszeit ebenfalls ausschlaggebend.
-Die bei CSMA/CA zum Kollisionsschutz verwendeten randomisierte Sendefenster limitieren mit steigender Geräteanzahl die Sendezeit und erhöhen die Latenzen.
+Die bei CSMA/CA zum Kollisionsschutz verwendeten randomisierten Sendefenster limitieren mit steigender Geräteanzahl die Sendezeit und erhöhen die Latenzen.
 Um signifikante Ergebnisse zu diskutieren werden pro Nutzungsszenario 100 Messwerte erhoben und in einem Boxplot dargestellt.
 
 Mit dem SWT-Labor befindet sich der lokale PC im ersten Nutzungsszenario im gleichen Netzbereich wie der MQTT-Broker, was den Transportweg reduziert.
@@ -702,7 +707,7 @@ Die Messergebnisse sind in Abbildung \ref{fig:measure_institute} dargestellt.
 Die Latenzen sind mit Maximalwerten von 138 ms sehr gering  
 SensorEventListener erheben Daten mit einer eine Verzögerung von maximal 200 ms.
 Hier könnte auch die eigentliche Sensormessung auf dem Smartphone die Übertragungs begrenzen.
-Im Labor-Szenario kann die imlementierte Lösung eingesetzt werden.
+Im Labor-Szenario kann die Smartbit-Lösung eingesetzt werden.
 
 Die Messung des zweiten Szenarios erfolgt aus einem Heimnetz mit acht Hops zwischen Broker und lokalem PC. 
 Auf dem Access Point sind zur Zeit der Messung acht Geräte registriert.
@@ -714,7 +719,7 @@ Die Ergebnisse sind in Abbildung \ref{fig:measure_home} dargestellt.
   \caption{Messergnisse der Latenzmessungen im Heimnetz}
   \label{fig:measure_home}
 \end{figure}
-Die Messwerte fallen mit einem Median von etwa 175 ms deutlich höher als im Labor aus, befinden sich allerdings immer noch im tolerablen Bereich und stellen keine gravierende Beeinträchtigung in der Benutzung der Lösung dar.
+Die Messwerte fallen mit einem Median von etwa 175 ms deutlich höher als im Labor aus, befinden sich allerdings immer noch im tolerablen Bereich und stellen keine gravierende Beeinträchtigung in der Benutzung der Smartbit-Lösung dar.
 
 Im dritten Szenario wird die Messung von einer in VirtualBox gestarteten, virtuellen Maschine auf dem lokalen PC aus gestartet.
 Sowohl Bibliothek und Kontrollanwendung werden in der virtuellen Maschine betrieben.
@@ -734,9 +739,9 @@ Dadurch ist ebenfalls von keiner maßgeblichen Beeinträchtigung der Nutzung aus
 Sie kann auch in virtuellen Entwicklungsumgebungen verwendet werden.
 
 \chapter{Fazit}\label{chap:fazit}
-Die implementierte Lösung erfüllt die Anforderungen zufriedenstellend.
-Die im Vorfeld durchgeführte Konzeption der Lösung ermöglichte eine problemlose Implementierung.
-Während der Entwicklung wurden jedoch einige Designentscheidungen getroffen, welche die Lösung beschränken.
+Die Smartbit-Lösung erfüllt die Anforderungen zufriedenstellend.
+Die im Vorfeld durchgeführte Konzeption ermöglichte eine problemlose Implementierung.
+Während der Entwicklung wurden jedoch einige Designentscheidungen getroffen, welche die Smartbit-Lösung beschränken.
 Sensordaten werden von der Kontrollanwendung nicht für einzelne Geräte eingespeichert.
 Es ist nicht möglich Programmcode simultan auf mehreren Smartphones gleichzeitig auszuführen.
 Gruppen-Sessions können nicht erstellt werden.
@@ -764,7 +769,8 @@ Sollten sich die Startzeiten der Sensormessprozesse nicht wesentlich auf die Lat
 % List of abbrev
 \listoffigures % Liste der Abbildungen 
 \listoftables % Liste der Tabellen
-\printglossary[type=\acronymtype, title={Abkürzungsverzeichnis}]
+%todo: glassar ohne index
+\printglossary[type=\acronymtype, title={Abkürzungsverzeichnis}, nonumberlist=true]
 
 \newpage
 
