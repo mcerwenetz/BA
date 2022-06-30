@@ -249,7 +249,7 @@ Bei Eingang einer Sensorwert-Anfrage der Bibliothek sendet die Kontrollanwendung
 
 Zur Übermittlung der Nachrichten werden die Protokolle MQTT und UDP eingesetzt.
 MQTT ist ein auf einem Observer-Pattern basierendens Client-Server-Protokoll.
-Durch einen 2 Byte großen Header und maximalen Payload-Größe von 260 MB ist es leichtgewichtig und gleichzeitig flexibel.
+Durch einen 2 Byte großen Header und  eine maximale Payload-Größe von 260 MB ist es leichtgewichtig und gleichzeitig flexibel.
 Nachrichten werden zur Publizierung auf einem Topic an einen MQTT Broker gesendet.
 Dieser leitet sie dann an alle Clients weiter die das Topic abboniert haben.
 %todo: MQTT Nutzung wurde vom Prof vorausgesetz reinbringen.
@@ -355,7 +355,7 @@ Dieses leitet die Nachricht per MQTT weiter an die Smartphone-App, wo das Komman
 Ein eventuell anfallender Rückgabewert wird durch eine rpc\_response vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet, welche die Nachricht dann per UDP weiter an die Bibliothek weiterleitet.
 
 
-\chapter{Aufbau der Android Anwendung}\label{chap:app}
+\chapter{Aufbau der Android-Anwendung}\label{chap:app}
 Die Android-Anwendung ist eine der drei Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
 Für diese bietet sie eine Signal-LED, ein Textfeld und zwei Buttons in einer RootActivity an.
@@ -370,7 +370,7 @@ Ein Ablaufplan des Startvorgangs ist in Abbildung \ref{fig:app_flow} zu sehen.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{images/app_ablauf}
-  \caption{Ablaufdiagramm Android Anwendung}
+  \caption{Ablaufdiagramm Android-Anwendung}
   \label{fig:app_flow}
 \end{figure}
 In der RootActivity werden anfänglich alle UI-Elemente zur programmatischen Ansteuerung eingebunden.
@@ -408,8 +408,8 @@ Die Funktionsweise der Sensormeessung wird in Abbildung \ref{fig:sensor_event_li
   \label{fig:sensor_event_listener}
 \end{figure}
 SensorEventListener werden, nach Prüfung der Verfügbarkeit der jeweiligen Sensoren, gestartet und zentral in einem \texttt{SmartBitEventListenerContainer} gespeichert.
-Diese Klasse beeinhaltet SensorEventListener für alle untertstützten Sensoren und dient der Datenhaltung der einzelnen SensorEventListener.
-Aufgabe der SensorEventListener ist es auf Sensorwert-Änderungen zu reagieren und eine entsprechende Callback-Funktion in der die Sensorwerte über den MQTT-Service per update\_requests an die Kontrollanwendung übermittelt werden.
+Diese Klasse beeinhaltet SensorEventListener für alle unterstützten Sensoren und dient der Datenhaltung der einzelnen SensorEventListener.
+Aufgabe der SensorEventListener ist es, auf Sensorwert-Änderungen zu reagieren und eine entsprechende Callback-Funktion in der die Sensorwerte über den MQTT-Service per update\_requests an die Kontrollanwendung übermittelt werden.
 Statische Methoden der Klasse \textit{JSONMessageWrapper} ermöglichen die Erstellung der Nachrichtenformate und setzen das Messergebniss in das korrekte Feld ein.
 Die so generierte Nachricht wird anschließend über den gebundenen MQTT-Service an das vorher definierte Topic versendet.
 
@@ -424,9 +424,9 @@ Höhere QoS-Stufen würden den Übertraungsprozess verlangsamen und Latenzen erh
 
 \section{Sensoren}
 Smartphones beeinhalten Sensoren, die Daten über die Umgebungseigenschaften erfassen.
-Dazu zählen Beispielsweise Bewegung, Annäherung, aber auch Temperatur oder Luftdruck.
+Dazu zählen beispielsweise Bewegung, Annäherung, aber auch Temperatur oder Luftdruck.
 %todo: stimmt nicht. die messen einfach. reagiert wird wo anders.
-Ihr Zweck besteht darin auf Änderungen der Werte zu reagieren.
+Ihr Zweck besteht darin, auf Änderungen der Werte zu reagieren.
 Für unterschiedliche Aufgaben werden unterschiedliche Sensoren benötigt.
 Beispielsweise word für \textit{Diebstahl-Alarm} nur der Näherungssensor verwendet, für \textit{Dreh-Zähler} der Lagesensor.
 Für die in dieser Arbeit enthaltenen Übungsaufgaben werden folgende Sensortypen verwendet: Beschleunigungssensor, Gyroskop und Annäherungssenso.
@@ -436,15 +436,15 @@ Die Erdbeschleunigung ist auch in diesen Messwerten enthalten.
 Diese muss für die bereinigten, realen Werte von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
 % todo: einheiten
 Messeinheiten unterscheiden sich je nach Sensor.
-Das Gyroskop misst keine Beschleunigung sondern die aktuelle Geschwindigkeit in $rad/s$ der gleichen Achsen.
-Zur Übersicht sind diese in Abbildung \ref{fig:and_axes} zu dargestellt.
+Das Gyroskop misst keine Beschleunigung, sondern die aktuelle Geschwindigkeit in $rad/s$ der gleichen Achsen.
+Zur Übersicht sind diese in Abbildung \ref{fig:and_axes} dargestellt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.7\textwidth]{images/android_axes.png}
   \caption{Android-Koordinatensystem}
   \label{fig:and_axes}
 \end{figure}
-Die Frequenz mit der Messwerte erfasst werden kann manuell angegeben werden.
+Die Frequenz, mit der Messwerte erfasst werden kann manuell angegeben werden.
 Hierfür stehen vier Stufen zur Auswahl.
 \begin{table}[htbp]
   \centering
@@ -468,7 +468,7 @@ In der Android-App erfolgen alle Messungen mit SENSOR\_DELAY\_NORMAL.
 Die Stufe gilt für Android jedoch nicht als festes Limit, sondern wird eher als Richt-Frequenz behandelt.
 Android kann die reale Frequenz auch erhöhen.
 Nicht alle Smartphones besitzen alle Sensoren.
-Daher wird beim Start überprüft ob der Sensor auch wirklich vorhanden ist.
+Daher wird beim Start überprüft, ob der Sensor auch wirklich vorhanden ist.
 Ist er es nicht, wird auch keine Messung gestartet.
 
 \chapter{Aufbau der Kontrollanwendung}\label{chap:server_software}
@@ -478,8 +478,6 @@ Die Anwendung vermittelt als Middleware zwischen Anfragen der Programmierumgebun
 Durch Sie können Ausgaben in der Android-App ausgeführt- und Sensordaten abgefragt werden.
 Sie wurde in Python entwickelt und ist aus mehreren Komponenten aufgebaut.
 In diesem Kapitel wird der Aufbau der Anwendung anhand ihrerer zweckgebundenen Komponenten dargestellt und die Funktionswese der Bestandteile im Detail an Beispielen erläutert.
-%Die Middleware ist unter der IP-Adresse 127.0.0.1 des localhost auf dem Port 5006 erreichbar.
-%Für die MQTT-Verbindung kommt dabei die unter OpenSource-Lizenz stehende MQTT-Library Paho \cite{paho} der Eclipse-Foundation zum Einsatz. 
 
 Die Kontrollanwendung besteht aus mehreren Thread-Klassen, die beim Start der Anwendung gestartet werden.
 Sie ist mit den Klassen DataHandler und MQTTHandlerThread aufgeteilt in einen datenverwaltende Bestandteil und eine MQTT-Anbindung.
@@ -503,6 +501,7 @@ Die Funktionsweise und Zwecke der Subkomponenten von DataHandler werden im Folge
 Abbildung \ref{fig:serverMqttReqPath} wird zur Erläuterung für das erste Beispiel diskutiert.
 Dargestellt ist der Ablaufplan bei Empfang einer von der mobilen Anwendung an die Kontrollanwendung per MQTT versandten Nachricht.
 Dies könnte beispielsweise ein update\_request sein.
+
 %todo: startpunkt fehlt.
 \begin{figure}[htbp]
   \centering
@@ -510,6 +509,7 @@ Dies könnte beispielsweise ein update\_request sein.
   \caption{Ablaufdiagramm MQTT Request}
   \label{fig:serverMqttReqPath}
 \end{figure}
+Für die MQTT-Verbindung wird die unter OpenSource-Lizenz stehende MQTT-Library Paho \cite{paho} der Eclipse-Foundation verwendet. 
 Erreicht eine Nachricht per MQTT die Anwendung, wird Sie vom MQTTHandlerThread entgegengenommen.
 Dieser hat sich mit einem MQTT-Broker unter der Hostadresse \textit{pma.inftech.hs-mannheim.de} auf ein in der Datei \textit{config.json} angegebenes Topic verbunden und reagiert mit einer Callback-Methode auf eingehende Nachrichten.
 Erreicht eine Nachricht den MQTTHandlerThread, wird die Callback-Funktion ausgelöst und die Payload der Nachricht in eine Queue eingetragen.
@@ -549,7 +549,7 @@ Die Programmierumgebung ist die Schnittstelle, die die Programmierer für die In
 Sie besteht aus einer Bibliothek, die Funktionen anbietet mit denen Programmierer Sensorwerte einlesen, oder Ausgaben auf dem Smartphone tätigen können.
 Sie können die Funktionen in ihren bestehenden Quellcode einbinden und die Funktionen dort verwenden.
 Die Bibliothek ist in den Programmiersprachen C, Java und Python vorhanden, damit sie mit verschiedenen Programmiersprachen genutzt werden kann.
-In Java und Python ist sie zudem Plattformunabhängig.
+In Java und Python ist sie zudem plattformunabhängig.
 Für C gibt es zwei Bibliotheken: Eine für Unix- und eine für Windows-Systeme.
 In C ist die Bibliothek prozedural mit statischen Methoden, in Java und Python objektorientiert implementiert.
 
@@ -576,10 +576,10 @@ Für das Empfangen von Paketen müssen diese gebunden werden, für Sendevorgäng
 Bei der Erstellung eines Phone-Objekts in Python und Java werden die Nachrichtenvorlagen für Anfragen und Antworten aus der Datei \texttt{protocol.json} geladen.
 Die Datei muss sich im Dateisystem im gleichen Ordner befinden wie die Bibliothek.
 Für die C-Bibliothek sind alle Methoden statisch definiert.
-Es gibt somit keinen Start-Punkt zu dem die Datei \texttt{protocol.json} eingelesen werden kann.
+Es gibt somit keinen Startpunkt, zu dem die Datei \texttt{protocol.json} eingelesen werden kann.
 Damit die Datei nicht für jeden Funktionsaufruf kontinuierlich eingelesen werden muss, muss Sie vom Programmierer einmal zum Start des Programms als cstring eingelesen werden.
 Anschließend muss dieser C String für jeden Aufruf einer Funktion der Bibliothek als Parameter angegeben werden.
-Die Methode \texttt{get\_file\_content} kann, unter der Angabe des Dateipfades der \texttt{protocol.json}-Datei, aufgerufen werden um den Dateiinhalt einzulesen.
+Die Methode \texttt{get\_file\_content} kann, unter der Angabe des Dateipfades der \texttt{protocol.json}-Datei, aufgerufen werden, um den Dateiinhalt einzulesen.
 Zurückgegeben wird der Inhalt als C String.
 Diese Lösung verringert die Anzahl der Lesevorgänge und die damit verbundenen durch IO verursachten Latenzen.
 Der Inhalt ist ab dem Einlesezeitpunkt auf dem Heap des Arbeitsspeichers gespeichert.
@@ -625,7 +625,7 @@ Das Programm soll nur im Falle eines KeyboardInterrupts angehalten werden.
 In einer Endlosschleife wird der Näherungssensorwert kontinuierlich abgefragt.
 Außerdem wird der Ablauf für 500 ms pausiert um einer Nachrichtenflut und somit einer Nichtverfügbarkeit der Kontrollanwendung vorzubeugen.
 Der Annäherungssensor sendet im Falle einer Annäherung den Wert 0.0 zurück auf den in Zeile 8 reagiert wird.
-Ist die Bedingung erfüllt, wird mit der Methode \texttt{write\_text()} der Text \textit{ALARM} usgegeben.
+Ist die Bedingung erfüllt, wird mit der Methode \texttt{write\_text()} der Text \textit{ALARM} ausgegeben.
 Die Methode \textit{vibrate} lässt das Smartphone für die Dauter von 1000 ms vibrieren.
 Zum Schluss wird mit der Methode \textit{toggle\_led} noch der Farbwert der Signal-LED von grün auf rot geändert.
 
@@ -664,14 +664,15 @@ Das Resultat ist in Abbildung \ref{fig:app_alarm} dargestellt.
 \end{figure}
 Das Textfeld stellt nun den Text \textit{ALARM} dar und die Farbe der Signal-LED hat sich von grün auf rot geändert.
 Die Vorgangs-LED leuchtet rot um zu signalisieren dass gerade eine Ausgabe ausgeführt wird.
-Diese ist nicht sichtbar, denn es handelt sich um das haptische vibrationsfeedback.
+Diese ist nicht sichtbar, denn es handelt sich um das haptische Vibrationsfeedback.
 
+%todo: absatz waaaaaaaaaaaay to short
 Die Reaktionszeit liegt unter einer Sekunde.
 %todo: hier noch dicke fette qualitative Bewertung der Anforderung.
 
 Latenzprobleme per MQTT treten nicht auf.
 Trotz einem QOS-Level 0 werden auch Ausgabeanfragen sicher übertragen und ausgeführt.
-Da die Nachrichten über TLS übertragen werden ist der Austausch sicher.
+Da die Nachrichten über TLS übertragen werden, ist der Austausch sicher.
 Logging-Möglichkeiten in der Kontrollanwendung und der Android-App erleichterten die Entwicklung sehr und halfen bei der Fehlersuche.
 
 
@@ -680,7 +681,7 @@ Logging-Möglichkeiten in der Kontrollanwendung und der Android-App erleichterte
 Im Zuge der Konzeption wurden Latenzen eine besondere Bedeutung zugemessen.
 Erhöhte Latenzzeiten führen zu einem verzögerten Verhalten und einer schlechteren Benutzbarkeit.
 Zum Zwecke der Evalutation der Latenzen werden für drei Nutzungsszenarien Messungen durchgeführt.
-Da sensor\_requests lediglich über die local-loopback Schnittstelle zwischen Bibliothek und Kontrollanwendung ausgetauscht werden ist anzunehmen, dass diese Verbindung in der Smartbit-Lösung keine Limitierung darstellt.
+Da sensor\_requests lediglich über die Local-Loopback-Schnittstelle zwischen Bibliothek und Kontrollanwendung ausgetauscht werden ist anzunehmen, dass diese Verbindung in der Smartbit-Lösung keine Limitierung darstellt.
 Auf die Untersuchung der Latenzzeiten zwischen dem Absenden eines sensor\_requests und dem Erhalt einer sensor\_response wird daher verzichtet.
 
 Unbekannt ist indes die Latenz zwischen Smartphone-App und Kontrollprogramm.
@@ -743,26 +744,26 @@ Die Smartbit-Lösung erfüllt die Anforderungen zufriedenstellend.
 Die im Vorfeld durchgeführte Konzeption ermöglichte eine problemlose Implementierung.
 Während der Entwicklung wurden jedoch einige Designentscheidungen getroffen, welche die Smartbit-Lösung beschränken.
 Sensordaten werden von der Kontrollanwendung nicht für einzelne Geräte eingespeichert.
-Es ist nicht möglich Programmcode simultan auf mehreren Smartphones gleichzeitig auszuführen.
+Es ist nicht möglich, Programmcode simultan auf mehreren Smartphones gleichzeitig auszuführen.
 Gruppen-Sessions können nicht erstellt werden.
-Für Programme die die Java und Python-Schnittstelle könnte dies unintuitiv erscheinen.
+Für Programme die die Java und Python-Schnittstelle erscheint dies unintuitiv.
 Die Bedeutung eines Phone-Objektes lässt auf eine zwischen Einzelgeräten unterscheidende Verwendung schließen.
 Ein weiterer Nachteil der Benutzerfreundlichkeit besteht in der zwingenden Verwendung von Hilfs-Bibliotheken für den Nachrichtenaustausch über JSON.
 Sowohl für Java, als auch für C sind zusätzliche JSON-Parser für die Kommunikation zwischen Bibliothek und Kontrollanwendung nötig.
 Für eine erfolgreiche Kompilierung in C muss der Dateipfad für diesen dem Linker bekannt gemacht werden.
 Für die interne Struktur ist die Datenverwaltung innerhalb des Programms ausreichend.
 Durch den asynchronen Ansatz des Multithreading können beide Kommunikationspartner gleichzeitig über das Kontrollprogramm kommunizieren und zwischengespeicherte Daten auslesen oder bearbeiten.
-Die Möglichkeit mehrere Werte zum internen Datenspeicher hinzuzufügen wird jedoch nicht unterstützt.
+Die Möglichkeit, mehrere Werte zum internen Datenspeicher hinzuzufügen, wird jedoch nicht unterstützt.
 Häufige Sensor-Anfragen werden mit dem gleichen, einzeln zwischengespeicherten Sensorwert beantwortet, welcher zusätzlich kein Ablaufdatum besitzt.
 Abbrüche der Übertragung resultieren in der kontinuierlichen Übermittlung des zuletzt eingespeicherten Sensorwerts.
 
 Zur Ablösung von Hilfsbibliotheken eignet sich die Verwendung eines Binärprotokolls.
 In Enumerationen konvertierte Nachrichtenformate und Parameter könnten statt der implementierten Darstellung mit JSON eingesetzt werden.
-Dadurch entfiehle nicht nur der Nachteil der unintuitiven Einbindung.
+Dadurch entfiele nicht nur der Nachteil der unintuitiven Einbindung.
 Die Nachrichtengröße würde ebenfalls verringert werden.
 Energieeffizienz der Android-App wurde zum Vorteil der Latenzreduzierung während der Implementierung nicht wesentlich berücksichtigt.
 Zum Start der Anwendung werden die Sensormessprozesse unmittelbar gestartet und Sensorwerte an die Kontrollanwendung gesendet, was einen erhöhten Energieverbrauch bedeutet.
-Sollten sich die Startzeiten der Sensormessprozesse nicht wesentlich auf die Latenzen auswirken, wäre eine auf Anfragen basierende Sensmessdatenübertragung erwägenswert um den Energieverbrauch zu reduzieren.
+Sollten sich die Startzeiten der Sensormessprozesse nicht wesentlich auf die Latenzen auswirken, wäre eine auf Anfragen basierende Sensormessdatenübertragung erwägenswert, um den Energieverbrauch zu reduzieren.
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
 % Meist ist das aber unnötig.
