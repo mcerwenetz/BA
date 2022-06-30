@@ -25,10 +25,11 @@
 
 \begin{document}
 %todo: Rechtschreibprüfung Paula reinbringen
+%todo: Jedes Chappter außer Einführung und Fazit benötigen ein Intro.
 \include{vorspann} % Titelseite, Erklärungen, etc.
 
 \begin{abstract}
-  %todo: Ergebnisse rein.
+
 Um Programmieraufgaben interaktiv zu gestalten eignen sich Projekte mit Microcontrollern besonders gut.
 Smartphones bieten einen vergleichbaren Funktionsumfang und müssen meist nicht zusätzlich beschafft werden.
 In dieser Arbeit wurde eine Softwarelösung erstellt, um Smartphonesensoren über eine Programmierumgebung auszulesen und Ausgaben auf dem Smartphone auszuführen.
@@ -36,39 +37,41 @@ Hierfür wurde eine Android-Anwendung, eine Kontrollanwendung und eine programie
 
 Für die Nutzung der Lösung werden Beispiel-Programmieraufgaben dazugereicht.
 Programmierer schreiben Programme auf dem PC, welche auf Änderungen von Smartphonesensorwerten wie beispielsweise Beschleunigungssensoren reagieren und die Ausgabemöglichkeiten des Smartphones nutzen.
+  %todo: Ergebnisse rein.
 \end{abstract}
 
 \tableofcontents
 
 \chapter{Einführung} \label{chap:intro}
-Viele Programmierer oder programmierwillige Anfänger mühen sich beim Programmierenlernen mit der Semantik von Programmiersprachen und grundlegenden algorithmischen Konzepten.
+Viele angehenden Programmierer mühen sich beim Programmierenlernen mit der Semantik von Programmiersprachen und grundlegenden algorithmischen Konzepten.
 Akademische Übungsaufgaben senken die Lernmotivation durch rein virtuelle Aufgabenstellungen ohne Interaktionsmöglichkeiten.
 Projekte mit Microcontrollern dagegen bieten eine praktische, fordernde und spielerische Einstiegsmöglichkeit.
 Es werden kleine Projekte realisiert, die durch die Verwendung von Sensoren Programmierer einladen sich an Programmieraufgaben auszuprobieren.
-Diese Eigenschaften sind sinnvoll, insbesondere bei Projekten für Programmierer mit wenig Vorwissen wie Schüler oder Erstemester-Studierende.
-Gelerntes kann direkt angewandt werden.
-Praktische Programmieraufgaben bieten für Programmieranfänger den besten Lerneffekt bei höchster Motivation \cite{learning_computer_programming}.
-Die in Microcontroller integrierten Sensoren sind Voraussetzung um physikalische Eigenschaften in der realen Welt zu messen.
-Programme auf dem Microcontroller können die die Sensoren auslesen und auf Änderungen der gemessenen Werte reagieren.
+Sinnvoll sind diese Eigenschaften insbesondere bei Projekten für Programmierer mit wenig Vorwissen wie Schüler oder Erstemester-Studierende, da Gelerntes direkt angewandt werden kann.
+Praktische Programmieraufgaben bieten für Programmieranfänger den besten Lerneffekt und die  höchste Motivation \cite{learning_computer_programming}.
+Die in Microcontroller-Schaltungen verwendeten Sensoren sind Voraussetzung um physikalische Eigenschaften in der realen Welt zu messen.
+Programme auf dem Microcontroller können die verbundenen Sensoren auslesen und auf Änderungen der gemessenen Werte reagieren.
 Sensoren, Microcontroller und das entwickelte Programm ermöglichen zusammen eine Bedienung durch Nutzer.
+
+Während der Entwicklung treten jedoch häufig Probleme auf.
 Selten verhält sich das Programm beim ersten Versuch korrekt.
 Eine Anpassung des Codes ist nötig, bis das Fehlverhalten beseitigt ist.
-Diese kontinierliche Weiterentwicklung mindert Ängste vor Änderungen des Codes, schafft Routine in der Entwicklung und damit ein tieferes Verständnis und Hintergrundwissen für die Problemstellung.
+Diese kontinierliche Weiterentwicklung mindert Ängste vor Code-Änderungen, schafft Routine in der Entwicklung und damit ein tieferes Verständnis und Hintergrundwissen für die Problemstellung.
 
 Microcontroller-Projekte benötigen allerdings kostspielige Einstiegs-Kits.
-Ein Arduino-Development-Board kostet im Arduino-Shop über 80,00 € \cite{arduino_kit}.
-Ein Großteil der Kosten entfällt zwar auf den eigentlichen Microcontroller, ein nicht unmittelbarer Teil jedoch auf Peripherie wie wie Breadboards, Verbindungskabel und Erweiterungsboards.
-Die Peripherie-Anbindung setzt daneben Hintergrundwissen in elektrotechnischen Bereichen voraus, wie zum Beispiel den Verschaltungskonventionen bei Breadboards.
+Die Kosten eines Arduino-Development-Boards belaufen sich im Arduino-Shop über 80,00 € \cite{arduino_kit}.
+Ein Großteil der Kosten entfällt zwar auf den konkreten Microcontroller, ein nicht unerheblicher Teil jedoch auf Peripherie wie wie Breadboards, Verbindungskabel und Erweiterungsboards.
+Die Peripherie-Anbindung setzt zusätzliches Hintergrundwissen in elektrotechnischen Bereichen voraus, zum  Beispiel bei den Verschaltungskonventionen von Breadboards.
 Dies stellt ebenfalls eine Einstiegshürde dar, die die eigentliche interaktive Lernerfahrung herauszögert und die Motivation senkt.
 
 Smartphones dienen für Einstiegs-Programmierer als als Alternative zu herkömmlichen Microcontrollern.
-Integriert sind zahlreiche Sensoren wie Lagesensoren, Gyroskop oder Näherungssensoren.
+In die Geräte sind zahlreiche Sensoren wie Lagesensoren, Gyroskop oder Annäherungssensoren integriert.
 Der Sensoren-Umfang ist vergleichbar mit dem von Microcontrollern.
 Elektrische Bauteile konventioneller Microcontroller-Sets erlauben einen Fehlgebrauch, der im schlimmsten Fall in der Zerstörung von Komponenten enden kann.
-Projekte mit Smartphones reduzieren dieses Risiko dadurch, dass Schaltkreise bereits intern verknüpft und somit von äußerlicher Fehlverwendung geschützt sind.
-Ein weiterer Vorteil Smartphones gegebüber Microcontrollern liegt in der Verfügbarkeit.
+Projekte in stattdessen Smartphones statt Microcontroller verwendet werden reduzieren dieses Risiko dadurch, dass elektrische Schaltungen bereits intern gefertigt und somit von äußerlicher Fehlverwendung geschützt sind.
+Ein weiterer Vorteil der Verwendung von Smartphones gegebüber Microcontrollern bei Programmierprojekten liegt in der Verfügbarkeit.
 Weltweit besaßen 2022 5,2 Mrd. Menschen ein Smartphone \cite{smartphone_users}.
-Sie sind gerade unter Kindern, Jugendlichen und jungen Erwachsenen weit verbreitet.
+Sie sind gerade bei Kindern, Jugendlichen und jungen Erwachsenen weit verbreitet.
 Kinder besitzen häufig bereits mit 10 Jahren ein Smartphone \cite{bitkom_smartphones}.
 Im Alltag wird es für Chats, Social-Media oder Spiele verwendet.
 Sie sind also häufig bereits in Gebrauch und müssten für die Nutzung von Programmierprojekten nicht zusätzlich beschafft werden.
@@ -221,7 +224,7 @@ Durch zwei Tasten muss der Nutzer außerdem mit der Anwendung interargieren kön
 Neben den optischen Ausgaben bzw. Bedienelementen muss die Smartphone-App auch haptische Ausgaben wie Vibrationen umsetzen können.
 Für die Einstellung von Vibrationsmustern muss eine Vibrationszeitdauer konfigurierbar sein.
 
-\chapter{Architektur} \label{chap:architektur}
+\chapter{Architektur der implementierten Lösung} \label{chap:architektur}
 Die implementierte Lösung besteht aus den drei Komponenten Programmierumgebung, Kontrollprogramm und Android-Anwendung, die zur korrekten Funktionsweise miteinander kommunizieren.
 Eine Übersicht des Aufbaus ist in Abbildung \ref{fig:design} dargestellt.
 \begin{figure}[htbp]
@@ -253,7 +256,7 @@ Die UDP-Kommunikation zwischen Bibliothek und Kontrollprogramm auf dem lokalen P
 Als Nachrichtenformat wird \acrshort{json} verwendet.
 Das menschlesbare, kompakte Nachrichtenformat ist weit verbreitet und wird von vielen Softwarebibliotheken unterstützt.
 
-\chapter{Nachrichtenformate}\label{chap:message_formats}
+\chapter{Nachrichtenformate der Komponenten}\label{chap:message_formats}
 Ein einheitliches Nachrichtenformat ist Voraussetzung für den Nachrichtenaustausch.
 Der ausgearbeitete Nachrichtenstandard definiert die Nachrichten in einem Klartextformat.
 Nachrichten-Vorlagen sind in einer Datei gespeichert und werden in der Bibliothek, dem Kontrollprogramm und in der Smartphone-App eingelesen, wodurch Sie in allen Komponenten kongruent vorliegen.
@@ -351,7 +354,7 @@ Dieses leitet die Nachricht per MQTT weiter an die Smartphone-App, wo das Komman
 Ein eventuell anfallender Rückgabewert wird durch eine rpc\_response vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet, welche die Nachricht dann per UDP weiter an die Bibliothek weiterleitet.
 
 
-\chapter{Android Anwendung}\label{chap:app}
+\chapter{Aufbau der Android Anwendung}\label{chap:app}
 Die Android-Anwendung ist eine der drei Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
 Für diese bietet sie eine Signal-LED, ein Textfeld und zwei Buttons in einer RootActivity an.
@@ -467,18 +470,20 @@ Nicht alle Smartphones besitzen alle Sensoren.
 Daher wird beim Start überprüft ob der Sensor auch wirklich vorhanden ist.
 Ist er es nicht, wird auch keine Messung gestartet.
 
-\chapter{Kontrollanwendung}\label{chap:server_software}
+\chapter{Aufbau der Kontrollanwendung}\label{chap:server_software}
 %todo: se chapter needs some more sciency lingu
-Zur Vermittlung zwischen den Komponenten fungiert als Middleware eine Kontrollanwendung.
-Sie ist in Python geschrieben und vermittelt zwischen UDP-Anfragen auf der einen Seite vom Client aus und MQTT-Anfragen vom Smartphone auf der anderen Seite.
-User können über die Library RPC-Anfragen oder Sensor-Anfragen an den Server stellen.
-Dies geschieht in Form von JSON-Anfragen die per UDP übermittelt werden.
-Der Server ist unter der localhost-Adresse 127.0.0.1 auf dem Port 5006 erreichbar.
-Für die MQTT-Verbindung kommt dabei die unter OpenSource-Liznenz stehende MQTT-Library Paho \cite{paho} der Eclipse-Foundation zum Einsatz. 
+Zur Vermittlung zwischen der Smartphone-App und Programmierumgebung dient die Kontrollanwendung.
+Die Anwendung vermittelt als Middleware zwischen Anfragen der Programmierumgebung und Anfragen der mobilen Anwendung.
+Durch Sie können Ausgaben in der Android-App ausgeführt- und Sensordaten abgefragt werden.
+Sie wurde in Python entwickelt und ist aus mehreren Komponenten aufgebaut.
+In diesem Kaptel wird der Aufbau der Anwendung anhand ihrerer zweckgebundenen Komponenten dargestellt und die Funktionswese der Bestandteile im Detail an Beispielen erläutert.
+%Die Middleware ist unter der IP-Adresse 127.0.0.1 des localhost auf dem Port 5006 erreichbar.
+%Für die MQTT-Verbindung kommt dabei die unter OpenSource-Lizenz stehende MQTT-Library Paho \cite{paho} der Eclipse-Foundation zum Einsatz. 
 
-Die Kontrollanwendung ist aufgeteilt in einen Datenverwaltungsteil, DataHandler, und eine MQTT Anbindung, MQTTHandlerThread.
-Der zur Sensordatenpufferung dienende Key-Value-Store wird durch die Klasse SensorDB implementiert.
-Diese Wrapper-Klasse bietet threadsichere Zufriffsfunktionen auf ein intern gespeichertes Python-Dictionary.
+Die Kontrollanwendung besteht aus mehreren Thread-Klassen, die beim Start der Anwendung gestartet werden.
+Sie ist mit den Klassen DataHandler und MQTTHandlerThread aufgeteilt in einen datenverwaltende Bestandteil und eine MQTT-Anbindung.
+Zusätzlich dient eine Instanz der Klasse SensorDB als Key-Value-Store um die vom Smartphone übermittelten Sensordaten zwischenzuspeichern.
+SensorDB bietet einen threadsicheren Zufriff auf ein intern gespeichertes Python-Dictionary.
 Eine Übersicht über die Komponenten der Kontrollanwendung ist in Abbildung \ref{fig:serverUml} dargestellt.
 \begin{figure}[htbp]
   \centering
@@ -486,18 +491,20 @@ Eine Übersicht über die Komponenten der Kontrollanwendung ist in Abbildung \re
   \caption{UML Digaramm Server}
   \label{fig:serverUml}
 \end{figure}
-DataHandler wiederrum teilt sich nochmal auf in vier seperate Funktionen, die als Threads nebenläufig laufen: MqttRequestHandler, UDPRequestHandler, UDPRequestQueueWorker und AnswerQueueWorker.
+Die Komponente DataHandler besteht wiederrum aus vier Sub-Komponenten, die ebenfalls als Threads nebenläufig laufen: MqttRequestHandler, UDPRequestHandler, UDPRequestQueueWorker und AnswerQueueWorker.
+Die Funktionsweise und Zwecke dieser Subkomponenten wird im Folgenden anhand zweier Beispiele erläutert.
 
-Die Funktionsweise und Zwecke dieser Threads wird im Folgenden an zwei Beispielen erläutert.
-Für das erste Beispiel wird Abbildung \ref{fig:serverMqttReqPath} betrachtet.
+Abbildung \ref{fig:serverMqttReqPath} wird für das erste Beispiel diskutiert.
+Dargestellt ist der Ablaufplan der Behandlung einer Nachricht, die von der mobilen Anwendung per MQTT an die Kontrollanwendung gesendet wurde.
+Dies könnte beispielsweise ein update\_request sein.
+%todo: startpunkt fehlt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/MqttRequestServerPath}
   \caption{Ablaufdiagramm MQTT Request}
   \label{fig:serverMqttReqPath}
 \end{figure}
-Dargestellt ist ein MQTT-Request, also eine Anfrage des Smartphones, dass über MQTT an den Server gesendet wird.
-Erreicht ein MQTT Request den Server wird es im MQTTHandlerThread entgegengenommen.
+Erreicht eine Nachrciht per MQTT die Anwendung, wird es im MQTTHandlerThread entgegengenommen.
 Dieser setzt die Nachricht in eine MQTTRequestQueue ein.
 Der MQTTRequestHandler des DataHandlers wartet bis ein Eintrag in der Queue vorhanden ist und nimmt gegebenenfalls eine Nachricht.
 Daraufhin wird derTyp des Requests bestimmt.
@@ -507,6 +514,7 @@ Der AnswerQueue Worker wartet, ähnlich wie der MQTT Request Handler, bis eine n
 
 Das zweite Beispiel befasst sich mit dem Ablauf eines UDP-Requests, also einer Anfrage die mithilfe der Bibliothek gesendet wurde.
 Der Ablauf ist in Abbildung \ref{fig:serverUDPReqPath} dargestellt.
+%todo: startpunkt fehlt
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/UDPRequestServerPath}
@@ -533,7 +541,7 @@ Hierfür gibt es den AnswerQueueWorker, dessen einzige Aufgabe es ist Antworten 
 Die Kommunikation zwischen den Threads funktioniert über synchronisierte Queues des queue-Moduls\cite{python_queue} der cpython Implementierung.
 Es handelt sich um eine threadsichere Monitorklasse, die einen gleichzeitigen Zugriff zweier unterschiedlicher Threads durch Locks verhindert.
 
-\chapter{Programmierumgebung}\label{chap:libs}
+\chapter{Aufbau der Programmierumgebung}\label{chap:libs}
 Die Programmierumgebung ist die Schnittstelle, die die Programmierer für die Interaktion mit dem Smartphone in ihren Programmen verwenden.
 Sie besteht aus einer Bibliothek, die Funktionen anbietet mit denen Programmierer Sensorwerte einlesen, oder Ausgaben auf dem Smartphone tätigen können.
 Sie können die Funktionen in ihren bestehenden Quellcode einbinden und die Funktionen dort verwenden.
@@ -577,7 +585,7 @@ Der Programmierer muss diesen am Ende seines Programms durch den Aufruf der \tex
 Die Ausgabe erscheint als direkter Grund der Annäherung.
 
 
-\chapter{Evaluation}\label{chap:eval}
+\chapter{Evaluation der implementierten Lösung}\label{chap:eval}
 %todo: auch gerne nochmal sprachlich drübergehen.
 %todo: Intro fehlt. Worum geht's im Chapter? Qualitative und quantitative Bewertung.
 Die Umsetung der an die implementierte Anwendung gestellten Anforderungen wird in diesem Kapitel überprüft.
