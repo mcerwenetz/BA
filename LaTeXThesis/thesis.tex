@@ -24,9 +24,7 @@
 \newcommand{\korreferent}{Prof.\ Dr.\ Jens-Matthias Bohli}
 
 \begin{document}
-%todo: Rechtschreibprüfung Paula reinbringen
-%todo: Jedes Chappter außer Einführung und Fazit benötigen ein Intro.
-%todo: kein 'außerdem'
+%todo: Jedes Chapter außer Einführung und Fazit benötigen ein Intro.
 
 \include{vorspann} % Titelseite, Erklärungen, etc.
 
@@ -45,7 +43,6 @@ Auftretende Latenzen sind vernachlässigbar und die Benutzbarkeit gegeben.
 \tableofcontents
 
 \chapter{Einführung} \label{chap:intro}
-%todo: Irgendwie muss implementierte Lösung = Smartbit-Lösung heißen. Hier introducen.
 Viele angehende Programmiererinnen und Programmierer mühen sich beim Programmieren lernen zum Anfang mit der Semantik von Programmiersprachen und grundlegenden algorithmischen Konzepten.
 Akademische Übungsaufgaben senken durch rein virtuelle Aufgabenstellungen ohne Interaktionsmöglichkeiten die Lernmotivation.
 Aufgaben in Verbindung mit Mikrocontroller-Schaltungen stellen dagegen eine praktische, fordernde und spielerische Einstiegsmöglichkeit dar, um Programmieren zu lernen.
@@ -85,8 +82,6 @@ Visuelle und haptische Ausgaben auf dem Smartphone erfordern eine mobile Anwendu
 In dieser Arbeit wurde eine Softwarelösung mit dem Namen Smartbit entwickelt.
 Sie ermöglicht Smartphones statt Mikrocontroller-Schaltungen für die Entwicklung von interaktiven Projekten zu nutzen. 
 Sensoren sollen ausgelesen und Ausgaben auf dem Smartphone ausgelöst werden können.
-%check: Wenn sich die Struktur ändert muss das hier angepasst werden.
-%todo: gereicht raus. hört sich kacke an.
 Für die Verwendung der Smartbit-Lösung werden angehenden Programmiererinnen und Programmierern Beispielaufgaben dargereicht, deren Bewältigung eine Bereitstellung von Benutzungsmöglichkeiten seitens der Smartbit-Lösung erfordert.
 Die Aufgaben, sowie aus ihnen ableitbare Anforderungen und Rahmenbedingungen, sind in Kapitel \ref{chap:Experimente} zu aufgeführt.
 Die drei Komponenten Smartphone-App, Kontrollanwendung und Programmierumgebung und werden in Kapitel \ref{chap:architektur} vorgestellt.
@@ -101,28 +96,27 @@ Dort wird zudem die Verwendung der Smartbit-Lösung anhand einer Beispielaufgabe
 Bei der Entwicklung aufgetretene Schwierigkeiten sowie mögliche Erweiterungen und Verbesserungen der Smartbit-Lösung werden in Kapitel \ref{chap:fazit} diskutiert.
 
 \chapter{Smartphones als Mikrocontroller-Ersatz für Programmieraufgaben} \label{chap:Experimente}
-Smartphones sind in sich geschlossene technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB- bzw. Lightning-Port, WLAN und Bluetooth keine weiteren Schnittstellen bieten, um externe Hardware und Schaltungen anzuschließen.
+Smartphones sind in sich geschlossene, technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB- bzw. Lightning-Port, WLAN und Bluetooth keine weiteren Schnittstellen bieten, um externe Hardware und Schaltungen anzuschließen.
 Gegenüber Mikrocontroller-Schaltungen bieten sie jedoch einen vergleichbaren Sensorumfang.
 Integrierte Lautsprecher können die in einer Mikrocontroller-Schaltung  manuell angeschlossenen Piepser ersetzen.
-Zudem müssen Smartphones bei der Ausgabe nicht auf Mehrzweck-Ausgabemöglichkeiten wie LED-Grids zurückgreifen, da zweckgebundene Elemente wie Textfelder, Textausgaben oder Bildausgaben während der App-Entwicklung beliebig platziert werden können.
+Zudem müssen Smartphones bei Ausgaben nicht auf Mehrzweck-Ausgabemöglichkeiten wie LED-Grids zurückgreifen, da zweckgebundene UI-Elemente wie Textfelder, Textausgaben oder Bildausgaben während der App-Entwicklung beliebig platziert werden können.
 
-In diesem Kapitel werden Beispielprogrammieraufgaben dargelegt.
+In diesem Kapitel werden Beispielprogrammieraufgaben vorgestellt.
 Diese können sowohl mit Mikrocontroller-Schaltungen, als auch mit der in dieser Arbeit implementierten Smartbit-Lösung gelöst werden.
 Des Weiteren werden die aus den Beispielprogrammieraufgaben hervorgehenden Anforderungen aufgestellt und erörtert.
 
 \section{Beispielprogrammieraufgaben}\label{sec:activities}
-Praxisnahe Programmieraufgaben mit interessanten Aufgabenstellungen motivieren Softwareentwickler.
+Praxisnahe Programmieraufgaben motivieren mit interessanten Aufgabenstellungen Programmiererinnen und Programmierer.
 Die in diesem Abschnitt vorgestellten Beispielaufgaben definieren das von Sensormesswerten abhängige Verhalten interaktiver Programme.
 Die Aufgabenstellungen sind in Tabelle \ref{tab:excercises} aufgeführt.
 Für jede Aufgabe werden die benötigen Sensortypen und Ausgabeschnittstellen beschrieben.
 Leserinnen und Leser werden in der Entscheidungsfindung durch die Angabe eines dreistufigen Schwierigkeitsgrades unterstützt.
-Dies soll verhindern, dass sich unerfahrene Programmierer mit komplizierten Aufgaben zu Anfang überfordern.
-%todo: + ersetzen mit einfach, mittel, sschwer
+Dies soll verhindern, dass sich unerfahrene Programmierer zu Anfang mit komplizierten Aufgaben überfordern.
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|l|c|p{2.3cm}|c|}
       \hline
-      \textbf{Name der Aufgabe} & \textbf{Benötigte Sensoren} & \textbf{Verwendete Ausgaben} & \textbf{Schwierigkeitsgrad} \\
+      \textbf{Name der Aufgabe} & \textbf{Benötigte Sensoren} & \textbf{Verwendete Ausgabeschnittstellen} & \textbf{Schwierigkeitsgrad} \\
       \hline
       Disco & - & LED & Einfach \\
       \hline
@@ -139,40 +133,33 @@ Dies soll verhindern, dass sich unerfahrene Programmierer mit komplizierten Aufg
   \label{tab:excercises}
 \end{table}
 
-In der Aufgabe \textit{Disco} soll eine virtuelle LED für eine Zeitdauer von 500 ms grün und anschließend 500ms rot leuchten.
-Die Verwendung Sensoren ist in dieser Aufgabe nicht nötig, da die LED-Ausgabe unabhängig von Sensormesswertänderungen ausgeführt wird.
-%todo: schwierigkeit kursiv
-Aus diesem Grund ist die Aufgabe als Einfach eingestuft.
+In der Aufgabe \textit{Disco} soll eine virtuelle LED für eine Zeitdauer von 500 ms grün und anschließend 500 ms rot leuchten.
+Sensoren werden in dieser Aufgabe nicht verwendet, da die LED-Ausgabe unabhängig von Sensormesswertänderungen ausgeführt wird, weshalb Aufgabe als \textit{Einfach} eingestuft wird.
 
 In der Aufgabe \textit{Würfeln} soll ein Schütteln des Geräts erkannt werden.
-Zur Verwendung kommt dabei ein Lagesensor zum Einsatz, welcher Gerätebeschleunigungen messen kann.
+Verwendet wird ein Gerätebeschleunigungen messender Lagesensor.
 Wird ein Schütteln erkannt, soll auf dem PC eine Zufallszahl generiert werden.
-Anschließend wird diese auf dem Gerät in einem Textfeld ausgegeben.
-%todo: schwierkigkeit kursiv
-Der Schwierigkeitsgrad wird ebenfalls auf Einfach eingeschätzt, da die Aufgabe unter Verwendung eines Sensors und einer Ausgabe lösbar ist.
+Anschließend wird diese auf dem Endgerät in einem Textfeld ausgegeben.
+Der Schwierigkeitsgrad wird ebenfalls auf \textit{Einfach} eingeschätzt, da die Aufgabe unter Verwendung lediglich eines Sensors und einer Ausgabe lösbar ist.
 
-In der Aufgabe \textit{Diebstahl-Alarm} wird unter Verwendung des Näherungssensors das örtliche Umfeld des Geräts auf eine Annäherung kontrolliert.
-Wird eine Annäherung festgestellt, wird ein alarmierender Text im Textfeld ausgegeben.
+In der Aufgabe \textit{Diebstahl-Alarm} wird unter Verwendung des Näherungssensors das örtliche Umfeld des Geräts auf eine Annäherung überprüft.
+Im Falle einer Annäherung wird ein alarmierender Text im Textfeld ausgegeben.
 Zusätzlich soll die LED die wie in Aufgabe \textit{Disco} die Farbe wechseln.
-Neben den visuellen Ausgaben wird die Vibrationsfunktion als haptisches Feedback benötigt.
-Im Falle einer Annäherung soll das Gerät fünf mal vibrieren.
-%todo: schwierkigkeit kursiv
-Der Schwierigkeitsgrad der Aufgabe ist als Mittel eingestuft, da hier zwischen Alarm- und Normalzustand unterschieden werden muss.
-Entfernt sich eine Person, muss der Alarm-Zustand verlassen werden können.
-Alle Ausgaben werden auf ihren Initialwert zurückgesetzt.
+Neben den visuellen Ausgaben wird die Vibrationsfunktion als haptisches Feedback benötigt, die das Gerät fünf mal für 1000 ms vibrieren lässt.
+Der Schwierigkeitsgrad der Aufgabe ist als \textit{Mittel} eingestuft, da hier zwischen Alarm- und Normalzustand unterschieden werden muss.
+Entfernt sich eine Person, muss der Alarm-Zustand verlassen und alle Ausgaben auf ihren Initialwert zurückgesetzt werden.
 
-Bei der Aufgabenstellung \textit{Klatsch-Zähler} muss für einen definierten Zeitraum die Anzahl der Händeklatscher gemessen werden.
+Bei der Aufgaben \textit{Klatsch-Zähler} muss für einen selbstdefinierten Zeitraum die Anzahl der Händeklatscher gemessen werden.
 Diese Anzahl wird anschließend im Textfeld des Geräts ausgegeben.
-Zur Verwendung kommen hierfür das Mikrofon als Ein- und das Textfeld als Ausgabe.
+Verwendet werden das Mikrofon als Ein- und das Textfeld als Ausgabe.
 Die Schwierigkeit ist auf \textit{Mittel} angesetzt, da die Messwerte von Händeklatschern unterschiedliche Intensitäten aufweisen.
 Um einen Händeklatscher zu identifizieren, ist es nötig Grenzwerte zu ermitteln um sie von normalen Hintergrundgeräuschen abzugrenzen.
-Eine Visualisierung der Messdaten kann bei dieser Festlegung helfen.
+Eine Visualisierung der Messdaten kann bei dieser Aufgabe helfen.
 
-Bei der Aufgabe \textit{Drehzähler} soll der Programmierer das Device innerhalb eines definierten Zeitraums drehen und anhand der Messdaten die Anzahl der Umdrehungen ermitteln.
+In  der Aufgabe \textit{Drehzähler} soll der Programmierer das Device innerhalb eines selbstdefinierten Zeitraums drehen und ein Programm entwickeln, das anhand der Messdaten die Anzahl der Umdrehungen ermittelt.
 Diese Anzahl soll anschließend im Textfeld auf dem Gerät ausgegeben werden.
-Zur Verwendung kommen hier ebenfalls der Lagesensor als Sensoreingabe und das Textfeld als Ausgabe.
-%todo: schwierkigkeit kursiv
-Die Aufgabe ist als Schwer bewertet, da hier Wiederholungen in einer Werteabfolge erkannt werden müssen, welche jedoch wie bei der Aufgabe \textit{Klatsch-Zähler} in ihrer Größe variieren können.
+Verwendet werden hier ebenfalls der Lagesensor als Sensoreingabe und das Textfeld als Ausgabe.
+Die Aufgabe ist als \textit{Schwer} bewertet, da hier Wiederholungen in einer Werteabfolge erkannt werden müssen, welche jedoch wie bei der Aufgabe \textit{Klatsch-Zähler} in ihrer Größe variieren können.
 Abhängigkeiten zwischen den Messwertergebnissen erschweren eine Erkennung der Umdrehungen zusätzlich.
 
 \section{Anforderungen der Implementierung}\label{sec:anforderungen}
@@ -619,7 +606,7 @@ Die Bibliothek wird in Zeile 2 in das vom Programmierer geschriebene Programm im
 In Zeile 4 wird ein Phone-Objekt erstellt, über welches Sensor-Auslesemethoden wie \texttt{get\_x\_accel()} oder Smartphone-Ausgaben wie \texttt{vibrate()} aufgerufen werden können.
 Das Programm soll nur im Falle eines KeyboardInterrupts angehalten werden.
 In einer Endlosschleife wird der Näherungssensorwert kontinuierlich abgefragt.
-Außerdem wird der Ablauf für 500 ms pausiert um einer Nachrichtenflut und somit einer Nichtverfügbarkeit der Kontrollanwendung vorzubeugen.
+Zusätzlich wird der Ablauf für 500 ms pausiert um einer Nachrichtenflut und somit einer Nichtverfügbarkeit der Kontrollanwendung vorzubeugen.
 Der Annäherungssensor sendet im Falle einer Annäherung den Wert 0.0 zurück auf den in Zeile 8 reagiert wird.
 Ist die Bedingung erfüllt, wird mit der Methode \texttt{write\_text()} der Text \textit{ALARM} ausgegeben.
 Die Methode \textit{vibrate} lässt das Smartphone für die Dauer von 1000 ms vibrieren.
