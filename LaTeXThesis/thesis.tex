@@ -163,43 +163,60 @@ Die Aufgabe ist als \textit{Schwer} bewertet, da hier Wiederholungen in einer We
 Abhängigkeiten zwischen den Messwertergebnissen erschweren eine Erkennung der Umdrehungen zusätzlich.
 
 \section{Anforderungen der Implementierung}\label{sec:anforderungen}
-Aus den Beispielaufgaben leiten sich Anforderungen an die Smartbit-Lösung ab.
+%todo: Anforderung über Vertraulichkeit: 
+%Verschlüssung benutzen, keine RCE.
+%In die eval kann dann, dass die architektur sicher ist, weil mqtt encrypted und api keine rce zulässt.
 
-Geringe Latenzen sind bei der Sensordatenübermittlung für ein responsives Verhalten von Programmen nötig.
-Sie tragen zur Lernerfahrung bei, da sich physikalische Änderungen unmittelbar auf das Verhalten des entwickelten Programms auswirken.
-Eine Verkürzung der Latenzen ist von mehreren Faktoren abhängig.
+%todo: Wartbarkeit mit Logging verknüpfen.
+%todo: Portabilität herausstellen. Soll auf Windows und Unixlike systemen gehen und mit unterschiedlichen Programmiersprachen.
+%todo: Alle diese Anforderungen in der Eval aufgreifen.
+Die Smartbit-Lösung muss die in den Aufgabenstellungen beschrieben Schnittstellen anbieten.
+Um eine benutzerfreundliche Lösung umzusetzen, werden Anforderungen aus den Aufgabenstellungen abgeleitet, die Softwarequalität erhöhen.
+Orientiert wird sich dafür an der ISO/IEC 25010:2011, die Software-Qualitätsmerkmale definiert \cite{software_quali}.
 
-Für die Übermittlung von Sensorwerten müssen diese initial vorliegen.
-Sensormessprozesse müssen gestartet und Sensoren ausgelesen werden, was die Latenzzeiten erhöht.
-Sensormessungen sollten daher nicht erst nach einer Anfrage oder einem Ereignis, sondern direkt zu Anfang gestartet werden und kontinuierlich messen.
+Um die Benutzbarkeit und Effizienz sicherzustellen, muss die Smartbit-Lösung ein responsives Verhalten aufweisen.
+Responsivität trägt zur Lernerfahrung bei, da sich physikalische Änderungen unmittelbar auf das Verhalten des entwickelten Programms auswirken.
+Latenzen werden durch die Round-Trip-Time (\acrshort{rtt}) gemessen.
+Diese beschreibt die Zeitdauer der Übermittlung einer Nachricht über Hin- und Rückweg eines Hosts zu einem Anderen.
+Eine Verkürzung dieser kann auf unterschiedlichen Wegen erreicht werden.
+Initial müssen Sensordaten vorliegen, um Sie vom Smartphone zu übermitteln.
+Das Starten von Sensormessprozessen erfordert jedoch Zeit, was die Latenzen erhöht. 
+Sensormessungen sollten daher nicht erst auf eine Anfrage, sondern direkt zum Start der Smartphone-Anwendung  gestartet werden und kontinuierlich weiter messen.
 Der Versand der Sensorwerte wird durch den Transportweg zwischen Smartphone und Programmierumgebung und deren lokale Gegebenheiten verzögert.
-Smartphones bieten keine kabelgebundenen Netzwerkschnittstellen.
-Latenzen können je nach Mobilfunk- bzw WLAN Standard, Umwelteinflüssen und der Geräteanzahl in Funkzellen variieren.
-%todo: Abkürzungsverzeichnis muss rein. Waaay too much Abkürzungen.
-Für Latenzen dient die Round-Trip-Time (\acrshort{rtt}) als Messgröße.
-Sie beschreibt die Zeitdauer der Übermittlung einer Nachricht über Hin- und Rückweg eines Hosts zu einem Anderen.
-Präventionsprinzipien wie \acrshort{csmaca} (Carrier Sense Multiple Access/Collision Avoidance) verhindern bei WLAN-Verbindungen Interferenzen, erhöhen allerdings die Latenzen.
-Während sie bei Standards wie WLAN 802.11b ca. 10 ms beträgt, kann sie bei \acrshort{umts}-Verbindungen (Universal Mobile Telecommunications System) auf 300 ms bis 400 ms ansteigen \cite{network_latencies} .
-Zudem kann sie variieren, was bei einer synchronen Übertragung zu nicht nachvollziehbaren Verzögerungen führt.
-Um die Latenz des Transportweges geringer darzustellen, müssen Sensorwerte zwischengespeichert werden, um einen Puffer aufzubauen, auf den in Fällen erhöhter Latenz zugegriffen werden kann.
-Eine weitere Latenz-Optimierung ist durch den Einsatz effizienter Protokolle möglich.
-Der Verlust weniger Sensorwerte ist für die Funktionsweise des Programms unerheblich.
-Verbindungsorientierte Protokolle erhöhen die Menge der zu sendenden Nachrichten pro Sensorwert.
+Smartphones bieten keine kabelgebunden Netzwerkschnittstellen, so dass drahtlose Netzwerke genutzt werden müssen.
+Latenzen können allerdings je nach Mobilfunk- bzw WLAN-Standard, Umwelteinflüssen und der Anzahl der registrierten Geräte in Funkzellen variieren.
+Kollisions-Präventionsprinzipien wie \acrshort{csmaca} (Carrier Sense Multiple Access/Collision Avoidance) verhindern bei WLAN-Verbindungen zwar, das Geräte gleichzeitig senden, erhöhen dadurch allerdings die Latenzen.
+Die Latenzen sind ebenfalls abhängig vom Standard des mobilen Netzwerks.
+Bei WLAN 802.11b beträgt die Latenz ca. 10 ms, kann jedoch beispielsweise bei \acrshort{umts}-Verbindungen (Universal Mobile Telecommunications System) auf 300 ms bis 400 ms ansteigen \cite{network_latencies}.
+Zudem fällt die Reaktionszeit bei mehreren Sendungen unterschiedlich aus, was bei einer synchronen Übertragung zu nicht nachvollziehbaren Verzögerungen führt.
+%todo: das hier ist eher architektur
+% Um diese Problematik zu mitigieren kann ein weiterer Ansatz ist, die Latenz vor der Programmiererin oder dem Programmierer durch die Verwendung eines Zwischenpuffers zu verschleiern.
+Eine weitere Optimierung der Latenz ist durch den Einsatz effizienter Protokolle möglich.
+Verbindungsorientierte Protokolle erhöhen neben der Übertragungssicherheit allerdings auch die Menge der zu sendenden Nachrichten.
 Verbindungslose Protokolle sind deshalb zu bevorzugen.
+Der Verlust eines einzelnen Sensorwertes ist unerheblich.
+Eine weitere die Benutzbarkeit betreffende Anforderung an die Smartbit-Lösung ist daher die Umsetzung einer adäquaten Abtastrate der Sensormesswerte um Verluste auf dem Transportweg auszugleichen.
+Die Verwendung der Lösung soll leicht verständlich und ohne viel Vorwissen möglich sein.
+Für die Bereitstellung der Schnittstellen gilt es Boilerplate-Code zu vermeiden.
 
-Die Smartbit-Lösung muss einen benutzerfreundlichen Nutzungszugang für Programmierer und die Anbindung ihrer Programme bieten.
-Boilerplate-Code soll reduziert werden, um die Verwendung zu erleichtern.
-Die angebotene Funktionalität soll mit möglichst wenig Vorwissen nutzbar sein.
+Die Smartbit-Lösung muss eine Anbindung an weitere Komponenten unterstützen, um die Kompatibilität zu gewährleisten, wie dies zum Beispiel bei der Einbindung der Lösung in bestehende Entwicklungsumgebungen der Fall ist.
+Die Entwicklungsumgebung Eclipse ist weit verbreitet.
+%todo: cite mit anzahl der downloads / user
+Da es sich um eine plattformunabhängige \acrshort{ide} (Integrated Development Environment) handelt, muss auch die Smartbit-Lösung plattformübergreifend in diese Entwicklungsumgebung integrierbar sein.
+%todo: add mehrere sprachen
+% warum gerade java, python und c
+% vorteil: weit verbreitet und plattformübergreind.
+%allerdings muss dass in die arch.
 Auf serialisierte Ausgabeformate muss verzichtet werden.
 Funktionen müssen Rückgabewerte in Form von primitiven Datentypen zurückgeben.
-Für die Bedienung aller Ausgabemöglichkeiten des Smartphones muss die Smartbit-Lösung eine Funktion zur Programmierung bereitstellen.
-Das Einbinden in bestehende Entwicklungsumgebungen ist neben der benutzerfreundlichen Schnittstellengestaltung Voraussetzung für die Nutzung.
-Die Entwicklungsumgebung Eclipse ist im Labor-Kontext weit verbreitet.
-Da es sich um eine plattformunabhängige \acrshort{ide} (Integrated Development Environment) handelt, muss auch die Smartbit-Lösung plattformübergreifend in diese Entwicklungsumgebung integrierbar sein.
+
+%Wartbarkeit
 Nachrichtenabläufe sollen nachvollziehbar sein um fehlerhafte Konfigurationen rasch zu identifizieren und zu korrigieren.
 Hierfür muss es eine Logging-Funktion geben, die den Nachrichtenverlauf aufzeichnet und ausgibt.
 Programmierer können anhand der Log-Einträge den Versand nachvollziehen, wodurch Fehler ersichtlich werden.
 
+%Funktionalität
+Für die Bedienung aller Ausgabemöglichkeiten des Smartphones muss die Smartbit-Lösung eine Funktion zur Programmierung bereitstellen.
 Neben den netzwerktechnischen und nutzungsbezogenen Anforderungen muss die Smartbit-Lösung auch Ausgabemöglichkeiten über die grafische Benutzeroberfläche einer Smartphone-App bereitstellen.
 Teil dieser Oberfläche ist eine farbwechselbare Signal-LED.
 Zur Ausgabe von Texten und Zeichen muss ein Textfeld implementiert werden.
