@@ -1,3 +1,20 @@
 {
-    "makefile.extensionOutputFolder": "./.vscode"
+    "makefile.extensionOutputFolder": "./.vscode",
+    "cSpell.enabled": true,
+    "cSpell.language": "en,de",
+    "cSpell.enableFiletypes": [
+        "tex"
+    ],
+    "cSpell.words": [
+        "CSMA",
+        "cstring",
+        "Datagramme",
+        "Initialwert",
+        "ispell",
+        "Präventionsprinzipien",
+        "Publizierung",
+        "responsives",
+        "smartbit",
+        "Verbindungsorientierte"
+    ]
 }
