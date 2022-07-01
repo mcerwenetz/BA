@@ -33,7 +33,7 @@
 
 \begin{abstract}
 %todo: zu kurz
-Um Programmieraufgaben interaktiv zu gestalten, eignen sich Projekte mit Microcontrollern besonders gut.
+Um Programmieraufgaben interaktiv zu gestalten, eignen sich Projekte mit Mikrokontrollern besonders gut.
 Smartphones bieten einen vergleichbaren Sensorumfang und können Ausgaben virtuell darstellen.
 In dieser Arbeit wurde eine Softwarelösung namens Smartbit erstellt, um Smartphonesensoren über eine Programmierumgebung auszulesen und Ausgaben auf dem Smartphone auszuführen.
 Hierfür wurde eine Android-Anwendung, eine Kontrollanwendung und eine programiersprachenunabhängige Softwarebibliothek erstellt.
@@ -47,32 +47,31 @@ Auftretende Latenzen sind vernachlässigbar und die Benutzbarkeit gegeben.
 \chapter{Einführung} \label{chap:intro}
 %todo: Irgendwie muss implementierte Lösung = Smartbit-Lösung heißen. Hier introducen.
 Viele angehende Programmiererinnen und Programmierer mühen sich beim Programmierenlernen zum Anfang mit der Semantik von Programmiersprachen und grundlegenden algorithmischen Konzepten.
-Akademische Übungsaufgaben senken die Lernmotivation durch rein virtuelle Aufgabenstellungen ohne Interaktionsmöglichkeiten.
-Projekte mit Microcontrollern dagegen bieten eine praktische, fordernde und spielerische Einstiegsmöglichkeit.
-Es werden kleine Projekte realisiert, die durch die Verwendung von Sensoren Programmierer einladen, sich an Programmieraufgaben auszuprobieren.
-Sinnvoll sind diese Eigenschaften insbesondere bei Projekten für Programmierer mit wenig Vorwissen wie Schüler oder Erstsemester-Studierende, da Gelerntes direkt angewandt werden kann.
-Praktische Programmieraufgaben bieten für Programmieranfänger den besten Lerneffekt und die  höchste Motivation \cite{learning_computer_programming}.
-Die in Microcontroller-Schaltungen verwendeten Sensoren sind Voraussetzung, um physikalische Eigenschaften in der realen Welt zu messen.
-Programme auf dem Microcontroller können die verbundenen Sensoren auslesen und auf Änderungen der gemessenen Werte reagieren.
-Sensoren, Microcontroller und das entwickelte Programm ermöglichen zusammen eine Bedienung durch Nutzer.
-
+Akademische Übungsaufgaben senken durch rein virtuelle Aufgabenstellungen ohne Interaktionsmöglichkeiten die Lernmotivation.
+Aufgaben in Verbindung mit Mikrokontroller-Schaltungen stellen dagegen eine praktische, fordernde und spielerische Einstiegsmöglichkeit dar, um Programmieren zu lernen.
+In den Projekten werden kleine Programme realisiert, die durch die Verwendung von Sensoren Programmiererinnen und Programmierer einladen, sich an den Aufgabenstellungen auszuprobieren.
+Die in Mikrokontroller-Schaltungen integrierten Sensoren sind Voraussetzung, um physikalische Eigenschaften in der realen Welt zu messen.
+Von Programmierinnen und Programmierern entwickelte Programme können auf dem Mikrokontroller die verbundenen Sensoren auslesen und auf Änderungen der gemessenen Werte reagieren.
+Zusammen ermöglichen Sensoren, Mikrokontroller und das entwickelte Programm eine Bedienung der Schaltung.
 Während der Entwicklung treten jedoch häufig Probleme auf.
 Selten verhält sich das Programm beim ersten Versuch korrekt.
 Eine Anpassung des Codes ist nötig, bis das Fehlverhalten beseitigt ist.
 Diese kontinierliche Weiterentwicklung mindert Ängste vor Code-Änderungen, schafft Routine in der Entwicklung und damit ein tieferes Verständnis und Hintergrundwissen für die Problemstellung.
+Sinnvoll sind diese Projekt-Eigenschaften insbesondere für Programmiererinnen und Programmierer mit wenig Vorwissen, wie Schüler oder Erstsemester-Studierende.
+Praktische Programmieraufgaben bieten für sie den größten Lerneffekt und motivieren am Meisten \cite{learning_computer_programming}.
 
-Microcontroller-Projekte benötigen allerdings kostspielige Einstiegs-Kits.
+Mikrokontroller-Projekte benötigen allerdings teure Einstiegs-Kits.
 Die Kosten eines Arduino-Development-Boards belaufen sich im Arduino-Shop über 80,00 € \cite{arduino_kit}.
-Ein Großteil der Kosten entfällt zwar auf den konkreten Microcontroller, ein nicht unerheblicher Teil jedoch auf Peripherie wie wie Breadboards, Verbindungskabel und Erweiterungsboards.
-Die Peripherie-Anbindung setzt zusätzliches Hintergrundwissen in elektrotechnischen Bereichen voraus, zum  Beispiel bei den Verschaltungskonventionen von Breadboards.
+Ein Großteil der Kosten entfällt zwar auf den konkreten Mikrokontroller, ein nicht unerheblicher Teil jedoch auf Peripherie wie wie Breadboards, Verbindungskabel und Erweiterungsboards.
+Die Peripherie-Anbindung setzt zusätzliches Hintergrundwissen in elektrotechnischen Bereichen voraus, zum  Beispiel bei den Verschaltungskonventionen von Breadboards oder der Benutzung von Lötkolben.
+Fehlerhafte Verdrahtungen oder ein Fehlgebrauch resultieren in zerstörten Komponenten oder Verletzungen.
 Dies stellt ebenfalls eine Einstiegshürde dar, die die eigentliche interaktive Lernerfahrung herauszögert und die Motivation senkt.
 
-Smartphones dienen für Einstiegs-Programmierer als als Alternative zu herkömmlichen Microcontrollern.
+Smartphones dienen für Einstiegs-Programmierer als als Alternative zu herkömmlichen Mikrokontrollern.
 In die Geräte sind zahlreiche Sensoren wie Lagesensoren, Gyroskop oder Annäherungssensoren integriert.
-Der Sensoren-Umfang ist vergleichbar mit dem von Microcontrollern.
-Elektrische Bauteile konventioneller Microcontroller-Sets erlauben einen Fehlgebrauch, der im schlimmsten Fall in der Zerstörung von Komponenten enden kann.
-Projekte in stattdessen Smartphones statt Microcontroller verwendet werden reduzieren dieses Risiko dadurch, dass elektrische Schaltungen bereits intern gefertigt und somit von äußerlicher Fehlverwendung geschützt sind.
-Ein weiterer Vorteil der Verwendung von Smartphones gegenbüber Microcontrollern bei Programmierprojekten liegt in der Verfügbarkeit.
+Der Sensoren-Umfang ist vergleichbar mit dem von Mikrokontrollern.
+Projekte in denen Smartphones statt Mikrokontroller verwendet werden reduzieren das Risiko eines Verdrahtungsfehlers der Schaltung dadurch, dass elektrische Schaltungen bereits intern gefertigt und somit von äußerlicher Fehlverwendung geschützt sind.
+Ein weiterer Vorteil der Verwendung von Smartphones gegenbüber Mikrokontrollern bei Programmierprojekten liegt in der Verfügbarkeit.
 2022 besaßen Weltweit 5,2 Mrd. Menschen ein Smartphone \cite{smartphone_users}.
 Sie sind gerade bei Kindern, Jugendlichen und jungen Erwachsenen weit verbreitet.
 Kinder besitzen häufig bereits mit 10 Jahren ein Smartphone \cite{bitkom_smartphones}.
@@ -104,14 +103,14 @@ In Kapitel \ref{chap:eval} wird untersucht, ob die vorgegebenen Anforderungen er
 Dort wird zudem die Verwendung der Smartbit-Lösung anhand einer Beispielaufgabe vorgestellt.
 Bei der Entwicklung aufgetretene Schwierigkeiten sowie mögliche Erweitungen und Verbessungen der Smartbit-Lösung werden in Kapitel \ref{chap:fazit} diskutiert.
 
-\chapter{Smartphones als Microcontroller-Ersatz} \label{chap:Experimente}
+\chapter{Smartphones als Mikrokontroller-Ersatz für Programmieraufgaben} \label{chap:Experimente}
 Smartphones sind in sich geschlossene technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB- bzw. Lightning-Port, WLAN und Bluetooth keine weiteren Schnittstellen bieten, um externe Hardware und Schaltungen anzuschließen.
-Gegenüber Microcontroller-Schaltungen bieten Sie jedoch einen vergleichbaren Sensorumfang.
-Integrierte Lautsprecher können die in einer Microcontroller-Schaltung  manuell angeschlossenen Piepser ersetzen.
+Gegenüber Mikrokontroller-Schaltungen bieten sie jedoch einen vergleichbaren Sensorumfang.
+Integrierte Lautsprecher können die in einer Mikrokontroller-Schaltung  manuell angeschlossenen Piepser ersetzen.
 Zudem müssen Smartphones bei der Ausgabe nicht auf Mehrzweck-Ausgabemöglichkeiten wie LED-Grids zurückgreifen, da zweckgebundene Elemente wie Textfelder, Textausgaben oder Bildausgaben während der App-Entwicklung beliebig platziert werden können.
 
 In diesem Kapitel werden Beispielprogrammieraufgaben dargelegt.
-Diese können sowohl mit Microcontroller-Schaltungen, als auch mit der in dieser Arbeit implementierten Smartbit-Lösung gelöst werden.
+Diese können sowohl mit Mikrokontroller-Schaltungen, als auch mit der in dieser Arbeit implementierten Smartbit-Lösung gelöst werden.
 Des Weiteren werden die aus den Beispielprogrammieraufgaben hervorgehenden Anforderungen aufgestellt und erörtert.
 
 \section{Beispielprogrammieraufgaben}\label{sec:activities}
