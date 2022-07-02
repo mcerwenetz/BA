@@ -1,0 +1,19 @@
+@startuml
+actor Programmierer as pr
+component Programm as prog
+package Smartbit {
+component Programmierumgebung as pu
+component Kontrollanwendung as ka
+component "Smartphone-App" as sa
+}
+
+pr -down-> prog: (1) entwickelt
+prog -> pu: (2) ruft Methode auf
+pu -down-> ka: (3) übermittelt Anfrage
+ka -down-> sa: (4)leitet weiter
+sa -> sa: (5) führt Anfrage aus
+sa -[#grey]-> ka: <color #grey>(6) gibt Rückgabewert weiter</color>
+ka-[#grey]->pu:<color #grey> (7) erhält Rückgabewert</color>
+pu-[#grey]left->prog:<color #grey> (8) gibt Rückgabewert zurück</color>
+
+@enduml
