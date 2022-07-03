@@ -125,7 +125,7 @@ Dies soll verhindern, dass sich unerfahrene Programmierer zu Anfang mit komplizi
       \hline
       Würfeln & Lagesensor & Textfeld & Einfach \\
       \hline
-      Diebstahl-Alarm & Näherungssensor & Textfeld, LED, Vibration & Mittel \\
+      Diebstahl-Alarm & Annäherungssensor & Textfeld, LED, Vibration & Mittel \\
       \hline
       Klatsch-Zähler & Mikrofon & Textfeld & Mittel \\
       \hline
@@ -166,20 +166,38 @@ Die Aufgabe ist als \textit{Schwer} bewertet, da hier Wiederholungen in einer We
 Abhängigkeiten zwischen den Messwertergebnissen erschweren eine Erkennung der Umdrehungen zusätzlich.
 
 \section{Anforderungen an Smartbit}\label{sec:anforderungen}
-%todo: Unterscheiden in C-Reqs und D-Reqs
-%todo: Anforderung über Vertraulichkeit: 
-%Verschlüssung benutzen, keine RCE.
-%In die eval kann dann, dass die architektur sicher ist, weil mqtt encrypted und api keine rce zulässt.
+Aus der vorangegangenen Beschreibung von Beispielaufgaben lassen sich Anforderungen an die Smartbit-Lösung ableiten.
+Bei dieser wird zwischen Anforderungen der Nutzer (C-Requirements) und programmierseitige Anforderungen (D-Requirements) der Implementierung unterschieden.
+Die Zielgruppe besteht, wie in der Einleitung beschrieben, aus angehenden Programmiererinnen oder Programmierern mit Hauptfokus auf sich im Grundstudium befindende Studierende der Fakultät Informationstechnik der Hochschule Mannheim oder informatik-affine Studieninteressierte.
+Voraussetzung der Nutzung der App ist der Besitz eines PCs und eines Smartphones mit Internetzugang.
 
-%todo: Wartbarkeit mit Logging verknüpfen.
-%todo: Portabilität herausstellen. Soll auf Windows und Unixlike systemen gehen und mit unterschiedlichen Programmiersprachen.
-%todo: Alle diese Anforderungen in der Eval aufgreifen.
+Anhand der Beispielaufgaben werden Anwendungsfälle spezifiziert, die die Nutzeranforderungen definieren.
+Eine Übersicht der Anwendungsfälle ist in Abbildung \ref{fig:usecase} dargestellt.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.7\textwidth]{images/usecase_usage.pdf}
+  \caption{Anwendungsfälle für die Benutzung der Lösung}
+  \label{fig:usecase}
+\end{figure}
+Nutzer möchten über die Smartbit-Lösung Ausgaben auf dem Smartphone tätigen und Sensorwerte des Smartphones auslesen können.
+Ausgaben sollen visuell über ein Textfeld, eine LED und haptisch über eine Vibrationsausgabe möglich sein.
+Sensor-Anfragen sollen zur Erfüllung der Aufgaben für den Lage- und Annäherungssensor sowie dem Mikrofon möglich sein.
+Für die Bedienung aller Ausgabemöglichkeiten und der Abfrage der spezifizierten Sensortypen, muss eine in bestehenden Programmcode einbindbare Funktion existieren.
+Die Verwendung der Lösung soll verständlich und ohne viel Vorwissen möglich sein.
+Auf serialisierte Ausgabeformate ist zu verzichten.
+Funktionen müssen Rückgabewerte in Form von primitiven Datentypen zurückgeben.
+Smartbit soll für Nutzer leicht in Entwicklungsumgebungen einbindbar und mit wenig Boilerplate-Code zu verwenden sein.
+Der Einsatz der Entwicklungsumgebung Eclipse IDE \cite{eclipse-ide} ist an der Fakultät Informationstechnik der Hochschule Mannheim weit verbreitet und wird in den Lehrveranstaltungen des Grundstudiums umfassend genutzt.
+Es ist davon auszugehen, dass Studierende mit der Benutzung der Entwicklungsumgebung vertraut sind.
+Die Smartbit-Einbindung soll daher insbesondere für Eclipse IDE unterstützt werden.
+Da es sich um eine plattformunabhängige \acrfull{ide} handelt, muss auch die Smartbit-Lösung plattformübergreifend in diese Entwicklungsumgebung integrierbar sein.
+%todo: add mehrere sprachen
+% warum gerade java, python und c
+% vorteil: weit verbreitet und plattformübergreind.
+%allerdings muss dass in die arch.
 
-%Intro: Stakeholder beschreiben
-%Alter, Bildungsgrad, Position im Leben
-%todo: Use-Case Diagramm
 
-
+% D Req
 Um die Benutzbarkeit und Effizienz sicherzustellen, muss die Smartbit-Lösung ein responsives Verhalten aufweisen.
 Responsivität trägt zur Lernerfahrung bei, da sich physikalische Änderungen unmittelbar auf das Verhalten des entwickelten Programms auswirken.
 Latenzen werden durch die \acrfull{rtt} gemessen.
@@ -200,34 +218,12 @@ Verbindungsorientierte Protokolle erhöhen neben der Übertragungssicherheit all
 Verbindungslose Protokolle sind deshalb zu bevorzugen.
 Der Verlust eines einzelnen Sensorwertes ist unerheblich.
 Eine weitere die Benutzbarkeit betreffende Anforderung an die Smartbit-Lösung ist daher die Umsetzung einer adäquaten Abtastrate der Sensormesswerte um Verluste auf dem Transportweg auszugleichen.
-Die Verwendung der Lösung soll leicht verständlich und ohne viel Vorwissen möglich sein.
-Für die Bereitstellung der Schnittstellen gilt es Boilerplate-Code zu vermeiden.
 
-Die Smartbit-Lösung muss eine Anbindung an weitere Komponenten unterstützen, um die Kompatibilität zu gewährleisten, wie dies zum Beispiel bei der Einbindung der Lösung in bestehende Entwicklungsumgebungen der Fall ist.
-Die Entwicklungsumgebung Eclipse ist weit verbreitet.
-%todo: cite mit anzahl der downloads / user
-Da es sich um eine plattformunabhängige \acrfull{ide} handelt, muss auch die Smartbit-Lösung plattformübergreifend in diese Entwicklungsumgebung integrierbar sein.
-%todo: add mehrere sprachen
-% warum gerade java, python und c
-% vorteil: weit verbreitet und plattformübergreind.
-%allerdings muss dass in die arch.
-Auf serialisierte Ausgabeformate muss verzichtet werden.
-Funktionen müssen Rückgabewerte in Form von primitiven Datentypen zurückgeben.
-
-%Wartbarkeit
+% D Req
 Um die Wartbarkeit zu gewährleisten muss Smartbit testbar sein.
 Insbesondere bei der Kommunikation zwischen Smartphone-Anwendung und Programmierumgebung kann es zu Komplikationen kommen.
 So muss die Lösung Nachrichtenabläufe nachvollziehbar mit einer Logging-Funktion darstellt, um fehlerhafte Konfigurationen zu vermeiden.
 Programmierer können anhand der Log-Einträge den Versand nachvollziehen, wodurch Fehler ersichtlich werden.
-
-%Funktionalität
-Für die Bedienung aller Ausgabemöglichkeiten des Smartphones muss die Smartbit-Lösung eine Funktion zur Programmierung bereitstellen.
-Neben den netzwerktechnischen und nutzungsbezogenen Anforderungen muss die Smartbit-Lösung auch Ausgabemöglichkeiten über die grafische Benutzeroberfläche einer Smartphone-App bereitstellen.
-Teil dieser Oberfläche ist eine farbwechselbare Signal-LED.
-Zur Ausgabe von Texten und Zeichen muss ein Textfeld implementiert werden.
-Durch zwei Tasten muss der Nutzer zudem mit der Anwendung interagieren können.
-Neben den optischen Ausgaben bzw. Bedienelementen muss die Smartphone-App auch haptische Ausgaben wie Vibrationen umsetzen können.
-Für die Einstellung von Vibrationsmustern muss eine Vibrationszeitdauer konfigurierbar sein.
 
 \chapter{Smartbit-Architektur und Spezifikation} \label{chap:architektur}
 In diesem Kapitel werden die Komponenten der Smartbit-Lösung vorgestellt und ihr Verhalten spezifiziert.

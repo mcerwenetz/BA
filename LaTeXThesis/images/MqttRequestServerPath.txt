@@ -8,6 +8,7 @@ document {
 }
 </style>
 |#Beige|MqttHandlerThread|
+start
 :Mqtt Nachricht entgegennehmen;
 :Nachricht in die \n mqtt_request_queue eintragen;
 |#GhostWhite|MqttRequestHandler|

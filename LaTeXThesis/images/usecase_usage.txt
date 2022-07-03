@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+actor "Programmierer" as pr
+rectangle Smartbit{
+ usecase "Ausgaben tätigen" as at
+ usecase "Sensorwerte auslesen" as swa
+}
+
+rectangle Smartphone as sp
+
+pr --> at
+pr --> swa
+at --> sp
+swa --> sp
+
+@enduml
