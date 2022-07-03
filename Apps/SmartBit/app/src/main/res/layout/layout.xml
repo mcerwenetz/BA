@@ -50,6 +50,7 @@
             android:textAlignment="center"
             android:gravity="center"
             android:text="output"
+            android:textSize="50dp"
             />
         <LinearLayout
             android:layout_width="match_parent"

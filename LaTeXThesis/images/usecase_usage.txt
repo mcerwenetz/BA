@@ -4,6 +4,7 @@ actor "Programmierer" as pr
 rectangle Smartbit{
  usecase "Ausgaben tätigen" as at
  usecase "Sensorwerte auslesen" as swa
+ usecase "Bibliothek einbinden" as eb
 }
 
 rectangle Smartphone as sp
@@ -12,5 +13,7 @@ pr --> at
 pr --> swa
 at --> sp
 swa --> sp
+eb --> at : <<include>>
+eb -->swa : <<include>>
 
 @enduml

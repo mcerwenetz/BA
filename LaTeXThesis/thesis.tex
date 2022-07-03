@@ -167,63 +167,51 @@ Abhängigkeiten zwischen den Messwertergebnissen erschweren eine Erkennung der U
 
 \section{Anforderungen an Smartbit}\label{sec:anforderungen}
 Aus der vorangegangenen Beschreibung von Beispielaufgaben lassen sich Anforderungen an die Smartbit-Lösung ableiten.
-Bei dieser wird zwischen Anforderungen der Nutzer (C-Requirements) und programmierseitige Anforderungen (D-Requirements) der Implementierung unterschieden.
-Die Zielgruppe besteht, wie in der Einleitung beschrieben, aus angehenden Programmiererinnen oder Programmierern mit Hauptfokus auf sich im Grundstudium befindende Studierende der Fakultät Informationstechnik der Hochschule Mannheim oder informatik-affine Studieninteressierte.
-Voraussetzung der Nutzung der App ist der Besitz eines PCs und eines Smartphones mit Internetzugang.
+Die Zielgruppe besteht, wie in der Einleitung beschrieben, aus informatik-affinen Studieninteressierten oder angehenden Programmiererinnen oder Programmierern, mit Hauptfokus auf sich im Grundstudium befindende Studierende der Fakultät Informationstechnik der Hochschule Mannheim.
+Voraussetzung der Nutzung der App ist der Besitz eines PCs und eines Android-Smartphones  mit Internetzugang.
 
 Anhand der Beispielaufgaben werden Anwendungsfälle spezifiziert, die die Nutzeranforderungen definieren.
 Eine Übersicht der Anwendungsfälle ist in Abbildung \ref{fig:usecase} dargestellt.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.7\textwidth]{images/usecase_usage.pdf}
+  \includegraphics[width=.8\textwidth]{images/usecase_usage.pdf}
   \caption{Anwendungsfälle für die Benutzung der Lösung}
   \label{fig:usecase}
 \end{figure}
-Nutzer möchten über die Smartbit-Lösung Ausgaben auf dem Smartphone tätigen und Sensorwerte des Smartphones auslesen können.
-Ausgaben sollen visuell über ein Textfeld, eine LED und haptisch über eine Vibrationsausgabe möglich sein.
-Sensor-Anfragen sollen zur Erfüllung der Aufgaben für den Lage- und Annäherungssensor sowie dem Mikrofon möglich sein.
+Nutzerinnen und Nutzer möchten durch die Smartbit-Lösung Ausgaben auf dem Smartphone tätigen und Sensorwerte des Smartphones auslesen können.
+Ausgaben sollen visuell über ein Textfeld und eine LED, und haptisch über eine Vibrationsausgabe möglich sein.
+Sensor-Anfragen sollen, zur Erfüllung der Aufgaben, für den Lage- und Annäherungssensor sowie dem Mikrofon möglich sein.
 Für die Bedienung aller Ausgabemöglichkeiten und der Abfrage der spezifizierten Sensortypen, muss eine in bestehenden Programmcode einbindbare Funktion existieren.
 Die Verwendung der Lösung soll verständlich und ohne viel Vorwissen möglich sein.
 Auf serialisierte Ausgabeformate ist zu verzichten.
 Funktionen müssen Rückgabewerte in Form von primitiven Datentypen zurückgeben.
-Smartbit soll für Nutzer leicht in Entwicklungsumgebungen einbindbar und mit wenig Boilerplate-Code zu verwenden sein.
+Um die Kompatibilität mit, von Programmiererinnen oder Programmierern entwickelten Programmen, zu erhöhen, müssen die Funktionen in mehreren Programmiersprachen zur Verfügung stehen.
+Smartbit soll für Nutzerinnen und Nutzer, neben der Einbindung in Programme, auch leicht in Entwicklungsumgebungen integrierbar und mit wenig Boilerplate-Code verwendbar sein.
 Der Einsatz der Entwicklungsumgebung Eclipse IDE \cite{eclipse-ide} ist an der Fakultät Informationstechnik der Hochschule Mannheim weit verbreitet und wird in den Lehrveranstaltungen des Grundstudiums umfassend genutzt.
-Es ist davon auszugehen, dass Studierende mit der Benutzung der Entwicklungsumgebung vertraut sind.
+Es ist davon auszugehen, dass Studierende mit der Benutzung dieser Entwicklungsumgebung vertraut sind.
 Die Smartbit-Einbindung soll daher insbesondere für Eclipse IDE unterstützt werden.
-Da es sich um eine plattformunabhängige \acrfull{ide} handelt, muss auch die Smartbit-Lösung plattformübergreifend in diese Entwicklungsumgebung integrierbar sein.
-%todo: add mehrere sprachen
-% warum gerade java, python und c
-% vorteil: weit verbreitet und plattformübergreind.
-%allerdings muss dass in die arch.
+Da es sich um eine plattformunabhängige \acrfull{ide} handelt, muss auch die Smartbit-Lösung plattformübergreifend, also für Unix und Windows-Systeme, in diese Entwicklungsumgebung eingebunden werden können.
 
-
-% D Req
 Um die Benutzbarkeit und Effizienz sicherzustellen, muss die Smartbit-Lösung ein responsives Verhalten aufweisen.
 Responsivität trägt zur Lernerfahrung bei, da sich physikalische Änderungen unmittelbar auf das Verhalten des entwickelten Programms auswirken.
 Latenzen werden durch die \acrfull{rtt} gemessen.
 Diese beschreibt die Zeitdauer der Übermittlung einer Nachricht über Hin- und Rückweg eines Hosts zu einem Anderen.
-Eine Verkürzung dieser kann auf unterschiedlichen Wegen erreicht werden.
 Initial müssen Sensordaten vorliegen, um Sie vom Smartphone zu übermitteln.
 Das Starten von Sensormessprozessen erfordert jedoch Zeit, was die Latenzen erhöht. 
-Sensormessungen sollten daher nicht erst auf eine Anfrage, sondern direkt zum Start der Smartphone-Anwendung  gestartet werden und kontinuierlich weiter messen.
-Der Versand der Sensorwerte wird durch den Transportweg zwischen Smartphone und Programmierumgebung und deren lokale Gegebenheiten verzögert.
 Smartphones bieten keine kabelgebunden Netzwerkschnittstellen, so dass drahtlose Netzwerke genutzt werden müssen.
-Latenzen können allerdings je nach Mobilfunk- bzw WLAN-Standard, Umwelteinflüssen und der Anzahl der registrierten Geräte in Funkzellen variieren.
+Der Versand der Sensorwerte wird durch den Transportweg zwischen Smartphone und Programmierumgebung und deren lokale Gegebenheiten verzögert.
+Latenzzeiten können je nach Mobilfunk- bzw WLAN-Standard, Umwelteinflüssen und der Anzahl der registrierten Geräte in Funkzellen variieren.
 Kollisions-Präventionsprinzipien wie \acrfull{csmaca} verhindern bei WLAN-Verbindungen zwar, das Geräte gleichzeitig senden, erhöhen dadurch allerdings die Latenzen.
+% Gelöst durch Puffer
 Die Latenzen sind ebenfalls abhängig vom Standard des mobilen Netzwerks.
 Bei WLAN 802.11b beträgt die Latenz ca. 10 ms, kann jedoch beispielsweise bei Verbindungen mit \acrfull{umts} auf 300 ms bis 400 ms ansteigen \cite{network_latencies}.
-Zudem fällt die Reaktionszeit bei mehreren Sendungen unterschiedlich aus, was bei einer synchronen Übertragung zu nicht nachvollziehbaren Verzögerungen führt.
-Eine weitere Optimierung der Latenz ist durch den Einsatz effizienter Protokolle möglich.
-Verbindungsorientierte Protokolle erhöhen neben der Übertragungssicherheit allerdings auch die Menge der zu sendenden Nachrichten.
-Verbindungslose Protokolle sind deshalb zu bevorzugen.
-Der Verlust eines einzelnen Sensorwertes ist unerheblich.
-Eine weitere die Benutzbarkeit betreffende Anforderung an die Smartbit-Lösung ist daher die Umsetzung einer adäquaten Abtastrate der Sensormesswerte um Verluste auf dem Transportweg auszugleichen.
-
-% D Req
-Um die Wartbarkeit zu gewährleisten muss Smartbit testbar sein.
-Insbesondere bei der Kommunikation zwischen Smartphone-Anwendung und Programmierumgebung kann es zu Komplikationen kommen.
-So muss die Lösung Nachrichtenabläufe nachvollziehbar mit einer Logging-Funktion darstellt, um fehlerhafte Konfigurationen zu vermeiden.
-Programmierer können anhand der Log-Einträge den Versand nachvollziehen, wodurch Fehler ersichtlich werden.
+Zudem fällt die Reaktionszeit bei mehreren Sendungen unterschiedlich aus, was bei einer synchronen Übertragung zu für Nutzer nicht nachvollziehbaren Verzögerungen führt.
+% Gelöst durch Puffer
+Bei der Übertragung von Sensormessdaten ist auf den Gebrauch ihrem Einsatzzweck entsprechender Protokolle zu achten.
+Um die Sicherheit zu erhöhen müssen Nachrichten auf den Transportwegen verschlüsselt übertragen und eine Ausführung von Schadcode auf dem Smartphone verhindert werden.
+Bei der Kommunikation zwischen Smartphone-Anwendung und Programmierumgebung kann es zu Komplikationen kommen.
+Um die Wartbarkeit zu gewährleisten, müssen Smartbit-Abläufe transparent sein.
+Die Lösung muss Nachrichtenabläufe nachvollziehbar darstellen, um fehlerhafte Konfigurationen zu vermeiden.
 
 \chapter{Smartbit-Architektur und Spezifikation} \label{chap:architektur}
 In diesem Kapitel werden die Komponenten der Smartbit-Lösung vorgestellt und ihr Verhalten spezifiziert.
@@ -247,14 +235,14 @@ Schwankende Übertragungsgeschwindigkeiten, die durch kabellose Netzwerkschnitts
 Das Zwischenspeicher ist ebenfalls Aufgabe der Kontrollanwendung.
 Ausgabemöglichkeiten werden von der für Android-Smartphones implementieren mobilen Anwendung angeboten.
 Die Anwendung reagiert auf von Funktionen der Bibliothek aufgerufenen Ausgabe-Anfragen und sendet kontinuierlich Sensorwerte zur Zwischenspeicherung an die Kontrollanwendung.
+Zur Reduktion der Latenzzeiten beim Start der Sensormessprozesse werden diese bereits zum Start der Anwendung ausgeführt, so dass die Kontrollanwendung bereits vor der Ausführung des Programms der Programmiererin oder des Programmierers auf Sensorwerte zurückgreifen kann.
 Die Komponenten stehen untereinander in einer 1:1-Beziehung.
 Programmiererinnen und Programmierer können mit \textit{einem} Programm und \textit{einer} Kontrollanwendung \textit{ein} Smartphone ansteuern.
 Für das Ansteuern mehrerer Smartphones wird jeweils eine Kontrollanwendung benötigt.
 
 Zur Übermittlung der Nachrichten werden die Protokolle \acrfull{mqtt} und \acrfull{udp} eingesetzt.
 MQTT ist ein auf einem Observer-Pattern basierendes Client-Server-Protokoll.
-%todo: cite pls
-Durch einen 2 Byte großen Header und eine maximale Payload-Größe von 260 MB ist es leichtgewichtig und gleichzeitig flexibel.
+Durch einen 2 Byte großen Header und eine maximale Payload-Größe von 260 MB \cite{mqtt-size} ist es leichtgewichtig und gleichzeitig flexibel.
 Nachrichten werden zur Publizierung auf einem Topic an einen MQTT Broker gesendet.
 Dieser leitet sie dann an alle Clients weiter die das Topic abonniert haben.
 Die Verwendung von MQTT ist vom Referenten vorausgesetzt.
@@ -262,10 +250,13 @@ Die UDP-Kommunikation zwischen Bibliothek und Kontrollprogramm auf dem lokalen P
 Das Loopback-Interface ist eine virtuelle Netzwerk-Schnittstelle des Betriebssystems eines PCs.
 Pakete werden nicht über externe Netzwerk-Schnittstellen wie Netzwerkkarten versendet, sondern verbleiben im Netzwerk-Stack des Betriebssystems.
 Zwischen Programmierumgebung und Kontrollanwendung auftretende Latenzen betragen weniger als eine Millisekunde.
-Da für die in der Anwendung übertragenen Daten die Übertragungsgeschwindigkeit eine höhere Priorität besitzt als Übertragungssicherheit wird UDP als verbindungsloses Protokoll verwendet.
+Zur weiteren Minimierung der Latenzen wird UDP als verbindungsloses Protokoll eingesetzt.
+Die Verwendung verbindungsorientierter Protokolle wie TCP würde neben ihrer Übertragungssicherheit durch eine größere Anzahl an zu sendenden Nachrichten die Latenzen erhöhen.
+Da ein Übertragungsfehler lediglich den Verlust einer Sensormesswert-Anfrage bedeutete ist eine Reduktion der Übertragungssicherheit zwischen Bibliothek und Kontrollanwendung annehmbar.  
 Als Nachrichtenformat wird \acrfull{json}verwendet.
 Das menschenlesbare, kompakte Nachrichtenformat ist weit verbreitet und wird von vielen Softwarebibliotheken unterstützt.
-%todo: Facts über JSON pls
+Es unterstützt die Darstellung von Zahlen, Strings, Booleans und Arrays als Schlüssel-Wert-Paare und ermöglicht eine Schachtelung von Objekten.
+Als Character-Encoding kommt UTF-8 zum Tragen, was beispielsweise eine Übertragung von Emojis ermöglicht.
 
 Die beschrieben Komponenten bieten ein heterogenes verteiltes System, das über Nachrichten kommuniziert.
 Um das von den Nachrichten abhängige Verhalten der Komponenten zu spezifizieren, wird im Folgenden der Ablauf einer Beispielnachricht vorgestellt.
@@ -395,6 +386,7 @@ Die Bibliothek existiert zur Kompatibilität für Programme der Programmiersprac
 In Java und Python ist sie zudem plattformunabhängig.
 Für C gibt es zwei Bibliotheken: Eine für Unix- und eine für Windows-Systeme.
 In C ist die Bibliothek prozedural mit statischen Methoden, in Java und Python objektorientiert implementiert.
+%todo: Warum genau diese Programmiersprachen? Facts über Verteilung.
 
 Werden die bereitgestellten Funktionen aufgerufen, werden standardisierte Anfragen im JSON-Format generiert und an die Kontrollanwendung gesendet.
 Zur Verbesserung der Verständlichkeit für angehende Programmierer, wird auf Funktionen mit asynchronen Rückgabewerten, wie beispielsweise Futures, verzichtet.
@@ -447,8 +439,7 @@ Eine Übersicht über die Komponenten der Kontrollanwendung ist in Abbildung \re
 
 Die Komponente DataHandler besteht wiederum aus vier Sub-Komponenten, die ebenfalls als Threads nebenläufig laufen: MqttRequestHandler, UDPRequestHandler, UDPRequestQueueWorker und AnswerQueueWorker.
 Ziel der Aufteilung der Arbeitsschritte in Threads ist die Gewährleistung der Verfügbarkeit für beide Kommunikationspartner.
-%todo: queue erklären. fifo lifo.
-Die Thread-Kommunikation wird durch die threadsichere queues \cite{python_queue} realisiert.
+Die Thread-Kommunikation wird durch die threadsichere Fifo-Datenstruktur queues \cite{python_queue} realisiert.
 Nachrichten werden von einem Thread in der queue abgelegt und in einem anderen aus der queue entnommen.
 Eine durch das polling verursachte hohe CPU-Last kann durch blockierende Operationen beim ablegen und herausnehmen abgewendet werden.
 
@@ -456,7 +447,6 @@ Die Funktionsweise und Zwecke der Subkomponenten von DataHandler werden im Folge
 Abbildung \ref{fig:serverMqttReqPath} wird zur Erläuterung für das erste Beispiel diskutiert.
 Dargestellt ist der Ablaufplan bei Empfang einer von der mobilen Anwendung an die Kontrollanwendung per MQTT versandten Nachricht.
 Dies könnte beispielsweise ein update\_request sein.
-%todo: startpunkt fehlt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/MqttRequestServerPath}
@@ -476,7 +466,6 @@ Der AnswerQueueWorker wartet, bis der MqttRequestHandler die Nachricht abgelegt 
 
 Das zweite Beispiel befasst sich mit dem Ablauf eines UDP-Requests, also einer mit UDP versandten Nachricht der Programmierumgebung.
 Der Ablauf ist in Abbildung \ref{fig:serverUDPReqPath} dargestellt.
-%todo: startpunkt fehlt
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/UDPRequestServerPath}
@@ -500,7 +489,6 @@ Das Gegenstück dazu bilden für UDP-Anfragen der UDPRequestQueueWorker, der Anf
 Aufgabe des des MqttRequestHandler ist die Bearbeitung von MQTT Requests.
 
 \chapter{Aufbau der Android-Anwendung}\label{chap:app}
-%todo: Angabe Parameter (Min-SDK, SDK, usw.)
 Die Android-Anwendung ist eine der drei Bestandteile des Frameworks.
 Sie dient dazu Sensormessprozesse zu starten, Sensordaten zu übermitteln und Ausgabe-Kommandos auszuführen.
 Der Aufbau und die internen Abläufe in Bezug auf Nachrichtenempfang auf automatisierter Übertragung der Sensormesswerte werden in diesem Kapitel im Detail beschrieben.
@@ -535,7 +523,6 @@ Dies ist jedoch Voraussetzung um UI-Elemente wie zum Beispiel die Farbe der Sign
 Android unterbindet Änderungen aus Threads getätigt werden nicht, UI-Thread sind.
 Dieses Problem wird durch die Methode \textit{runOnUiThread} umgangen, welche die Änderung in der Ausführungswarteschlange des UI-Threads einreiht.
 Eine Übersicht des Vorgangs in in Abbildung \ref{fig:runOnUiThread} dargestellt.
-%todo: check: bild genug beschrieben
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{images/runOnUiThread.pdf}
@@ -546,7 +533,6 @@ Eine Übersicht des Vorgangs in in Abbildung \ref{fig:runOnUiThread} dargestellt
 Der MQTT-Service baut eine Verbindung zu einem in Datei config.json definierten MQTT-Broker auf und abonniert ein ebenfalls in der Konfigurationsdatei angegebenes Topic.
 Ist der MQTT-Service eingebunden sind alle Voraussetzungen für eine Übertragung erfüllt und  Sensormessprozesse können gestartet werden.
 Die Funktionsweise der Sensormessung wird in Abbildung \ref{fig:sensor_event_listener} dargestellt.
-%todo: still need to describe onSensorChanged
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.8\textwidth]{images/sensor_event_listener}
@@ -619,10 +605,9 @@ Ist er es nicht, wird auch keine Messung gestartet.
 
 \chapter{Evaluation der Smartbit-Lösung}\label{chap:eval}
 Die Umsetzung der an die implementierte Anwendung gestellten Anforderungen wird in diesem Kapitel überprüft.
-Durch Betrachtung eines Verwendungsbeispiels werden die Anforderungen qualitativ untersucht.
+Durch Betrachtung eines Verwendungsbeispiels werden die Anforderungen qualitativ untersucht und anschließend bewertet.
 Geringen Latenzzeiten wurden in der Konzeptionsphase eine hohe Priorität zugeordnet.
 Diese werden anhand der Smartbit-Lösung für drei Nutzungsszenarien gemessen und bewertet.
-
 
 \section{Verwendungsbeispiel}
 Die Verwendung der Smartbit-Lösung wird anhand der Beispielaufgabe \textit{Alarmanlage} vorgestellt.
@@ -691,19 +676,30 @@ Das Textfeld stellt nun den Text \textit{ALARM} dar und die Farbe der Signal-LED
 Die Vorgangs-LED leuchtet rot um zu signalisieren dass gerade eine Ausgabe ausgeführt wird.
 Diese ist nicht sichtbar, denn es handelt sich um das haptische Vibrationsfeedback.
 
-%todo: absatz waaaaaaaaaaaay to short
-Die Reaktionszeit liegt unter einer Sekunde.
-%todo: hier noch dicke fette qualitative Bewertung der Anforderung.
-%todo: Außerdem Angabe mit welchen devices und android versionen man die Anwendung getestet hat.
+Die Android-Anwendung dieses Beispiels wurde auf den Smartphones Motorola G6 (Android 9), OnePlus 3T (Android 11) und Google Pixel 4 (Android 12) getestet.
+Voraussetzung für die Nutzung der App ist ein Smartphone mit mindestens Android 7 (Nougat [API Level 24])
+Entwickelt wurde Smartbit mit Android Studio Bumblebee (2021.1.1 Patch 2) und Visual Studio Code (v1.68.1).
+Die Bibliotheken und Kontrollanwendung wurden unter Windows 10 (21H1), Windows 11 (21H2) und Debian GNU/Linux 11 (bullseye) unter den Python-Versionen 3.9.0, 3.9.2, 3.10.2, Java 17.0.2 und C18 mit GCC 10.2.1.
+Als JSON-Parser werden unter Java Json for Java (v20220320) und unter C libcjson v1.7.14-1 verwendet.
 
-Latenzprobleme per MQTT treten nicht auf.
+Nutzerinnen und Nutzer können alle in den Anforderungen aufgestellten Ausgabemöglichkeiten und Sensortypen nutzen.
+Implementierte Funktionen kommunizieren zwar mit der Kontrollanwendung in Serialisierten Nachrichten, geben an die aufrufenden Programme jedoch primitive Datentypen zurück.
+Die Bibliothek ist portabel nutzbar, da die Stub-Funktionen jeweils für die Programmiersprachen C, Java und Python implementiert wurden.
+Eine Einbindung in Eclipse IDE ist möglich, jedoch durch die zusätzlich benötigten JSON-Parser-Bibliotheken für C- und Java-Projekte nicht trivial.
+Da Java und Python plattformunabhängige Programmiersprachen sind erübrigt sich die zweifache Implementierung für Unix- und Windows-Systeme.
+Smartbit ermöglicht ein responsives Verhalten der Komponenten.
+Im vorangegangen Beispiel \textit{Alarmanlage} betrug die Reaktionszeit unter einer Sekunde.
+Smartphoneseitige Latenzen werden architekturbedingt durch die Zwischenspeicherung von Kontrollanwendung verschleiert.
+Eine, von Umgebungseigenschaften abhängige, Variierungder Übertragungsgeschwindigkeit ist dadurch für die Programmiererin oder den Programmierer nicht sichtbar.
+Mit der Verwendung von MQTT und UDP wurden leichtgewichtig, ihrem Einsatzzweck entsprechende Protokolle für die Kommunikation gewählt.
 Trotz einem QOS-Level 0 werden auch Ausgabeanfragen sicher übertragen und ausgeführt.
-Da die Nachrichten über TLS übertragen werden, ist der Austausch sicher.
-Logging-Möglichkeiten in der Kontrollanwendung und der Android-App erleichterten die Entwicklung sehr und halfen bei der Fehlersuche.
-
+Nachrichten, die über die MQTT-Verbindung zwischen Kontrollanwendung und Smartphone-App versandt werden, werden auf dem Übertragungsweg mit TLS verschlüsselt übertragen.
+Nachrichten, die über die UDP-Verbindung zwischen Kontrollanwendung und Bibliothek übertragen werden, werden nicht verschlüsselt.
+Ein unberechtigtes Mitlesen des Datenverkehrs setzt jedoch voraus, dass Angreifer Nutzerrechte auf dem PC der Nutzerin oder des Nutzers besäßen, da Datagramme lediglich über das Loopback-Interface ausgetauscht werden können.
+Das Smartphone ist vor einer \acrfull{rce}-Attacke geschützt, da nur Ausgaben ausgeführt werden können, die von der API spezifiziert wurden.
+Smartbit setzt durch die Implementierung von Log-Ausgaben in Kontrollanwendung und Smartphone ebenfalls die Anforderungen an die Transparenz um.
 
 \section{Latenzmessung}
-%todo: introsatz fehlt. liest sich unrund.
 Im Zuge der Konzeption wurden Latenzen eine besondere Bedeutung zugemessen.
 Erhöhte Latenzzeiten führen zu einem verzögerten Verhalten und einer schlechteren Benutzbarkeit.
 Zum Zwecke der Evaluation der Latenzen werden für drei Nutzungsszenarien Messungen durchgeführt.

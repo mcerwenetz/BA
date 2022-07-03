@@ -1,8 +1,6 @@
 from time import sleep
 import smartbit
 
-p = smartbit.Phone()
-
 while True:
     prox_val = float(p.get_proxy())
     print(prox_val)
