@@ -271,17 +271,28 @@ Als Nachrichtenformat wird \acrfull{json}verwendet.
 Das menschenlesbare, kompakte Nachrichtenformat ist weit verbreitet und wird von vielen Softwarebibliotheken unterstützt.
 %todo: Facts über JSON pls
 
-%todo: hier muss noch n bild rein
-Für die Verwendung der Smartbit-Lösung ist das Verhalten der Komponenten und Kommunikation folgendermaßen spezifiziert.
-Die Bibliothek mit den, zur Interaktion mit dem Smartphone geeigneten, Stub-Funktionen kann in Programmcode der Programmiersprachen C, Java und Python eingebunden werden.
-Führt eine Programmiererin oder ein Programmierer einen Funktionsaufruf der Bibliothek aus, übermittelt die Bibliothek eine Anfrage per MQTT an das Kontrollprogramm.
+Die beschrieben Komponenten bieten ein heterogenes verteiltes System, das über Nachrichten kommuniziert.
+Um das von den Nachrichten abhängige Verhalten der Komponenten zu spezifizieren, wird im Folgenden der Ablauf einer Beispielnachricht vorgestellt.
+In Abbildung \ref{fig:arch_flow} ist eine schematische Darstellung der Funktionsweise einer Ausgabe-Funktion abgebildet.
+Dies könnte beispielsweise eine Funktion sein, die einen Text auf dem Textfeld anzeigen soll.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{images/arch_call_flow.pdf}
+  \caption{Nachrichtenablauf}
+  \label{fig:arch_flow}
+\end{figure}
+Die Bibliothek mit den, zur Interaktion mit dem Smartphone geeigneten, Stub-Funktionen kann in Programmcode der Programmiersprachen C, Java und Python eingebunden werden (1).
+Führt eine Programmiererin oder ein Programmierer einen Funktionsaufruf der Bibliothek aus (2), übermittelt die Bibliothek eine Anfrage per MQTT an das Kontrollprogramm (3).
 Dieses entscheidet über die weitere Verfahrensweise.
 Anfragen, die Sensormessdaten des Smartphones fordern, werden direkt bedient.
-Ausgabe-Anfragen werden an das Smartphone per MQTT übertragen.
-Die Smartphone-App nimmt die Anfrage und führt Sie aus.
+Dieser Weg ist in der Abbildung nicht dargestellt.
+Ausgabe-Anfragen werden per MQTT an das Smartphone übertragen (4).
+Die Smartphone-App nimmt die Anfrage an und führt Sie aus (5).
 Es gibt Ausgaben die Rückgabewerte zurückgeben.
-In diesem Fall sendet die App den Rückgabewert an die Kontrollanwendung, welche ihn an die Bibliothek weiterleitet.
-In der Bibliothek ist definiert, welche Anfragen eine Antwort erwarten und welche nicht, um Antworten nicht zu ignorieren.
+Ihr Ablauf ist in der Abbildung grau dargestellt.
+In diesem Fall sendet die App den Rückgabewert an die Kontrollanwendung (6), welche ihn an die Bibliothek weiterleitet (7).
+Die Bibliothek gibt den Rückgabewert zum Schluss an die Bibliothek zurück (8)
+
 
 \chapter{Nachrichtenformate der Komponenten}\label{chap:message_formats}
 Ein einheitliches Nachrichtenformat ist Voraussetzung für den Nachrichtenaustausch.
@@ -340,7 +351,7 @@ Die Android-App sendet daher in periodischen Abständen Nachrichten des Typs \te
 Der gesamte Ablauf der Sensordatenübertragung ist in Abbildung \ref{fig:message_flow_requests} dargestellt.
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=.6\textwidth]{images/message_flow_sensor}
+\includegraphics[width=.5\textwidth]{images/message_flow_sensor}
 \caption{Nachrichtenablauf der Sensordatenübermittlung}
 \label{fig:message_flow_requests}
 \end{figure}
@@ -369,7 +380,7 @@ Eine Nachricht dieser Nachrichtenart wird erst per MQTT an das Kontrollprogramm 
 Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} dargestellt.
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=.6\textwidth]{images/message_flow_rpc.pdf}
+\includegraphics[width=.5\textwidth]{images/message_flow_rpc.pdf}
 \caption{Nachrichtenablauf der RPC-Anfragen}
 \label{fig:message_flow_rpc}
 \end{figure}
@@ -395,7 +406,7 @@ Diese sendet die Daten gegebenenfalls an das Smartphone weiter oder antwortet di
 Eine Übersicht ist in Abbildung \ref{fig:Schnittstelle Bibliothek} dargestellt.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.8\textwidth]{images/lib_server_connection}
+  \includegraphics[width=.7\textwidth]{images/lib_server_connection}
   \caption{Schnittstellen der Bibliothek}
   \label{fig:Schnittstelle Bibliothek}
 \end{figure}
