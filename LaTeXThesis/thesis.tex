@@ -162,7 +162,7 @@ Abhängigkeiten unter den Messwertergebnissen erschweren eine Erkennung der Umdr
 
 \section{Anforderungen an Smartbit}\label{sec:anforderungen}
 Aus der vorangegangenen Beschreibung von Beispielaufgaben lassen sich Anforderungen an die Smartbit-Lösung ableiten.
-Die Zielgruppe besteht, wie in der Einleitung beschrieben, aus informatik-affinen Studieninteressierten oder angehenden Programmiererinnen oder Programmierern, mit Hauptfokus auf sich im Grundstudium befindende Studierende der Fakultät Informationstechnik der Hochschule Mannheim.
+Die Zielgruppe besteht, wie in der Einleitung beschrieben, aus IT-affinen Studieninteressierten oder angehenden Programmiererinnen oder Programmierern, mit Hauptfokus auf sich im Grundstudium befindende Studierende der Fakultät Informationstechnik der Hochschule Mannheim.
 Voraussetzung der Nutzung der App ist der Besitz eines PCs und eines Android-Smartphones  mit Internetzugang.
 
 Anhand der Beispielaufgaben werden Anwendungsfälle spezifiziert, die die Nutzeranforderungen definieren.
@@ -176,23 +176,25 @@ Eine Übersicht der Anwendungsfälle ist in Abbildung \ref{fig:usecase} dargeste
 Nutzerinnen und Nutzer möchten durch die Smartbit-Lösung Ausgaben auf dem Smartphone tätigen und Sensorwerte des Smartphones auslesen können.
 Ausgaben sollen visuell über ein Textfeld und eine LED, und haptisch über eine Vibrationsausgabe möglich sein.
 Sensor-Anfragen sollen, zur Erfüllung der Aufgaben, für den Lage- und Annäherungssensor sowie dem Mikrofon möglich sein.
-Für die Bedienung aller Ausgabemöglichkeiten und der Abfrage der spezifizierten Sensortypen, muss eine in bestehenden Programmcode einbindbare Funktion existieren.
-Die Verwendung der Lösung soll verständlich und ohne viel Vorwissen möglich sein.
+Für die Bedienung aller Ausgabemöglichkeiten und der Abfrage der spezifizierten Sensortypen, müssen aus bestehenden Programmcode aufrufbare Funktionen existieren.
+Die Verwendung der Lösung soll verständlich und ohne Hintergrundwissen möglich sein.
 Auf serialisierte Ausgabeformate ist zu verzichten.
 Funktionen müssen Rückgabewerte in Form von primitiven Datentypen zurückgeben.
 Um die Kompatibilität mit, von Programmiererinnen oder Programmierern entwickelten Programmen, zu erhöhen, müssen die Funktionen in mehreren Programmiersprachen zur Verfügung stehen.
 Smartbit soll für Nutzerinnen und Nutzer, neben der Einbindung in Programme, auch leicht in Entwicklungsumgebungen integrierbar und mit wenig Boilerplate-Code verwendbar sein.
-Der Einsatz der Entwicklungsumgebung Eclipse IDE \cite{eclipse-ide} ist an der Fakultät Informationstechnik der Hochschule Mannheim weit verbreitet und wird in den Lehrveranstaltungen des Grundstudiums umfassend genutzt.
+Der Einsatz der Entwicklungsumgebung \textit{Eclipse IDE} \cite{eclipse-ide} ist an der Fakultät Informationstechnik der Hochschule Mannheim weit verbreitet und wird in den Lehrveranstaltungen des Grundstudiums umfassend genutzt.
 Es ist davon auszugehen, dass Studierende mit der Benutzung dieser Entwicklungsumgebung vertraut sind.
-Die Smartbit-Einbindung soll daher insbesondere für Eclipse IDE unterstützt werden.
+Die Smartbit-Einbindung soll daher insbesondere für für diese Entwicklungsumgebung unterstützt werden.
 Da es sich um eine plattformunabhängige \acrfull{ide} handelt, muss auch die Smartbit-Lösung plattformübergreifend, also für Unix und Windows-Systeme, in diese Entwicklungsumgebung eingebunden werden können.
 
-Um die Benutzbarkeit und Effizienz sicherzustellen, muss die Smartbit-Lösung ein responsives Verhalten aufweisen.
-Responsivität trägt zur Lernerfahrung bei, da sich physikalische Änderungen unmittelbar auf das Verhalten des entwickelten Programms auswirken.
+Um die Benutzbarkeit sicherzustellen, müssen durch die Smartbit-Lösung Programme entwickelt werden können, die ein responsives Verhalten aufweisen.
+Responsivität trägt zur Lernerfahrung bei, da sich Änderungen physikalischer Umgebungseigenschaften unmittelbar auf das Verhalten des entwickelten Programms auswirken.
+Um eine Responsivität zu garantieren, gilt es Latenzzeiten zu minimieren.
 Latenzen werden durch die \acrfull{rtt} gemessen.
 Diese beschreibt die Zeitdauer der Übermittlung einer Nachricht über Hin- und Rückweg eines Hosts zu einem Anderen.
-Initial müssen Sensordaten vorliegen, um Sie vom Smartphone zu übermitteln.
-Das Starten von Sensormessprozessen erfordert jedoch Zeit, was die Latenzen erhöht. 
+Initial müssen Sensordaten vorliegen, um sie vom Smartphone zu übermitteln.
+Das Starten von Sensormessprozessen erfordert jedoch Zeit, was Latenzen erhöht.
+Anforderung an Smartbit ist es deshalb Sensordaten rechtzeitig zum Zwecke erhöhter Responsivität bereitzustellen. 
 Smartphones bieten keine kabelgebunden Netzwerkschnittstellen, so dass drahtlose Netzwerke genutzt werden müssen.
 Der Versand der Sensorwerte wird durch den Transportweg zwischen Smartphone und Programmierumgebung und deren lokale Gegebenheiten verzögert.
 Latenzzeiten können je nach Mobilfunk- bzw WLAN-Standard, Umwelteinflüssen und der Anzahl der registrierten Geräte in Funkzellen variieren.
@@ -200,12 +202,12 @@ Kollisions-Präventionsprinzipien wie \acrfull{csmaca} verhindern bei WLAN-Verbi
 % Gelöst durch Puffer
 Die Latenzen sind ebenfalls abhängig vom Standard des mobilen Netzwerks.
 Bei WLAN 802.11b beträgt die Latenz ca. 10 ms, kann jedoch beispielsweise bei Verbindungen mit \acrfull{umts} auf 300 ms bis 400 ms ansteigen \cite{network_latencies}.
-Zudem fällt die Reaktionszeit bei mehreren Sendungen unterschiedlich aus, was bei einer synchronen Übertragung zu für Nutzer nicht nachvollziehbaren Verzögerungen führt.
+Zudem fallen die Latenzzeit bei mehreren Sendungen unterschiedlich aus, was bei einer synchronen Übertragung zu für Nutzer nicht nachvollziehbaren Einbrüchen  in der Übertragungsgeschwindigkeit führt.
 % Gelöst durch Puffer
 Bei der Übertragung von Sensormessdaten ist auf den Gebrauch ihrem Einsatzzweck entsprechender Protokolle zu achten.
 Um die Sicherheit zu erhöhen müssen Nachrichten auf den Transportwegen verschlüsselt übertragen und eine Ausführung von Schadcode auf dem Smartphone verhindert werden.
 Bei der Kommunikation zwischen Smartphone-Anwendung und Programmierumgebung kann es zu Komplikationen kommen.
-Um die Wartbarkeit zu gewährleisten, müssen Smartbit-Abläufe transparent sein.
+Um die Wartbarkeit zu gewährleisten, müssen interne Abläufe transparent sein.
 Die Lösung muss Nachrichtenabläufe nachvollziehbar darstellen, um fehlerhafte Konfigurationen zu vermeiden.
 
 \chapter{Smartbit-Architektur und Spezifikation} \label{chap:architektur}
