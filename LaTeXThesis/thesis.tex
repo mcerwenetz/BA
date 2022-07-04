@@ -30,18 +30,17 @@
 
 \begin{abstract}
 Interaktive Programmieraufgaben eignen sich besonders gut zum Programmierenlernen für angehende Programmiererinnen oder Programmierer.
-Auf Mikrocontroller-Schaltungen basierende Projekte bieten durch angeschlossene Sensoren ein ideale Interaktivität, benötigen allerdings auch zusätzliches Fachwissen.
-Gegenüber ihnen bietet der Einsatz von Smartphones Vorteile für Aufgaben dieser Art Vorteile gegenüber Mikrocontroller-Schaltungen.
+Auf Mikrocontroller-Schaltungen basierende Projekte bieten durch angeschlossene Sensoren ein ideale Interaktivität, benötigen allerdings auch zusätzliches Fachwissen und müssen zusätzlich beschafft werden.
+Gegenüber ihnen bietet der Einsatz von Smartphones für interaktive Aufgaben Vorteile gegenüber Mikrocontroller-Schaltungen.
 Die Geräte bieten einen vergleichbaren Sensorumfang und können Ausgaben virtuell darstellen.
-Ihre Anbindung in Programmierumgebungen ist jedoch nicht äquivalent unterstützt.
-Schnittstellen zur Ansteuerung sind nicht gegeben.
+Ihre Anbindung in Programmierumgebungen ist im Vergleich zu Mikrocontrollern jedoch nicht äquivalent unterstützt.
 
 Diese Arbeit behandelt die Entwicklung einer Softwarelösung namens Smartbit, welche Sensoren von Smartphones über eine Programmierumgebung ausliest und Ausgaben auf dem Smartphone ausführt.
 Anforderungen an die Lösung werden anhand von Beispielaufgabenstellungen spezifiziert und für die Implementierung der Lösung berücksichtigt.
-Eine Evaluation der Lösung erfolgt durch die Demonstration einer Lösung für eine Beispielaufgabe und einer Messung für drei unterschiedliche Nutzungsszenarien für angehende Programmiererinnen und Programmierer.
+Die Evaluation der Lösung erfolgt durch eine Demonstration einer Beispielaufgabe und einer Messung für drei unterschiedliche Nutzungsszenarien.
 
 Die Lösung kann für den beschriebenen Einsatz verwendet werden. Die Einbindung in bestehende Programmierumgebungen ist möglich. 
-Bei Aufrufen auftretende Latenzen zwischen Smartphone und Programm sind vertretbar.
+Bei Aufrufen auftretende Latenzen zwischen Smartphone und Programm beeinträchtigen nicht die Nutzung.
 \end{abstract}
 
 \tableofcontents
@@ -53,7 +52,7 @@ Aufgaben in Verbindung mit Mikrocontroller-Schaltungen stellen dagegen eine prak
 In den Projekten werden kleine Programme realisiert, die durch die Verwendung von Sensoren Programmiererinnen und Programmierer einladen, sich an den Aufgabenstellungen auszuprobieren.
 Die in Mikrocontroller-Schaltungen integrierten Sensoren sind Voraussetzung, um physikalische Eigenschaften in der realen Welt zu messen.
 Von Programmiererinnen und Programmierern entwickelte Programme können auf dem Mikrocontroller die verbundenen Sensoren auslesen und auf Änderungen der gemessenen Werte reagieren.
-Zusammen ermöglichen Sensoren, Mikrocontroller und das entwickelte Programm eine Bedienung der Schaltung.
+Zusammen ermöglichen Sensoren, Mikrocontroller und ein entwickeltes Programm eine Bedienung der Schaltung.
 Während der Entwicklung treten jedoch häufig Probleme auf.
 Selten verhält sich das Programm beim ersten Versuch korrekt.
 Eine Anpassung des Codes ist nötig, bis das Fehlverhalten beseitigt ist.
@@ -68,20 +67,18 @@ Die Peripherie-Anbindung setzt zusätzliches Hintergrundwissen in elektrotechnis
 Fehlerhafte Verdrahtungen oder ein Fehlgebrauch resultieren in zerstörten Komponenten oder Verletzungen.
 Dies stellt ebenfalls eine Einstiegshürde dar, die die eigentliche interaktive Lernerfahrung herauszögert und die Motivation senkt.
 
-Smartphones dienen für angehende Programmiererinnen und Programmierer als Alternative zu herkömmlichen Mikrocontroller-Schaltungen für Programmieraufgaben.
-Ein Vorteil ihrer Nutzung gegenüber Mikrocontrollern bei Programmierprojekten liegt in der Verfügbarkeit.
+Smartphones dienen für interaktive Aufgaben als Alternative zu herkömmlichen Mikrocontroller-Schaltungen für Programmieraufgaben.
+Ein Vorteil ihrer Nutzung gegenüber Mikrocontrollern bei Programmierprojekten liegt in ihrer Verfügbarkeit.
 2022 besaßen weltweit 5,2 Mrd. Menschen ein Smartphone \cite{smartphone_users}.
-Sie sind insbesondere unter Jugendlichen und jungen Erwachsenen weit verbreitet.
-Im Alltag wird es für Chats, Social-Media oder Spiele verwendet.
+Sie sind insbesondere unter Jugendlichen und jungen Erwachsenen weit verbreitet und werden im Alltag für Chats, Social-Media oder Spiele verwendet.
 Sie sind also häufig bereits in Gebrauch und müssten für die Nutzung von Programmierprojekten nicht zusätzlich beschafft werden.
-Projekte in denen Smartphones statt Mikrocontroller verwendet werden reduzieren das Risiko eines Verdrahtungsfehlers der Schaltung dadurch, dass elektrische Schaltungen bereits intern gefertigt und somit von äußerlicher Fehlverwendung geschützt sind.
-Der Sensoren-Umfang ist vergleichbar mit dem von Mikrocontrollern.
-In Smartphones sind zahlreiche Sensoren wie Lagesensoren, Gyroskop oder Annäherungssensoren integriert.
-Durch diese können sie zuverlässig physikalische Umgebungseigenschaften messen.
+Projekte in denen Smartphones anstatt Mikrocontroller-Schaltungen verwendet werden reduzieren das Risiko von Verdrahtungsfehlern einer Schaltung dadurch, dass Sie außer einem Ladeanschluss keine elektronischen Schnittstellen anbieten.
+Ihr Sensoren-Umfang ist mit dem von Mikrocontroller-Schaltungen vergleichbar.
+Zahlreiche Sensortypen wie Lagesensoren, Gyroskop oder Annäherungssensoren sind bereits integriert.
 Neben kabelgebundenen Übertragungsschnittstellen wie USB oder Lightning besteht auch die Möglichkeit, drahtlose Verbindungsmöglichkeiten wie WLAN oder Bluetooth zu nutzen.
 Die Geräte sind zudem batteriebetrieben, was Lösungen ermöglicht, die von einer Spannungsversorgung unabhängig sein können. 
-Eine Einbindung von Smartphones in Entwicklungsumgebungen ist in den meisten Fällen jedoch nicht möglich.
-Visuelle und haptische Ausgaben auf dem Smartphone erfordern eine mobile Anwendung, da Smartphone-Betriebssysteme keine nativen Ausgabemethoden bieten.
+Eine Einbindung von Smartphones in Entwicklungsumgebungen wird in den meisten Fällen jedoch nicht unterstützt.
+Visuelle und haptische Ausgaben auf dem Smartphone erfordern zudem eine mobile Anwendung, da Smartphone-Betriebssysteme keine nativen Ausgabemethoden bieten.
 
 In dieser Arbeit wurde eine Softwarelösung mit dem Namen Smartbit entwickelt.
 Sie ermöglicht Smartphones statt Mikrocontroller-Schaltungen für die Entwicklung von interaktiven Projekten zu nutzen. 
@@ -91,12 +88,11 @@ Die Aufgaben, sowie aus ihnen ableitbare Anforderungen und Rahmenbedingungen, si
 Die drei Komponenten Smartphone-App, Kontrollanwendung und Programmierumgebung und werden in Kapitel \ref{chap:architektur} vorgestellt.
 Damit die Komponenten zusammenarbeiten können müssen sie Nachrichten austauschen.
 Die Einsatzzwecke der Nachrichtentypen und der Nachrichtenaustausch werden in Kapitel \ref{chap:message_formats} erklärt beziehungsweise exemplarisch veranschaulicht.
-Einbindung und Nutzung der Schnittstellen der Programmierumgebung werden in Kapitel \ref{chap:libs} erklärt.
+Die Nutzung und Funktionsweise der Schnittstellen der Programmierumgebung werden in Kapitel \ref{chap:libs} erklärt.
 Der Aufbau und das Verhalten, der zwischen Smartphone-App und Programmierumgebung vermittelnden Kontrollanwendung, wird in Kapitel \ref{chap:server_software} erklärt.
 Kapitel \ref{chap:app} behandelt die Funktionsweise und den Aufbau der Smartphone-App im Detail.
-In Kapitel \ref{chap:eval} wird untersucht, ob die vorgegebenen Anforderungen erfüllt wurden.
-Dort wird zudem die Verwendung der Smartbit-Lösung anhand einer Beispielaufgabe vorgestellt.
-Bei der Entwicklung aufgetretene Schwierigkeiten, Verbesserungsvorschläge und Erweiterungsmöglichkeiten der Smartbit-Lösung werden in Kapitel \ref{chap:fazit} diskutiert.
+In Kapitel \ref{chap:eval} wird untersucht, ob die vorgegebenen Anforderungen erfüllt wurden und die Verwendung der Smartbit-Lösung anhand einer Beispielaufgabe vorgestellt.
+Bei der Entwicklung aufgetretene Schwierigkeiten, Verbesserungs- und Erweiterungsmöglichkeiten der Smartbit-Lösung werden in Kapitel \ref{chap:fazit} diskutiert.
 
 \chapter{Smartphones als Mikrocontroller-Ersatz für Programmieraufgaben} \label{chap:Experimente}
 Smartphones sind in sich geschlossene, technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB- bzw. Lightning-Port, WLAN und Bluetooth keine weiteren Schnittstellen bieten, um externe Hardware und Schaltungen anzuschließen.
@@ -114,7 +110,7 @@ Die in diesem Abschnitt vorgestellten Beispielaufgaben definieren das von Sensor
 Die Aufgabenstellungen sind in Tabelle \ref{tab:excercises} aufgeführt.
 Für jede Aufgabe werden die benötigen Sensortypen und Ausgabeschnittstellen beschrieben.
 Leserinnen und Leser werden in der Entscheidungsfindung durch die Angabe eines dreistufigen Schwierigkeitsgrades unterstützt.
-Dies soll verhindern, dass sich unerfahrene Programmierer zu Anfang mit komplizierten Aufgaben überfordern.
+Dies soll verhindern, dass sich unerfahrene Programmiererinnen und Programmierer zu Anfang mit komplizierten Aufgaben überfordern.
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|l|c|p{2.3cm}|c|}
@@ -137,33 +133,32 @@ Dies soll verhindern, dass sich unerfahrene Programmierer zu Anfang mit komplizi
 \end{table}
 
 In der Aufgabe \textit{Disco} soll eine virtuelle LED für eine Zeitdauer von 500 ms grün und anschließend 500 ms rot leuchten.
-Sensoren werden in dieser Aufgabe nicht verwendet, da die LED-Ausgabe unabhängig von Sensormesswertänderungen ausgeführt wird, weshalb Aufgabe als \textit{Einfach} eingestuft wird.
+Sensoren werden nicht verwendet, da der LED-Farbwechsel unabhängig von Sensormesswertänderungen ausgeführt wird, weshalb Aufgabe als \textit{Einfach} eingestuft wird.
 
 In der Aufgabe \textit{Würfeln} soll ein Schütteln des Geräts erkannt werden.
-Verwendet wird ein Gerätebeschleunigungen messender Lagesensor.
-Wird ein Schütteln erkannt, soll auf dem PC eine Zufallszahl generiert werden.
-Anschließend wird diese auf dem Endgerät in einem Textfeld ausgegeben.
-Der Schwierigkeitsgrad wird ebenfalls auf \textit{Einfach} eingeschätzt, da die Aufgabe unter Verwendung lediglich eines Sensors und einer Ausgabe lösbar ist.
+Verwendet wird ein Beschleunigungen messender Lagesensor.
+Wird ein Schütteln erkannt, soll auf dem PC eine Zufallszahl generiert werden, welche anschließend auf dem Endgerät in einem Textfeld ausgegeben werden soll.
+Der Schwierigkeitsgrad wird ebenfalls auf \textit{Einfach} eingeschätzt, da die Aufgabe unter Verwendung lediglich eines Sensorstyps und einer Ausgabe lösbar ist.
 
-In der Aufgabe \textit{Diebstahl-Alarm} wird unter Verwendung des Näherungssensors das örtliche Umfeld des Geräts auf eine Annäherung überprüft.
-Im Falle einer Annäherung wird ein alarmierender Text im Textfeld ausgegeben.
+In der Aufgabe \textit{Diebstahl-Alarm} soll unter Verwendung des Näherungssensors das örtliche Umfeld des Geräts auf eine Annäherung überprüft werde.
+Im diesem Falle soll ein alarmierender Text im Textfeld ausgegeben werden.
 Zusätzlich soll die LED die wie in Aufgabe \textit{Disco} die Farbe wechseln.
 Neben den visuellen Ausgaben wird die Vibrationsfunktion als haptisches Feedback benötigt, die das Gerät fünf mal für 1000 ms vibrieren lässt.
 Der Schwierigkeitsgrad der Aufgabe ist als \textit{Mittel} eingestuft, da hier zwischen Alarm- und Normalzustand unterschieden werden muss.
 Entfernt sich eine Person, muss der Alarm-Zustand verlassen und alle Ausgaben auf ihren Initialwert zurückgesetzt werden.
 
-Bei der Aufgaben \textit{Klatsch-Zähler} muss für einen selbstdefinierten Zeitraum die Anzahl der Händeklatscher gemessen werden.
-Diese Anzahl wird anschließend im Textfeld des Geräts ausgegeben.
-Verwendet werden das Mikrofon als Ein- und das Textfeld als Ausgabe.
+Bei der Aufgabe \textit{Klatsch-Zähler} muss für einen selbstdefinierten Zeitraum die Anzahl der Händeklatscher gemessen werden.
+Diese Anzahl soll anschließend im Textfeld des Geräts ausgegeben werden.
+Verwendet wird das Mikrofon als Ein- und das Textfeld als Ausgabe.
 Die Schwierigkeit ist auf \textit{Mittel} angesetzt, da die Messwerte von Händeklatschern unterschiedliche Intensitäten aufweisen.
 Um einen Händeklatscher zu identifizieren, ist es nötig Grenzwerte zu ermitteln um sie von normalen Hintergrundgeräuschen abzugrenzen.
 Eine Visualisierung der Messdaten kann bei dieser Aufgabe helfen.
 
-In  der Aufgabe \textit{Drehzähler} soll der Programmierer das Device innerhalb eines selbstdefinierten Zeitraums drehen und ein Programm entwickeln, das anhand der Messdaten die Anzahl der Umdrehungen ermittelt.
+In  der Aufgabe \textit{Drehzähler} soll die Programmiererin oder der Programmierer das Gerät innerhalb eines selbstdefinierten Zeitraums drehen und ein Programm entwickeln, das anhand der Messdaten die Anzahl der Umdrehungen ermittelt.
 Diese Anzahl soll anschließend im Textfeld auf dem Gerät ausgegeben werden.
 Verwendet werden hier ebenfalls der Lagesensor als Sensoreingabe und das Textfeld als Ausgabe.
 Die Aufgabe ist als \textit{Schwer} bewertet, da hier Wiederholungen in einer Werteabfolge erkannt werden müssen, welche jedoch wie bei der Aufgabe \textit{Klatsch-Zähler} in ihrer Größe variieren können.
-Abhängigkeiten zwischen den Messwertergebnissen erschweren eine Erkennung der Umdrehungen zusätzlich.
+Abhängigkeiten unter den Messwertergebnissen erschweren eine Erkennung der Umdrehungen zusätzlich.
 
 \section{Anforderungen an Smartbit}\label{sec:anforderungen}
 Aus der vorangegangenen Beschreibung von Beispielaufgaben lassen sich Anforderungen an die Smartbit-Lösung ableiten.
