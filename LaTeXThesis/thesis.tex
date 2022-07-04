@@ -309,7 +309,7 @@ Eine Liste der vollständigen Nachrichtentypen, inklusive ihrer Felder, ist im A
   \label{tab:message_types}
 \end{table}
 
-\textit{Sensor\_request}s kommen bei Sensormesswert-Abfragen zum Einsatz.
+\texttt{Sensor\_requests} kommen bei Sensormesswert-Abfragen zum Einsatz.
 Dieser Nachrichtentyp wird von der Bibliothek an das Kontrollprogramm gesendet, wo die vom Smartphone übermittelten Sensorwerte zwischengespeichert wurden.
 Nach Eingang ermittelt das Kontrollprogramm, durch Angabe des gewünschten Sensortyp-Kürzels im Feld \texttt{sensor\_type}, den gespeicherten Sensormesswert.
 Sensortyp-Kürzel sind für alle Sensoren definiert und dienen in der Kontrollanwendung als Schlüssel der Adressierung der Messwerte im Key-Value-Speicher.
@@ -330,10 +330,10 @@ Die Kürzel sind in Tabelle \ref{tab:sensor_types} aufgelistet.
   \caption{Sensor-Kürzel mit Beschreibung}
   \label{tab:sensor_types}
 \end{table}
-Ist für den Sensortyp ein Sensormesswert im Key-Value-Store vorhanden, wird das Ergebnis in einer \textit{sensor\_response}, im Feld \texttt{sensor\_value}, zurückgesendet.
+Ist für den Sensortyp ein Sensormesswert im Key-Value-Store vorhanden, wird das Ergebnis in einer \texttt{sensor\_response}, im Feld \texttt{sensor\_value}, zurückgesendet.
 Die Antwort wird von der Bibliothek angenommen und an die aufrufende Funktion zurückgegeben.
 Um stets aktuelle Sensormesswerte zu erhalten, müssen sie vom Smartphone in regelmäßigen Zeitabständen übermittelt werden.
-Die Android-App sendet daher in periodischen Abständen Nachrichten des Typs \textit{update\_request} an das Kontrollprogramm.
+Die Android-App sendet daher in periodischen Abständen Nachrichten des Typs \texttt{update\_request} an das Kontrollprogramm.
 Übermittelt werden zur Einspeicherung und Zuordnung im Key-Value-Store sowohl der Sensortyp als auch der Sensormesswert.
 Der gesamte Ablauf der Sensordatenübertragung ist in Abbildung \ref{fig:message_flow_requests} dargestellt.
 \begin{figure}[htbp]
@@ -343,26 +343,26 @@ Der gesamte Ablauf der Sensordatenübertragung ist in Abbildung \ref{fig:message
 \label{fig:message_flow_requests}
 \end{figure}
 Aufgeführt sind die drei Komponenten Bibliothek, Kontrollprogramm und Smartphone-App.
-Die Bibliothek sendet sensor\_requests per UDP an das Kontrollprogramm.
-Dieses antwortet über UDP mit einer sensor\_response.
-Währenddessen werden der Kontrollanwendung vom Smartphone fortwährend neue Sensormesswerte durch update\_requests übertragen.
+Die Bibliothek sendet \texttt{sensor\_requests} per UDP an das Kontrollprogramm.
+Dieses antwortet über UDP mit einer \texttt{sensor\_response}.
+Währenddessen werden der Kontrollanwendung vom Smartphone fortwährend neue Sensormesswerte durch \texttt{update\_requests} übertragen.
 
 Neben Nachrichten die die Sensordatenübermittlung betreffen, existieren zur Umsetzung von Ausgaben auf der Smartphone-App auch Ausgabe-Nachrichten.
 Die app-seitigen Ausgaben sind unterscheidbar in Ausgaben mit und ohne Rückgabewert.
-Für erstere gibt es den Nachrichtentyp \textit{rpc\_request}.
+Für erstere gibt es den Nachrichtentyp \texttt{rpc\_request}.
 
 \acrfull{rpc} bezeichnet clientseitige Funktionsaufrufe, die auf einem Server ausgeführt werden.
 Die Bezeichnung entspricht nicht exakt dem Konzept, da ein Kommunikationspartner, Smartphone-App oder Kontrollanwendung, in diesem Fall die Rolle des Servers einnehmen würde.
 Die Voraussetzung einer Client-Server-Anwendung ist durch die beidseitige Nachrichtenübertragung zwischen Smartphone-App und Kontrollanwendung nicht gegeben.
 Die Bezeichnung wurde unter dem Fokus auf der entfernten Ausführung einer Funktion gewählt und entspricht eher einer \acrfull{rmi}.
 
-Der Nachrichtentyp rpc\_request enthält die Felder \texttt{command} und \texttt{value}.
+Der Nachrichtentyp \texttt{rpc\_request} enthält die Felder \texttt{command} und \texttt{value}.
 Diese spezifizieren die Ausgabe und falls vorgesehen eine mit der Ausgabe verbundene Größe.
-Für die Vibrationsausgabe wären die Inhalte des rpc\_requests für eine Vibration von einer Sekunde beispielsweise \textit{vibrate} und \textit{1000}.
+Für die Vibrationsausgabe wären die Inhalte des \texttt{rpc\_requests} für eine Vibration von einer Sekunde beispielsweise \texttt{vibrate} und \texttt{1000}.
 Die Nachricht wird von der Bibliothek per UDP an die Kontrollanwendung und von dort aus per MQTT an das Smartphone gesendet.
 Die Smartphone-App nimmt die Anfrage an und führt die Ausgabe aus.
 Manche Ausgabe-Anweisungen geben zusätzlich einen Rückgabewert zurück.
-Damit dieser vom Smartphone zurück an die Bibliothek gesendet werden kann, gibt es das Nachrichtenformat \textit{rpc\_response}.
+Damit dieser vom Smartphone zurück an die Bibliothek gesendet werden kann, gibt es das Nachrichtenformat \texttt{rpc\_response}.
 Eine Nachricht dieser Nachrichtenart wird erst per MQTT an das Kontrollprogramm und von dort aus per UDP an die Bibliothek gesendet.
 Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} dargestellt.
 \begin{figure}[htbp]
@@ -372,9 +372,9 @@ Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} dargestellt.
 \label{fig:message_flow_rpc}
 \end{figure}
 Aufgeführt sind die drei Komponenten Bibliothek, Kontrollprogramm und Android-App.
-Die Bibliothek sendet ein rpc\_request per UDP an das Kontrollprogramm.
+Die Bibliothek sendet ein \texttt{rpc\_request} per UDP an das Kontrollprogramm.
 Dieses leitet die Nachricht per MQTT weiter an die Smartphone-App, wo das Kommando ausgeführt wird.
-Ein eventuell anfallender Rückgabewert wird durch eine rpc\_response vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet, welche die Nachricht dann per UDP weiter an die Bibliothek weiterleitet.
+Ein eventuell anfallender Rückgabewert wird durch eine \texttt{rpc\_response} vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet, welche die Nachricht dann per UDP weiter an die Bibliothek weiterleitet.
 
 \chapter{Aufbau der Programmierumgebung}\label{chap:libs}
 Die Programmierumgebung ist die Schnittstelle, die die Programmierer für die Interaktion mit dem Smartphone in ihren Programmen verwenden.
@@ -394,7 +394,7 @@ Diese sendet die Daten gegebenenfalls an das Smartphone weiter oder antwortet di
 Eine Übersicht ist in Abbildung \ref{fig:Schnittstelle Bibliothek} dargestellt.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.7\textwidth]{images/lib_server_connection}
+  \includegraphics[width=.6\textwidth]{images/lib_server_connection}
   \caption{Schnittstellen der Bibliothek}
   \label{fig:Schnittstelle Bibliothek}
 \end{figure}
@@ -445,14 +445,14 @@ Eine durch das polling verursachte hohe CPU-Last kann durch blockierende Operati
 
 Die Funktionsweise und Zwecke der Subkomponenten von DataHandler werden im Folgenden anhand zweier Beispiele erläutert.
 Abbildung \ref{fig:serverMqttReqPath} wird zur Erläuterung für das erste Beispiel diskutiert.
-Dargestellt ist der Ablaufplan bei Empfang einer von der mobilen Anwendung an die Kontrollanwendung per MQTT versandten Nachricht.
-Dies könnte beispielsweise ein update\_request sein.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/MqttRequestServerPath}
   \caption{Ablaufdiagramm MQTT Request}
   \label{fig:serverMqttReqPath}
 \end{figure}
+Dargestellt ist der Ablaufplan bei Empfang einer von der mobilen Anwendung an die Kontrollanwendung per MQTT versandten Nachricht.
+Dies könnte beispielsweise ein \texttt{update\_request} sein.
 
 Für die MQTT-Verbindung wird die unter OpenSource-Lizenz stehende MQTT-Library Paho \cite{paho} der Eclipse-Foundation verwendet. 
 Erreicht eine Nachricht per MQTT die Anwendung, wird Sie vom MQTTHandlerThread entgegengenommen.
@@ -460,8 +460,8 @@ Dieser hat sich mit einem MQTT-Broker unter der Hostadresse \textit{pma.inftech.
 Erreicht eine Nachricht den MQTTHandlerThread, wird die Callback-Funktion ausgelöst und die Payload der Nachricht in eine Queue eingetragen.
 Der MqttRequestHandler wartet, bis ein Eintrag in der Queue vorhanden ist, entnimmt gegebenenfalls eine Nachricht und bestimmt den Nachrichtentyp der Anfrage.
 Prinzipiell können von der Smartphone-App nur zwei Nachrichtentypen an die Kontrollanwendung versandt werden.
-Handelt sich um ein update\_request, also einen neuen Sensorwert, muss dieser in der Datenbank aktualisiert werden.
-Handelt es sich hingegen um eine rpc\_response, also um eine Antwort auf eine vorausgegangenes rpc\_request, muss diese Nachricht per UDP an die Bibliothek zurückgesendet werden, wofür Sie in eine andere queue abgelegt wird.
+Handelt sich um ein \texttt{update\_request}, also einen neuen Sensorwert, muss dieser in der Datenbank aktualisiert werden.
+Handelt es sich hingegen um eine \texttt{rpc\_response}, also um eine Antwort auf eine vorausgegangenes \texttt{rpc\_request}, muss diese Nachricht per UDP an die Bibliothek zurückgesendet werden, wofür Sie in eine andere queue abgelegt wird.
 Der AnswerQueueWorker wartet, bis der MqttRequestHandler die Nachricht abgelegt hat und sendet diese dann per UDP über die localhost-Adresse \textit{127.0.0.1} auf dem Port \textit{5005} zurück an die Bibliothek.
 
 Das zweite Beispiel befasst sich mit dem Ablauf eines UDP-Requests, also einer mit UDP versandten Nachricht der Programmierumgebung.
@@ -476,9 +476,9 @@ Erreicht eine Nachricht per UDP die Anwendung, wird Sie vom UDPRequestQueueWorke
 Dieser bindet beim Start einen Socket für die localhost-Adresse \textit{127.0.0.1} und den Port \textit{5005}  ein.
 Geht auf dem Socket eine Nachricht ein, wird Sie in eine queue abgelegt.
 Der UDPRequestHandler entnimmt die Nachricht aus der queue und bestimmt den Typ der Anfrage.
-Handelt es sich um eine Nachricht des Types rpc\_request, also einer Ausgabe-Anfrage für das Smartphone muss Sie per MQTT an das Smartphone versandt werden, wofür Sie in eine andere queue eingetragen wird.
+Handelt es sich um eine Nachricht des Types \texttt{rpc\_request}, also einer Ausgabe-Anfrage für das Smartphone muss Sie per MQTT an das Smartphone versandt werden, wofür Sie in eine andere queue eingetragen wird.
 Der MQTTHandlerThread entnimmt die Nachricht und sendet sie per MQTT ab.
-Ist Nachricht hingegen ein SensorRequest, also die Anfrage eines Sensormesswerts, muss eine Nachricht des Typs sensor\_response erstellt und der ausgelesene Wert eingefügt werden.
+Ist Nachricht hingegen ein \texttt{sensor\_request}, also die Anfrage eines Sensormesswerts, muss eine Nachricht des Typs \texttt{sensor\_response} erstellt und der ausgelesene Wert eingefügt werden.
 Dieser wird unter Verwendung der SensorDB-Klasse ermittelt.
 Die erstellte, befüllte Antwort muss anschließend an die Programmierumgebung zurückgesendet werden.
 Hierfür wird die Anfrage vom UDPRequestHandler in eine Queue eingetragen, aus der der AnswerQueueWorker Sie wieder entnimmt und Sie an die Programmierumgebung zurücksendet.
@@ -516,7 +516,7 @@ Nach dem Einlesen der Konfigurationen wird der zur Kommunikation verwendete MQTT
 Über eine ServiceConnection wird beim erfolgreichen Einbinden über eine Callback-Methode der weitere Ablauf der Anwendung definiert, der erst ausgeführt werden soll, wenn eine MQTT-Verbindung hergestellt ist.
 RootActivity und MQTT-Service tauschen jeweils ihre Objekt-Referenzen aus.
 Methoden des MQTT-Service rufen zum Zweck der Ausgabe Methoden der RootActivity auf.
-SensorEventListener benötigen eine Referenz auf den MQTT-Service, da sie bei Sensorwerten über diesen update\_requests versenden.
+SensorEventListener benötigen eine Referenz auf den MQTT-Service, da sie bei Sensorwerten über diesen \texttt{update\_request}s versenden.
 
 Der Nachrichtenempfang im MQTT-Service wird nicht im UI-Thread behandelt.
 Dies ist jedoch Voraussetzung um UI-Elemente wie zum Beispiel die Farbe der Signal-LED im Service verändern zu können.
@@ -547,10 +547,10 @@ Die so generierte Nachricht wird anschließend über den gebundenen MQTT-Service
 
 Ist der Erhalt von Nachrichten möglich und werden Sensormessdaten automatisch an die Kontrollanwendung gesendet, ist die Startroutine der mobilen Anwendung abgeschlossen.
 Auf Nachrichten wird nun nur noch im MQTT-Service in einem MessageListener mit entsprechendem Callback reagiert und gegebenenfalls eine Ausgabe ausgeführt.
-Die Anwendung ist nun betriebsbereit und sendet update\_requests an die Kontrollanwendung.
+Die Anwendung ist nun betriebsbereit und sendet \texttt{update\_request}s an die Kontrollanwendung.
 Übermittelt werden die Sensordaten an den Broker mit einer \acrfull{qos} (Quality of Service) von 0.
 Auf dieser Stufe wird der Empfang der Nachricht von den Kommunikationspartnern nicht bestätigt.
-Verluste von update\_requests sind unproblematisch, da je nach Taktung der SensorEventListener innerhalb kurzer Zeit neue Sensormesswerte zur Übertragung vorliegen.
+Verluste von \texttt{update\_request}s sind unproblematisch, da je nach Taktung der SensorEventListener innerhalb kurzer Zeit neue Sensormesswerte zur Übertragung vorliegen.
 Eine exakte Zustellung ist hier nicht notwendig.
 Höhere QoS-Stufen würden den Übertragungsprozess verlangsamen und Latenzen erhöhen.
 
@@ -564,11 +564,6 @@ Beispielsweise word für \textit{Diebstahl-Alarm} nur der Näherungssensor verwe
 Für die in dieser Arbeit enthaltenen Übungsaufgaben werden folgende Sensortypen verwendet: Beschleunigungssensor, Gyroskop und Annäherungssensor.
 
 Beschleunigungs- bzw. Lagesensoren messen die Beschleunigung in $m/s^2$ für die drei Bewegungsrichtungen: X-, Y- und Z-Achse in einem festgelegten Zeitraum.
-Die Erdbeschleunigung ist auch in diesen Messwerten enthalten.
-Diese muss für die bereinigten, realen Werte von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
-% todo: einheiten
-Messeinheiten unterscheiden sich je nach Sensor.
-Das Gyroskop misst keine Beschleunigung, sondern die aktuelle Geschwindigkeit in $rad/s$ der gleichen Achsen.
 Zur Übersicht sind diese in Abbildung \ref{fig:and_axes} dargestellt.
 \begin{figure}[htbp]
   \centering
@@ -576,6 +571,12 @@ Zur Übersicht sind diese in Abbildung \ref{fig:and_axes} dargestellt.
   \caption{Android-Koordinatensystem}
   \label{fig:and_axes}
 \end{figure}
+Die Erdbeschleunigung ist auch in diesen Messwerten enthalten.
+Diese muss für die bereinigten, realen Werte von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
+% todo: einheiten
+Messeinheiten unterscheiden sich je nach Sensor.
+Das Gyroskop misst keine Beschleunigung, sondern die aktuelle Geschwindigkeit in $rad/s$ der gleichen Achsen.
+
 Die Frequenz, mit der Messwerte erfasst werden kann manuell angegeben werden.
 Hierfür stehen vier Stufen zur Auswahl.
 \begin{table}[htbp]
@@ -612,6 +613,7 @@ Diese werden anhand der Smartbit-Lösung für drei Nutzungsszenarien gemessen un
 \section{Verwendungsbeispiel}
 Die Verwendung der Smartbit-Lösung wird anhand der Beispielaufgabe \textit{Alarmanlage} vorgestellt.
 Gezeigt wird wie die Aufgabe in der Programmierumgebung unter Verwendung der Python-Bibliothek gelöst wurde und wie sich Ausgaben auf dem Smartphone äußern.
+Die Android-Anwendung dieses Beispiels wurde auf den Smartphones Motorola G6 (Android 9), OnePlus 3T (Android 11) und Google Pixel 4 (Android 12) getestet.
 
 Eine gestartete Kontrollanwendung ist Voraussetzung für einen Nachrichtenaustausch.
 Mit dem Befehl \texttt{python ./server.py} wird sie in einer Shell gestartet.
@@ -623,8 +625,8 @@ Der Vorgang wird in Abbildung \ref{fig:start_controll_app} dargestellt.
   \label{fig:start_controll_app}
 \end{figure}
 Die Anwendung meldet eine erfolgreiche Verbindung mit dem MQTT-Broker und gibt das abonnierte Topic aus.
-Neben diesen Start-Informationen werden auch eingehende rpc\_requests und rpc\_responses ausgegeben.
-Sensor\_requests, sensor\_responses und update\_requests werden wegen ihrer Häufigkeit nicht geloggt.
+Neben diesen Start-Informationen werden auch eingehende \texttt{rpc\_requests} und \texttt{rpc\_responses} ausgegeben.
+\texttt{sensor\_requests}, \texttt{sensor\_responses} und \texttt{update\_requests} werden wegen ihrer Häufigkeit nicht geloggt.
 
 Die Implementierung der Lösung der Aufgabe ist in Listing \ref{lis:alarm} dargestellt.
 \lstset{language=python, captionpos=b, frame=single, numberstyle=\tiny, style=customcs}
@@ -639,7 +641,7 @@ Ist die Bedingung erfüllt, wird mit der Methode \texttt{write\_text()} der Text
 Die Methode \textit{vibrate} lässt das Smartphone für die Dauer von 1000 ms vibrieren.
 Zum Schluss wird mit der Methode \textit{toggle\_led} noch der Farbwert der Signal-LED von grün auf rot geändert.
 
-Die Bibliothek übermittelt für jede Ausgabe korrespondierende rpc\_requests über die Kontrollanwendung an das Smartphone.
+Die Bibliothek übermittelt für jede Ausgabe korrespondierende \texttt{rpc\_requests} über die Kontrollanwendung an das Smartphone.
 Bei Empfang werden die Anfragen in der Kontrollanwendung geloggt.
 Eine Übersicht der gesendeten Nachrichten des Beispiels ist in Abbildung \ref{fig:req_controll_app} aufgeführt.
 \begin{figure}[htbp]
@@ -675,24 +677,22 @@ Das Resultat ist in Abbildung \ref{fig:app_alarm} dargestellt.
 Das Textfeld stellt nun den Text \textit{ALARM} dar und die Farbe der Signal-LED hat sich von grün auf rot geändert.
 Die Vorgangs-LED leuchtet rot um zu signalisieren dass gerade eine Ausgabe ausgeführt wird.
 Diese ist nicht sichtbar, denn es handelt sich um das haptische Vibrationsfeedback.
-
-Die Android-Anwendung dieses Beispiels wurde auf den Smartphones Motorola G6 (Android 9), OnePlus 3T (Android 11) und Google Pixel 4 (Android 12) getestet.
-Voraussetzung für die Nutzung der App ist ein Smartphone mit mindestens Android 7 (Nougat [API Level 24])
-Entwickelt wurde Smartbit mit Android Studio Bumblebee (2021.1.1 Patch 2) und Visual Studio Code (v1.68.1).
-Die Bibliotheken und Kontrollanwendung wurden unter Windows 10 (21H1), Windows 11 (21H2) und Debian GNU/Linux 11 (bullseye) unter den Python-Versionen 3.9.0, 3.9.2, 3.10.2, Java 17.0.2 und C18 mit GCC 10.2.1.
-Als JSON-Parser werden unter Java Json for Java (v20220320) und unter C libcjson v1.7.14-1 verwendet.
+% Voraussetzung für die Nutzung der App ist ein Smartphone mit mindestens Android 7 (Nougat [API Level 24])
+% Entwickelt wurde Smartbit mit Android Studio Bumblebee (2021.1.1 Patch 2) und Visual Studio Code (v1.68.1).
+% Die Bibliotheken und Kontrollanwendung wurden unter Windows 10 (21H1), Windows 11 (21H2) und Debian GNU/Linux 11 (bullseye) unter den Python-Versionen 3.9.0, 3.9.2, 3.10.2, Java 17.0.2 und C18 mit GCC 10.2.1.
+% Als JSON-Parser werden unter Java Json for Java (v20220320) und unter C libcjson v1.7.14-1 verwendet.
 
 Nutzerinnen und Nutzer können alle in den Anforderungen aufgestellten Ausgabemöglichkeiten und Sensortypen nutzen.
-Implementierte Funktionen kommunizieren zwar mit der Kontrollanwendung in Serialisierten Nachrichten, geben an die aufrufenden Programme jedoch primitive Datentypen zurück.
+Implementierte Funktionen kommunizieren zwar mit der Kontrollanwendung in serialisierten Nachrichtenformaten, geben an die aufrufenden Programme jedoch primitive Datentypen zurück.
 Die Bibliothek ist portabel nutzbar, da die Stub-Funktionen jeweils für die Programmiersprachen C, Java und Python implementiert wurden.
 Eine Einbindung in Eclipse IDE ist möglich, jedoch durch die zusätzlich benötigten JSON-Parser-Bibliotheken für C- und Java-Projekte nicht trivial.
-Da Java und Python plattformunabhängige Programmiersprachen sind erübrigt sich die zweifache Implementierung für Unix- und Windows-Systeme.
+Da Java und Python plattformunabhängige Programmiersprachen sind, erübrigt sich die zweifache Implementierung für Unix- und Windows-Systeme.
 Smartbit ermöglicht ein responsives Verhalten der Komponenten.
 Im vorangegangen Beispiel \textit{Alarmanlage} betrug die Reaktionszeit unter einer Sekunde.
 Smartphoneseitige Latenzen werden architekturbedingt durch die Zwischenspeicherung von Kontrollanwendung verschleiert.
-Eine, von Umgebungseigenschaften abhängige, Variierungder Übertragungsgeschwindigkeit ist dadurch für die Programmiererin oder den Programmierer nicht sichtbar.
-Mit der Verwendung von MQTT und UDP wurden leichtgewichtig, ihrem Einsatzzweck entsprechende Protokolle für die Kommunikation gewählt.
-Trotz einem QOS-Level 0 werden auch Ausgabeanfragen sicher übertragen und ausgeführt.
+Von Umgebungseigenschaften abhängige Variierungen der Übertragungsgeschwindigkeit ist dadurch für die Programmiererin oder den Programmierer nicht sichtbar.
+Mit der Verwendung von MQTT und UDP wurden leichtgewichtige, ihrem Einsatzzweck entsprechende Protokolle für die Kommunikation gewählt.
+Trotz der Übertragung mit einem einem QoS-Level 0 werden auch Ausgabeanfragen sicher übertragen und ausgeführt.
 Nachrichten, die über die MQTT-Verbindung zwischen Kontrollanwendung und Smartphone-App versandt werden, werden auf dem Übertragungsweg mit TLS verschlüsselt übertragen.
 Nachrichten, die über die UDP-Verbindung zwischen Kontrollanwendung und Bibliothek übertragen werden, werden nicht verschlüsselt.
 Ein unberechtigtes Mitlesen des Datenverkehrs setzt jedoch voraus, dass Angreifer Nutzerrechte auf dem PC der Nutzerin oder des Nutzers besäßen, da Datagramme lediglich über das Loopback-Interface ausgetauscht werden können.
@@ -703,16 +703,16 @@ Smartbit setzt durch die Implementierung von Log-Ausgaben in Kontrollanwendung u
 Im Zuge der Konzeption wurden Latenzen eine besondere Bedeutung zugemessen.
 Erhöhte Latenzzeiten führen zu einem verzögerten Verhalten und einer schlechteren Benutzbarkeit.
 Zum Zwecke der Evaluation der Latenzen werden für drei Nutzungsszenarien Messungen durchgeführt.
-Da sensor\_requests lediglich über die Local-Loopback-Schnittstelle zwischen Bibliothek und Kontrollanwendung ausgetauscht werden ist anzunehmen, dass diese Verbindung in der Smartbit-Lösung keine Limitierung darstellt.
-Auf die Untersuchung der Latenzzeiten zwischen dem Absenden eines sensor\_requests und dem Erhalt einer sensor\_response wird daher verzichtet.
+Da \texttt{sensor\_requests} lediglich über die Local-Loopback-Schnittstelle zwischen Bibliothek und Kontrollanwendung ausgetauscht werden ist anzunehmen, dass diese Verbindung in der Smartbit-Lösung keine Limitierung darstellt.
+Auf die Untersuchung der Latenzzeiten zwischen dem Absenden eines \texttt{sensor\_requests} und dem Erhalt einer \texttt{sensor\_response} wird daher verzichtet.
 
 Unbekannt ist indes die Latenz zwischen Smartphone-App und Kontrollprogramm.
-Über diesen Transportweg werden die Nachrichtenformate rpc\_request, rpc\_response und update\_request übermittelt.
+Über diesen Transportweg werden die Nachrichtenformate \texttt{rpc\_request}, \texttt{rpc\_response} und \texttt{update\_request} übermittelt.
 Durch die marginale Latenz zwischen Kontrollanwendung und Bibliothek können Sensorwerte zwar häufig abgefragt werden, jedoch wird bis zum Eintreffen eines neuen Sensormesswerts der zuletzt Eingespeicherte zurückgegeben.
 Sensordatenabfragen sind daher abhängig von der MQTT-Verbindung zwischen Smartphone und Kontrollanwendung.
 Um ein realistisches Nutzungsverhalten zu simulieren, wird für die Messungen der Transportweg zwischen Bibliothek und Smartphone-App betrachtet.
-Gemessen wird die Zeitdauer nach Versand eines rpc\_requests bis zum Erhalt einer rpc\_response von der Smartphone-App.
-Die Smartphone-App sendet währenddessen fortlaufend update\_requests per MQTT umd reguläre Last auf der Kontrollanwendung zu simulieren.
+Gemessen wird die Zeitdauer nach Versand eines \texttt{rpc\_requests} bis zum Erhalt einer \texttt{rpc\_response} von der Smartphone-App.
+Die Smartphone-App sendet währenddessen fortlaufend \texttt{update\_request}s per MQTT umd reguläre Last auf der Kontrollanwendung zu simulieren.
 Messungen finden für drei verschiedene Nutzungsszenarien statt: Der Verwendung im Labor des SWT-Instituts an der Hochschule, der Heimarbeit über eine DSL-Verbindung und der Verwendung in einer virtuellen Umgebung.
 Für alle Messungen erfolgen Internetzugriffe seitens des lokalen PCs kabelgebunden und seitens des Smartphones über WLAN.
 Die Anzahl der verbunden Geräte des AccessPoints sind für die Übertragungszeit ebenfalls ausschlaggebend.
