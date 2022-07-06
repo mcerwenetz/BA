@@ -226,6 +226,7 @@ Eine Übersicht des Aufbaus ist in Abbildung \ref{fig:design} dargestellt.
 \end{figure}
 Um mit dem Smartphone zu interagieren bietet die Programmierumgebung eine programmiersprachenunabhängige Bibliothek mit Schnittstellen in Form von Stub-Funktionen an, welche die \acrfull{api} der Kontrollanwendung nutzen.
 Die Bibliothek kann in bestehenden Programmcode auf dem lokalen PC eingebunden werden, um die angebotenen Funktionen zu verwenden.
+Zur Verbesserung der Verständlichkeit für angehende Programmiererinnen und Programmierer, wird auf Funktionen mit asynchronen Rückgabewerten, wie beispielsweise Futures, verzichtet.
 Die in der Programmiersprache Python implementierte Kontrollanwendung, welche ebenfalls auf dem lokalen PC betrieben wird, dient der Nachrichtenvermittlung zwischen Smartphone-App und Programmierumgebung.
 Latenzen zwischen Smartphone und Programmierumgebung werden durch den Einsatz eines Zwischenspeichers für Sensorwerte vor der Programmiererin oder dem Programmierer verschleiert.
 Das Problem variierender, durch die Verwendung von Funknetzen verursachter, Übertragungsgeschwindigkeiten wird dadurch umgangen.
@@ -236,6 +237,9 @@ Um Latenzzeiten beim Start der Sensormessprozesse zu reduzieren, werden diese be
 Die Komponenten stehen untereinander in einer 1:1-Beziehung.
 Programmiererinnen und Programmierer können mit \textit{einem} Programm und \textit{einer} Kontrollanwendung \textit{ein} Smartphone ansteuern.
 Für das Ansteuern mehrerer Smartphones wird jeweils eine Kontrollanwendung benötigt.
+Umgebungsparameter für die Komponenten können in den zwei Konfigurationsdateien \textit{config.json} und \textit{protocol.json} eingestellt werden.
+In Ersterer sind grundlegende Konfigurationsparameter wie Hostname und Port des MQTT-Brokers oder der Name des Topics definiert.
+In der zweiten Datei werden neben den Schlüsselwörtern und Abkürzungen für Sensortypen und Ausgabekommandos auch Vorlagen für Nachrichtenformate aufgeführt.
 
 Zur Übermittlung der Nachrichten werden die Protokolle \acrfull{mqtt} und \acrfull{udp} eingesetzt.
 MQTT ist ein auf dem Observer-Pattern basierendes Client-Server-Protokoll.
@@ -250,8 +254,6 @@ Latenzzeiten beim Versand betragen dadurch weniger als eine Millisekunde.
 Zur weiteren Minimierung der Latenzen wird UDP als verbindungsloses Protokoll eingesetzt.
 Die Verwendung verbindungsorientierter Protokolle wie TCP würde neben ihrer Übertragungssicherheit, durch eine insgesamt größere Anzahl an zu sendenden Nachrichten, auch die Latenzzeiten erhöhen.
 Da die Reduzierung der Latenzen, zum Zweck einer besseren Lernerfahrung, eine höhere Priorität hat als die Gewährleistung der Übertragungssicherheit wird auf verbindungsorientierte Protokolle verzichtet.
-% Die Reduzierung der Latenzzeiten hat eine höhere Priorität, als eine Übertragungssicherheit. 
-% Da ein Übertragungsfehler lediglich den Verlust einer Sensormesswert-Anfrage bedeutete ist eine Reduktion der Übertragungssicherheit zwischen Bibliothek und Kontrollanwendung annehmbar.  
 Als Nachrichtenformat wird \acrfull{json} verwendet.
 Das menschenlesbare, kompakte Nachrichtenformat ist weit verbreitet und wird von vielen Softwarebibliotheken unterstützt.
 Es ermöglicht die Darstellung von Zahlen, Strings, Booleans und Arrays und die Schachtelung von Objekten als Schlüssel-Wert-Paare \cite{json-rfc}.
@@ -383,11 +385,10 @@ Die Bibliothek existiert, zur Kompatibilität, für Programme der Programmierspr
 In Programmen in Java und Python ist sie zudem plattformunabhängig.
 Für C-Programme gibt es zwei Bibliotheken: Eine für Unix- und eine für Windows-Systeme.
 In C ist die Bibliothek prozedural mit statischen Methoden, in Java und Python objektorientiert implementiert.
-%todo: Warum genau diese Programmiersprachen? Facts über Verteilung.
+Der TIOBE-Index stellt, anhand der Häufigkeit von Suchbegriffen der 25 wichtigsten Suchmaschinen im Internet, ein Popularitätsranking für Programmiersprachen dar.
+Die Sprachen C, Java und Python belegen im Juni 2022 die ersten drei Plätze \cite{tiobe}.
 
 Beim Aufruf der bereitgestellten Funktionen, werden standardisierte Anfragen im JSON-Format generiert und an die Kontrollanwendung gesendet.
-% todo: das muss in die arch
-% Zur Verbesserung der Verständlichkeit für angehende Programmierer, wird auf Funktionen mit asynchronen Rückgabewerten, wie beispielsweise Futures, verzichtet.
 Diese sendet die Daten gegebenenfalls an das Smartphone weiter oder antwortet direkt.
 Eine Übersicht des System-Kontexts der Bibliothek ist in Abbildung \ref{fig:Schnittstelle Bibliothek} dargestellt.
 \begin{figure}[htbp]
@@ -505,11 +506,7 @@ Ein Ablaufplan des Startvorgangs ist in Abbildung \ref{fig:app_flow} dargestellt
   \label{fig:app_flow}
 \end{figure}
 In der RootActivity werden anfänglich alle UI-Elemente zur programmiertechnischen Ansteuerung eingebunden.
-%todo: eigentlich in die arch
 Anschließend werden die zwei Konfigurationsdaten \textit{config.json} und \textit{protocol.json} eingelesen.
-In Ersterer sind grundlegende Konfigurationsparameter wie Hostname und Port des MQTT-Brokers oder der Name des Topics definiert.
-In der Datei \textit{protocol.json} werden neben den Schlüsselwörtern und Abkürzungen für Sensortypen und Ausgabekommandos auch Vorlagen für Nachrichtenformate aufgeführt.
-
 Nach dem Einlesen der Konfigurationen wird der zur Kommunikation verwendete MQTT-Service gestartet und asynchron eingebunden.
 Über eine ServiceConnection wird beim erfolgreichen Einbinden über eine Callback-Methode der weitere Ablauf der Anwendung definiert, der erst ausgeführt werden soll, wenn eine MQTT-Verbindung hergestellt ist.
 RootActivity und MQTT-Service tauschen jeweils ihre Objekt-Referenzen aus, da Methoden des MQTT-Service um Ausgaben zu tätigen, Zugriff auf  Methoden der RootActivity benötigen.
@@ -538,8 +535,8 @@ Die Funktionsweise der Sensormessung wird in Abbildung \ref{fig:sensor_event_lis
 \end{figure}
 SensorEventListener werden, nach Prüfung der Verfügbarkeit der jeweiligen Sensoren, gestartet und zentral in der Instanz der Klasse \texttt{SmartBitEventListenerContainer} gespeichert.
 Diese Klasse beinhaltet SensorEventListener für alle unterstützten Sensoren und dient ihrer Datenhaltung.
-Aufgabe der SensorEventListener ist es, auf Sensorwert-Änderungen zu reagieren und gegebenenfalls die Callback-Funktion \texttt{onSensorChanged()} auszuführen, in der die Sensorwerte über den MQTT-Service per \texttt{update\_requests} an die Kontrollanwendung übermittelt werden.
-% Todo: JSON wär auch gut in der Kontrollanwendung
+Aufgabe der SensorEventListener ist es, auf Sensorwert-Änderungen zu reagieren und gegebenenfalls die Callback-Funktion \texttt{onSensorChanged} auszuführen, in der die Sensorwerte über den MQTT-Service per \texttt{update\_requests} an die Kontrollanwendung übermittelt werden.
+% Todo: JSONMEssageWrapepr wär auch gut in der Kontrollanwendung
 Statische Methoden der Klasse JSONMessageWrapper ermöglichen die Erstellung der Nachrichtenformate und setzen das Messergebnis in das entsprechende Feld in der JSON-Nachricht ein.
 Die so generierte Nachricht wird anschließend über den gebundenen MQTT-Service an das vorher definierte Topic versandt.
 Ist der Erhalt von Nachrichten möglich und werden Sensormessdaten automatisch an die Kontrollanwendung gesendet, ist die Startroutine der mobilen Anwendung abgeschlossen.
@@ -553,9 +550,7 @@ Höhere QoS-Stufen würden den Übertragungsprozess verlangsamen und Latenzen er
 
 \section{Sensoren}
 Smartphones beinhalten Sensoren, die Daten über die Umgebungseigenschaften erfassen.
-Dazu zählen beispielsweise Bewegung, Annäherung, aber auch Temperatur oder Luftdruck.
-%todo: stimmt nicht. die messen einfach. reagiert wird wo anders.
-Ihr Zweck besteht darin, auf Änderungen der Werte zu reagieren.
+Dazu zählen beispielsweise Beschleunigung, Annäherung, aber auch Temperatur oder Luftdruck.
 Für unterschiedliche Aufgaben werden unterschiedliche Sensoren benötigt, wie beispielsweise der Näherungssensor für\textit{Diebstahl-Alarm} oder der Lagesensor für \textit{Dreh-Zähler}.
 Für die in dieser Arbeit enthaltenen Übungsaufgaben werden folgende Sensortypen verwendet: Beschleunigungssensor, Gyroskop und Annäherungssensor.
 
@@ -569,7 +564,6 @@ Zur Übersicht sind diese in Abbildung \ref{fig:and_axes} dargestellt.
 \end{figure}
 Die Erdbeschleunigung ist auch in den Messwerten des Lagesensors enthalten.
 Diese muss für die bereinigten, realen Werte von den aufgenommenen Werten subtrahiert werden\cite{accel_g}.
-% todo: einheiten
 Messeinheiten unterscheiden sich je nach Sensor.
 Das Gyroskop misst beispielsweise keine Beschleunigung, sondern die aktuelle Geschwindigkeit in $rad/s$ der gleichen Achsen.
 
