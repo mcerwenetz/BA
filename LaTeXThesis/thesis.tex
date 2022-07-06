@@ -36,10 +36,10 @@ Die Geräte bieten einen vergleichbaren Sensorumfang und können Ausgaben virtue
 Ihre Anbindung in Programmierumgebungen ist im Vergleich zu Mikrocontrollern jedoch nicht äquivalent unterstützt.
 
 Diese Arbeit behandelt die Entwicklung einer Softwarelösung namens Smartbit, welche Sensoren von Smartphones über eine Programmierumgebung ausliest und Ausgaben auf dem Smartphone ausführt.
-Anforderungen an die Lösung werden anhand von Beispielaufgabenstellungen spezifiziert und für die Implementierung der Lösung berücksichtigt.
-Die Evaluation der Lösung erfolgt durch eine Demonstration einer Beispielaufgabe und einer Messung für drei unterschiedliche Nutzungsszenarien.
+Anforderungen an Smartbit werden anhand von Beispielaufgabenstellungen spezifiziert und für die Implementierung berücksichtigt.
+Die Evaluation erfolgt durch eine Demonstration einer Beispielaufgabe und einer Messung für drei unterschiedliche Nutzungsszenarien.
 
-Die Lösung kann für den beschriebenen Einsatz verwendet werden. Die Einbindung in bestehende Programmierumgebungen ist möglich. 
+Smartbit kann für den beschriebenen Einsatz verwendet werden. Die Einbindung in bestehende Programmierumgebungen ist möglich. 
 Bei Aufrufen auftretende Latenzen zwischen Smartphone und Programm beeinträchtigen nicht die Nutzung.
 \end{abstract}
 
@@ -49,7 +49,7 @@ Bei Aufrufen auftretende Latenzen zwischen Smartphone und Programm beeinträchti
 Viele angehende Programmiererinnen und Programmierer mühen sich beim Programmieren lernen zum Anfang mit der Semantik von Programmiersprachen und grundlegenden algorithmischen Konzepten.
 Akademische Übungsaufgaben senken durch rein virtuelle Aufgabenstellungen ohne Interaktionsmöglichkeiten die Lernmotivation.
 Aufgaben in Verbindung mit Mikrocontroller-Schaltungen stellen dagegen eine praktische, fordernde und spielerische Einstiegsmöglichkeit dar, um Programmieren zu lernen.
-In den Projekten werden kleine Programme realisiert, die durch die Verwendung von Sensoren Programmiererinnen und Programmierer einladen, sich an den Aufgabenstellungen auszuprobieren.
+In den Mikrocontroller-Projekten werden kleine Programme realisiert, die durch die Verwendung von Sensoren Programmiererinnen und Programmierer einladen, sich an den Aufgabenstellungen auszuprobieren.
 Die in Mikrocontroller-Schaltungen integrierten Sensoren sind Voraussetzung, um physikalische Eigenschaften in der realen Welt zu messen.
 Von Programmiererinnen und Programmierern entwickelte Programme können auf dem Mikrocontroller die verbundenen Sensoren auslesen und auf Änderungen der gemessenen Werte reagieren.
 Zusammen ermöglichen Sensoren, Mikrocontroller und ein entwickeltes Programm eine Bedienung der Schaltung.
@@ -83,7 +83,7 @@ Visuelle und haptische Ausgaben auf dem Smartphone erfordern zudem eine mobile A
 In dieser Arbeit wurde eine Softwarelösung mit dem Namen Smartbit entwickelt.
 Sie ermöglicht Smartphones statt Mikrocontroller-Schaltungen für die Entwicklung von interaktiven Projekten zu nutzen. 
 Sensoren sollen ausgelesen und Ausgaben auf dem Smartphone ausgelöst werden können.
-Für die Verwendung der Smartbit-Lösung werden angehenden Programmiererinnen und Programmierern Beispielaufgaben dargereicht, deren Bewältigung eine Bereitstellung von Benutzungsmöglichkeiten seitens der Smartbit-Lösung erfordert.
+Für die Verwendung von Smartbit werden angehenden Programmiererinnen und Programmierern Beispielaufgaben dargereicht, deren Bewältigung eine Bereitstellung von Benutzungsmöglichkeiten seitens Smartbit erfordert.
 Die Aufgaben, sowie aus ihnen ableitbare Anforderungen und Rahmenbedingungen, sind in Kapitel \ref{chap:Experimente} zu aufgeführt.
 Die drei Komponenten Smartphone-App, Kontrollanwendung und Programmierumgebung und werden in Kapitel \ref{chap:architektur} vorgestellt.
 Damit die Komponenten zusammenarbeiten können müssen sie Nachrichten austauschen.
@@ -91,8 +91,8 @@ Die Einsatzzwecke der Nachrichtentypen und der Nachrichtenaustausch werden in Ka
 Die Nutzung und Funktionsweise der Schnittstellen der Programmierumgebung werden in Kapitel \ref{chap:libs} erklärt.
 Der Aufbau und das Verhalten, der zwischen Smartphone-App und Programmierumgebung vermittelnden Kontrollanwendung, wird in Kapitel \ref{chap:server_software} erklärt.
 Kapitel \ref{chap:app} behandelt die Funktionsweise und den Aufbau der Smartphone-App im Detail.
-In Kapitel \ref{chap:eval} wird untersucht, ob die vorgegebenen Anforderungen erfüllt wurden und die Verwendung der Smartbit-Lösung anhand einer Beispielaufgabe vorgestellt.
-Bei der Entwicklung aufgetretene Schwierigkeiten, Verbesserungs- und Erweiterungsmöglichkeiten der Smartbit-Lösung werden in Kapitel \ref{chap:fazit} diskutiert.
+In Kapitel \ref{chap:eval} wird untersucht, ob die vorgegebenen Anforderungen erfüllt wurden und die Verwendung von Smartbit anhand einer Beispielaufgabe vorgestellt.
+Bei der Entwicklung aufgetretene Schwierigkeiten, Verbesserungs- und Erweiterungsmöglichkeiten werden in Kapitel \ref{chap:fazit} diskutiert.
 
 \chapter{Smartphones als Mikrocontroller-Ersatz für Programmieraufgaben} \label{chap:Experimente}
 Smartphones sind in sich geschlossene, technische Geräte, die neben vordefinierten Verbindungsschnittstellen wie einem USB- bzw. Lightning-Port, WLAN und Bluetooth keine weiteren Schnittstellen bieten, um externe Hardware und Schaltungen anzuschließen.
@@ -101,7 +101,7 @@ Integrierte Lautsprecher können die in einer Mikrocontroller-Schaltung  manuell
 Zudem müssen Smartphones bei Ausgaben nicht auf Mehrzweck-Ausgabemöglichkeiten wie LED-Grids zurückgreifen, da zweckgebundene UI-Elemente wie Textfelder, Textausgaben oder Bildausgaben während der App-Entwicklung beliebig platziert werden können.
 
 In diesem Kapitel werden Beispielprogrammieraufgaben vorgestellt.
-Diese können sowohl mit Mikrocontroller-Schaltungen, als auch mit der in dieser Arbeit implementierten Smartbit-Lösung gelöst werden.
+Diese können sowohl mit Mikrocontroller-Schaltungen, als auch mit Smartbit gelöst werden.
 Des Weiteren werden die aus den Beispielprogrammieraufgaben hervorgehenden Anforderungen aufgestellt und erörtert.
 
 \section{Beispielprogrammieraufgaben}\label{sec:activities}
@@ -133,7 +133,7 @@ Dies soll verhindern, dass sich unerfahrene Programmiererinnen und Programmierer
 \end{table}
 
 In der Aufgabe \textit{Disco} soll eine virtuelle LED für eine Zeitdauer von 500 ms grün und anschließend 500 ms rot leuchten.
-Sensoren werden nicht verwendet, da der LED-Farbwechsel unabhängig von Sensormesswertänderungen ausgeführt wird, weshalb Aufgabe als \textit{Einfach} eingestuft wird.
+Sensoren werden nicht verwendet, da der LED-Farbwechsel unabhängig von Sensormesswertänderungen ausgeführt wird, weshalb die Aufgabe als \textit{Einfach} eingestuft wird.
 
 In der Aufgabe \textit{Würfeln} soll ein Schütteln des Geräts erkannt werden.
 Verwendet wird ein Beschleunigungen messender Lagesensor.
@@ -142,7 +142,7 @@ Der Schwierigkeitsgrad wird ebenfalls auf \textit{Einfach} eingeschätzt, da die
 
 In der Aufgabe \textit{Diebstahl-Alarm} soll unter Verwendung des Näherungssensors das örtliche Umfeld des Geräts auf eine Annäherung überprüft werde.
 Im diesem Falle soll ein alarmierender Text im Textfeld ausgegeben werden.
-Zusätzlich soll die LED die wie in Aufgabe \textit{Disco} die Farbe wechseln.
+Zusätzlich soll die LED wie in Aufgabe \textit{Disco} die Farbe wechseln.
 Neben den visuellen Ausgaben wird die Vibrationsfunktion als haptisches Feedback benötigt, die das Gerät fünf mal für 1000 ms vibrieren lässt.
 Der Schwierigkeitsgrad der Aufgabe ist als \textit{Mittel} eingestuft, da hier zwischen Alarm- und Normalzustand unterschieden werden muss.
 Entfernt sich eine Person, muss der Alarm-Zustand verlassen und alle Ausgaben auf ihren Initialwert zurückgesetzt werden.
@@ -161,7 +161,7 @@ Die Aufgabe ist als \textit{Schwer} bewertet, da hier Wiederholungen in einer We
 Abhängigkeiten unter den Messwertergebnissen erschweren eine Erkennung der Umdrehungen zusätzlich.
 
 \section{Anforderungen an Smartbit}\label{sec:anforderungen}
-Aus der vorangegangenen Beschreibung von Beispielaufgaben lassen sich Anforderungen an die Smartbit-Lösung ableiten.
+Aus der vorangegangenen Beschreibung von Beispielaufgaben lassen sich Anforderungen an Smartbit ableiten.
 Die Zielgruppe besteht, wie in der Einleitung beschrieben, aus IT-affinen Studieninteressierten oder angehenden Programmiererinnen oder Programmierern, mit Hauptfokus auf sich im Grundstudium befindende Studierende der Fakultät Informationstechnik der Hochschule Mannheim.
 Voraussetzung der Nutzung der App ist der Besitz eines PCs und eines Android-Smartphones  mit Internetzugang.
 
@@ -170,14 +170,14 @@ Eine Übersicht der Anwendungsfälle ist in Abbildung \ref{fig:usecase} dargeste
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.8\textwidth]{images/usecase_usage.pdf}
-  \caption{Anwendungsfälle für die Benutzung der Lösung}
+  \caption{Anwendungsfälle für die Benutzung von Smartbit}
   \label{fig:usecase}
 \end{figure}
-Nutzerinnen und Nutzer möchten durch die Smartbit-Lösung Ausgaben auf dem Smartphone tätigen und Sensorwerte des Smartphones auslesen können.
-Ausgaben sollen visuell über ein Textfeld und eine LED, und haptisch über eine Vibrationsausgabe möglich sein.
+Nutzerinnen und Nutzer möchten durch Smartbit Ausgaben auf dem Smartphone tätigen und Sensorwerte des Smartphones auslesen können.
+Ausgaben sollen visuell über ein Textfeld, eine LED und haptisch über eine Vibrationsausgabe möglich sein.
 Sensor-Anfragen sollen, zur Erfüllung der Aufgaben, für den Lage- und Annäherungssensor sowie dem Mikrofon möglich sein.
 Für die Bedienung aller Ausgabemöglichkeiten und der Abfrage der spezifizierten Sensortypen, müssen aus bestehenden Programmcode aufrufbare Funktionen existieren.
-Die Verwendung der Lösung soll verständlich und ohne Hintergrundwissen möglich sein.
+Die Verwendung soll verständlich und ohne Hintergrundwissen möglich sein.
 Auf serialisierte Ausgabeformate ist zu verzichten.
 Funktionen müssen Rückgabewerte in Form von primitiven Datentypen zurückgeben.
 Um die Kompatibilität mit, von Programmiererinnen oder Programmierern entwickelten Programmen, zu erhöhen, müssen die Funktionen in mehreren Programmiersprachen zur Verfügung stehen.
@@ -185,9 +185,9 @@ Smartbit soll für Nutzerinnen und Nutzer, neben der Einbindung in Programme, au
 Der Einsatz der Entwicklungsumgebung \textit{Eclipse IDE} \cite{eclipse-ide} ist an der Fakultät Informationstechnik der Hochschule Mannheim weit verbreitet und wird in den Lehrveranstaltungen des Grundstudiums umfassend genutzt.
 Es ist davon auszugehen, dass Studierende mit der Benutzung dieser Entwicklungsumgebung vertraut sind.
 Die Smartbit-Einbindung soll daher insbesondere für für diese Entwicklungsumgebung unterstützt werden.
-Da es sich um eine plattformunabhängige \acrfull{ide} handelt, muss auch die Smartbit-Lösung plattformübergreifend, also für Unix und Windows-Systeme, in diese Entwicklungsumgebung eingebunden werden können.
+Da es sich um eine plattformunabhängige \acrfull{ide} handelt, muss Smartbit auch plattformübergreifend, also für Unix und Windows-Systeme, in diese Entwicklungsumgebung eingebunden werden können.
 
-Um die Benutzbarkeit sicherzustellen, müssen durch die Smartbit-Lösung Programme entwickelt werden können, die ein responsives Verhalten aufweisen.
+Um die Benutzbarkeit sicherzustellen, müssen unter der Verwendung von Smartbit Programme entwickelt werden können, die ein responsives Verhalten aufweisen.
 Responsivität trägt zur Lernerfahrung bei, da sich Änderungen physikalischer Umgebungseigenschaften unmittelbar auf das Verhalten des entwickelten Programms auswirken.
 Um eine Responsivität zu garantieren, gilt es Latenzzeiten zu minimieren.
 Latenzen werden durch die \acrfull{rtt} gemessen.
@@ -208,12 +208,12 @@ Bei der Übertragung von Sensormessdaten ist auf den Gebrauch ihrem Einsatzzweck
 Um die Sicherheit zu erhöhen müssen Nachrichten auf den Transportwegen verschlüsselt übertragen und eine Ausführung von Schadcode auf dem Smartphone verhindert werden.
 Bei der Kommunikation zwischen Smartphone-Anwendung und Programmierumgebung kann es zu Komplikationen kommen.
 Um die Wartbarkeit zu gewährleisten, müssen interne Abläufe transparent sein.
-Die Lösung muss Nachrichtenabläufe nachvollziehbar darstellen, um fehlerhafte Konfigurationen zu vermeiden.
+Smartbit muss Nachrichtenabläufe nachvollziehbar darstellen, um fehlerhafte Konfigurationen zu vermeiden.
 
 \chapter{Smartbit-Architektur und Spezifikation} \label{chap:architektur}
-In diesem Kapitel werden die Komponenten der Smartbit-Lösung vorgestellt und ihr Verhalten spezifiziert.
-Der Fokus liegt auf den Anforderungen berücksichtigenden Designentscheidungen während der Implementierung der Lösung und den zur interkomponellen Kommunikation verwendeten Protokollen.
-Des Weiteren wird das Verhalten der Lösung exemplarisch anhand des Ablaufs eines Funktionsaufrufs spezifiziert.
+In diesem Kapitel werden die Smartbit-Komponenten vorgestellt und ihr Verhalten spezifiziert.
+Der Fokus liegt auf den Anforderungen berücksichtigenden Designentscheidungen während der Implementierung und den zur interkomponellen Kommunikation verwendeten Protokollen.
+Des Weiteren wird das Verhalten der Smartbit-Lösung exemplarisch anhand des Ablaufs eines Funktionsaufrufs spezifiziert.
 
 Smartbit besteht aus den drei Komponenten Programmierumgebung, Kontrollprogramm und Android-Anwendung, die zur korrekten Funktionsweise miteinander kommunizieren.
 Eine Übersicht des Aufbaus ist in Abbildung \ref{fig:design} dargestellt.
@@ -264,7 +264,7 @@ Dies könnte beispielsweise eine Funktion sein, die einen Text auf dem Textfeld 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/arch_call_flow.pdf}
-  \caption{Nachrichtenablauf}
+  \caption{Nachrichtenablauf einer Ausgabe}
   \label{fig:arch_flow}
 \end{figure}
 Die Bibliothek mit den, zur Interaktion mit dem Smartphone geeigneten, Stub-Funktionen kann in Programmcode der Programmiersprachen C, Java und Python eingebunden werden und ermöglicht dadurch eine Entwicklung eines mit dem Smartphone interagierenden Programms(1).
@@ -308,7 +308,7 @@ Eine Liste der vollständigen Nachrichtentypen, inklusive ihrer Felder, ist im A
 \end{table}
 
 \texttt{Sensor\_requests} kommen bei Sensormesswert-Abfragen zum Einsatz.
-Dieser Nachrichtentyp wird von der Bibliothek an das Kontrollprogramm gesendet, wo die vom Smartphone übermittelten Sensorwerte zwischengespeichert wurden.
+Dieser Nachrichtentyp wird von der Bibliothek an das Kontrollprogramm gesendet, in der die vom Smartphone übermittelten Sensorwerte zwischengespeichert wurden.
 Nach Eingang ermittelt das Kontrollprogramm, durch Angabe des gewünschten Sensortyp-Kürzels im Feld \texttt{sensor\_type}, den gespeicherten Sensormesswert.
 Sensortyp-Kürzel sind für alle Sensoren definiert und dienen in der Kontrollanwendung als Schlüssel der Adressierung der Messwerte im Zwischenspeicher der Kontrollanwendung.
 Die Kürzel sind in Tabelle \ref{tab:sensor_types} aufgelistet. 
@@ -439,7 +439,7 @@ Die Komponente DataHandler besteht wiederum aus vier Sub-Komponenten, die ebenfa
 Ziel der Aufteilung, der Arbeitsschritte in Threads, ist die Gewährleistung der Verfügbarkeit der Kontrollanwendung sowohl für die Programmierumgebung, als auch die Smartphone-App.
 Die Thread-Kommunikation wird durch die threadsichere Warteschlangen-Klasse \textit{queues} \cite{python_queue} der C-Python Implementierung realisiert.
 Nachrichten werden von einem Thread in einer queue abgelegt und in einem anderen aus der queue entnommen.
-Eine, durch polling verursachte, erhöhte CPU-Last kann durch blockierende Operationen beim ablegen und herausnehmen der Nachrichten abgewendet werden.
+Eine, durch polling verursachte, erhöhte CPU-Last kann durch blockierende Operationen beim Ablegen und Herausnehmen der Nachrichten abgewendet werden.
 Die Funktionsweise und Zwecke der Subkomponenten von DataHandler werden im Folgenden anhand zweier Beispiele erläutert.
 
 Abbildung \ref{fig:serverMqttReqPath} wird zur Erläuterung für das erste Beispiel diskutiert.
@@ -517,16 +517,16 @@ Die in der RootActivity referenzierten SensorEventListener benötigen wiederum e
 
 Der Nachrichtenempfang im MQTT-Service wird nicht im UI-Thread behandelt.
 Dies ist jedoch Voraussetzung um UI-Elemente, wie zum Beispiel die Farbe der Signal-LED, im Service verändern zu können.
-Android unterbindet UI-Änderungen aus Nicht-UI-Threads.
+Android unterbindet Änderungen des UIs aus Nicht-UI-Threads.
 Dieses Problem wird durch die Methode \textit{runOnUiThread} umgangen, welche die UI-Änderungen in der Ausführungswarteschlange des UI-Threads einreiht.
-Eine Übersicht des Vorgangs in in Abbildung \ref{fig:runOnUiThread} dargestellt.
+Eine Übersicht des Vorgangs in Abbildung \ref{fig:runOnUiThread} dargestellt.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{images/runOnUiThread.pdf}
   \caption{Ausführung auf dem UI-Thread}
   \label{fig:runOnUiThread}
 \end{figure}
-Der MQTT-Service baut eine Verbindung zu, einem in Datei \textit{config.json} definierten, MQTT-Broker auf und abonniert ein, ebenfalls in der Konfigurationsdatei angegebenes, Topic.
+Der MQTT-Service baut eine Verbindung zu, einem in der Datei \textit{config.json} definierten, MQTT-Broker auf und abonniert ein, ebenfalls in der Konfigurationsdatei angegebenes, Topic.
 Ist der MQTT-Service eingebunden sind alle Voraussetzungen für eine Übertragung erfüllt und Sensormessprozesse können gestartet werden.
 
 Die Funktionsweise der Sensormessung wird in Abbildung \ref{fig:sensor_event_listener} dargestellt.
@@ -687,8 +687,8 @@ Smartphoneseitige Latenzen werden architekturbedingt durch die Zwischenspeicheru
 Von Umgebungseigenschaften abhängige Variierungen der Übertragungsgeschwindigkeit ist dadurch für die Programmiererin oder den Programmierer nicht sichtbar.
 Mit der Verwendung von MQTT und UDP wurden leichtgewichtige, ihrem Einsatzzweck entsprechende Protokolle für die Kommunikation gewählt.
 Trotz der Übertragung mit einem einem QoS-Level 0 werden auch Ausgabeanfragen sicher übertragen und ausgeführt.
-Nachrichten, die über die MQTT-Verbindung zwischen Kontrollanwendung und Smartphone-App versandt werden, werden auf dem Übertragungsweg mit TLS verschlüsselt übertragen.
-Nachrichten, die über die UDP-Verbindung zwischen Kontrollanwendung und Bibliothek übertragen werden, werden nicht verschlüsselt.
+Über die MQTT-Verbindung zwischen Kontrollanwendung und Smartphone-App versandte Nachrichten, werden auf dem Übertragungsweg mit TLS verschlüsselt übertragen.
+Über die die UDP-Verbindung zwischen Kontrollanwendung und Bibliothek übertragene Nachrichten, werden nicht verschlüsselt.
 Ein unberechtigtes Mitlesen des Datenverkehrs setzt jedoch voraus, dass Angreifer Nutzerrechte auf dem PC der Nutzerin oder des Nutzers besäßen, da Datagramme lediglich über das Loopback-Interface ausgetauscht werden können.
 Das Smartphone ist vor einer \acrfull{rce}-Attacke geschützt, da nur Ausgaben ausgeführt werden können, die von der API spezifiziert wurden.
 Smartbit setzt durch die Implementierung von Log-Ausgaben in Kontrollanwendung und Smartphone ebenfalls die Anforderungen an die Transparenz um.
@@ -706,7 +706,7 @@ Durch die marginale Latenz zwischen Kontrollanwendung und Bibliothek können Sen
 Sensordatenabfragen sind daher abhängig von der MQTT-Verbindung zwischen Smartphone und Kontrollanwendung.
 Um ein realistisches Nutzungsverhalten zu simulieren, wird für die Messungen der Transportweg zwischen Bibliothek und Smartphone-App betrachtet.
 Gemessen wird die Zeitdauer nach Versand eines \texttt{rpc\_requests} bis zum Erhalt einer \texttt{rpc\_response} von der Smartphone-App.
-Die Smartphone-App sendet währenddessen fortlaufend \texttt{update\_request}s per MQTT umd reguläre Last auf der Kontrollanwendung zu simulieren.
+Die Smartphone-App sendet währenddessen fortlaufend \texttt{update\_requests} per MQTT um die reguläre Last auf der Kontrollanwendung zu simulieren.
 Messungen finden für drei verschiedene Nutzungsszenarien statt: Der Verwendung im Labor des SWT-Instituts an der Hochschule, der Heimarbeit über eine DSL-Verbindung und der Verwendung in einer virtuellen Umgebung.
 Für alle Messungen erfolgen Internetzugriffe seitens des lokalen PCs kabelgebunden und seitens des Smartphones über WLAN.
 Die Anzahl der verbunden Geräte des AccessPoints sind für die Übertragungszeit ebenfalls ausschlaggebend.
@@ -721,7 +721,7 @@ Die Messergebnisse sind in Abbildung \ref{fig:measure_institute} dargestellt.
   \caption{Messergnisse der Latenzmessungen im Heimnetz}
   \label{fig:measure_institute}
 \end{figure}
-Die Latenzen sind mit Maximalwerten von 138 ms sehr gering  
+Die Latenzen sind mit Maximalwerten von 138 ms sehr gering.
 SensorEventListener erheben Daten mit einer eine Verzögerung von maximal 200 ms.
 Hier könnte auch die eigentliche Sensormessung auf dem Smartphone die Übertragungsgeschwindigkeit begrenzen.
 Im Labor-Szenario kann die Smartbit-Lösung eingesetzt werden.
