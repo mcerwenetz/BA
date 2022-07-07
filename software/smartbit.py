@@ -134,7 +134,7 @@ class Phone():
         return result
         
 
-    def write_text(self, text_outer) -> str:
+    def write_text(self, text_outer):
 
         def _write_text(self, text : str) -> None:
             """can be called with various text to display on the smartphone display"""
@@ -162,7 +162,7 @@ class Phone():
         threading.Thread(target=_vibrate, args=(self, )).start()
 
 
-    def get_x_accello(self):
+    def get_x_accelo(self):
         return self._get_sensor("accell_x")
 
     def get_proxy(self):

@@ -374,7 +374,7 @@ Der Nachrichtenablauf wird in Abbildung \ref{fig:message_flow_rpc} dargestellt.
 Aufgeführt sind die drei Komponenten Bibliothek, Kontrollprogramm und Android-App.
 Die Bibliothek sendet ein \texttt{rpc\_request} per UDP an das Kontrollprogramm.
 Dieses leitet die Nachricht per MQTT weiter an die Smartphone-App, wo das Kommando ausgeführt wird.
-Ein eventuell anfallender Rückgabewert wird durch eine \texttt{rpc\_response} vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet, welche die Nachricht dann per UDP weiter an die Bibliothek weiterleitet.
+Ein eventueller Rückgabewert wird durch eine \texttt{rpc\_response} vom Smartphone per MQTT zurück an die Kontrollanwendung gesendet, welche die Nachricht dann per UDP weiter an die Bibliothek weiterleitet.
 
 \chapter{Aufbau der Programmierumgebung}\label{chap:libs}
 Die Programmierumgebung ist die Schnittstelle, die Programmiererinnen und Programmierer für die Interaktion mit dem Smartphone in ihren Programmen verwenden.
@@ -415,10 +415,17 @@ Die Methode \texttt{get\_file\_content} kann, unter der Angabe des Dateipfades d
 Diese Lösung verringert die Anzahl der Lesevorgänge und damit die Latenzzeiten.
 Nach auf ruf der Einlese-Funktion ist der Datei-Inhalt auf dem Heap des Arbeitsspeichers gespeichert.
 Programmiererinnen und Programmierer müssen diesen am Ende des Programms durch den Aufruf der \texttt{free}-Funktion wieder freigeben.
-%todo: Kapitel JSON Parser. Einbinden für die Kompilierung was woher beziehen usw.
-%todo: Keine Einbindung?
-%todo: Wo stehen die Funktionen? Welche gibt es überhaupt. Beispiele!
 
+Für die Verwendung unter C- und Java-Programmen muss zusätzlich ein JSON-Parser eingebunden werden, um die Anfragen an die Kontrollanwendung versenden und Antworten von ihr parsen zu können.
+Unter C wird die unter OpenSource-Lizenz stehende Bibliothek \textit{cJSON} von Dave Gamble \cite{cjson} verwendet.
+Diese kann manuell kompiliert und gelinkt werden.
+Unter Debian steht mit \textit{libcjson1} \cite{cjson-package} allerdings auch ein installierbares Paket zur Installation bereit.
+Um ein Programm erfolgreich zu kompilieren, muss gcc mit der\texttt{-I}-Option der Pfad zum cJSON-Header angegeben werden.
+Dieser ist bei der Installation des Paketes unter \textit{/usr/lib/cjson} zu finden.
+Um die Dateien zu linken, muss gcc mit der \texttt{-l}-Option der Name der Library (\textit{cjson}) mitgeteilt werden.
+Da Java ebenfalls keinen integrierten JSON-Parser besitzt, wird wird daher \textit{JSON in Java} \cite{json_java} von Sean Leary verwendet.
+Dieser kann als JAR-Datei heruntergeladen und Projekten im Classpath angegeben werden.
+Eine Integration über Gradle oder Maven ist jedoch auch möglich \cite{json_java_maven}.
 
 \chapter{Aufbau und Funktionsweise der Kontrollanwendung}\label{chap:server_software}
 Die Kontrollanwendung vermittelt als Middleware zwischen Anfragen der Programmierumgebung und Anfragen der mobilen Anwendung.
@@ -613,7 +620,7 @@ Der Vorgang wird in Abbildung \ref{fig:start_controll_app} dargestellt.
 \end{figure}
 Die Anwendung meldet eine erfolgreiche Verbindung mit dem MQTT-Broker und gibt das abonnierte Topic aus.
 Neben diesen Start-Informationen werden auch eingehende \texttt{rpc\_requests} und \texttt{rpc\_responses} ausgegeben.
-Häufig versandte, nicht Ausgaben betreffende, Nachrichtentypen wie \texttt{sensor\_requests}, \texttt{sensor\_responses} und \texttt{update\_requests} werden nicht geloggt.
+Häufig versandte Nachrichtentypen wie \texttt{sensor\_re\-quests}, \texttt{sensor\_responses} und \texttt{update\_requests} werden nicht geloggt.
 
 Die Implementierung der Lösung der Aufgabe ist in Listing \ref{lis:alarm} dargestellt.
 \lstset{language=python, captionpos=b, frame=single, numberstyle=\tiny, style=customcs}
@@ -695,7 +702,7 @@ Da \texttt{sensor\_requests} lediglich über die Local-Loopback-Schnittstelle zw
 Auf die Untersuchung der Latenzzeiten zwischen dem Absenden eines \texttt{sensor\_requests} und dem Erhalt einer \texttt{sensor\_response} wird daher verzichtet.
 
 Unbekannt ist indes die Latenz zwischen Smartphone-App und Kontrollprogramm.
-Über diesen Transportweg werden die Nachrichtenformate \texttt{rpc\_request}, \texttt{rpc\_response} und \texttt{update\_request} übermittelt.
+Über diesen Transportweg werden die Nachrichtenformate \texttt{rpc\_request}, \texttt{rpc\_re\-sponse} und \texttt{update\_request} übermittelt.
 Durch die marginale Latenz zwischen Kontrollanwendung und Bibliothek können Sensorwerte zwar häufig abgefragt werden, jedoch wird bis zum Eintreffen eines neuen Sensormesswerts der zuletzt Eingespeicherte zurückgegeben.
 Sensordatenabfragen sind daher abhängig von der MQTT-Verbindung zwischen Smartphone und Kontrollanwendung.
 Um ein realistisches Nutzungsverhalten zu simulieren, wird für die Messungen der Transportweg zwischen Bibliothek und Smartphone-App betrachtet.
@@ -711,7 +718,7 @@ Mit dem SWT-Labor befindet sich der lokale PC im ersten Nutzungsszenario im glei
 Die Messergebnisse sind in Abbildung \ref{fig:measure_institute} dargestellt.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.7\textwidth]{images/timing_institute.pdf}
+  \includegraphics[width=0.6\textwidth]{images/timing_institute.pdf}
   \caption{Messergnisse der Latenzmessungen im Heimnetz}
   \label{fig:measure_institute}
 \end{figure}
@@ -726,7 +733,7 @@ Die Messergebnisse sind relevant für die Heimarbeit oder für die Verwendung be
 Die Ergebnisse sind in Abbildung \ref{fig:measure_home} dargestellt.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.7\textwidth]{images/timing_at_home}
+  \includegraphics[width=0.6\textwidth]{images/timing_at_home}
   \caption{Messergebnisse der Latenzmessungen im Heimnetz}
   \label{fig:measure_home}
 \end{figure}
@@ -736,8 +743,6 @@ Im dritten Szenario wird die Messung von einer in VirtualBox gestarteten, virtue
 Sowohl Bibliothek und Kontrollanwendung werden in der virtuellen Maschine betrieben.
 Relevant ist das Szenario ebenfalls für die Heimarbeit.
 Es bildet die Verwendung der virtuellen Maschine zum Programmieren ab.
-In den Lehrveranstaltungen des Instituts wird dies häufig angewandt um Studierenden auf simplem Wege eine vollständige Programmierumgebung zur Verfügung zu stellen. 
-Untersucht wird, ob die Latenzzeiten sich durch die NAT-Funktionalität von VirtualBox signifikant vergrößern.
 Die Messergebnisse sind in Abbildung \ref{fig:measure_vm} dargestellt.
 \begin{figure}[htbp]
   \centering
@@ -745,6 +750,8 @@ Die Messergebnisse sind in Abbildung \ref{fig:measure_vm} dargestellt.
   \caption{Messergebnisse der Latenzmessungen im Heimnetz}
   \label{fig:measure_vm}
 \end{figure}
+In den Lehrveranstaltungen des Instituts wird dies häufig angewandt um Studierenden auf simplem Wege eine vollständige Programmierumgebung zur Verfügung zu stellen. 
+Untersucht wird, ob die Latenzzeiten sich durch die NAT-Funktionalität von VirtualBox signifikant vergrößern.
 Die Latenzzeiten sind im Vergleich zur Messung auf dem Host-PC nicht wesentlich angestiegen.
 Dadurch ist ebenfalls von keiner maßgeblichen Beeinträchtigung der Nutzung auszugehen.
 Smartbit kann auch in virtuellen Entwicklungsumgebungen verwendet werden.
