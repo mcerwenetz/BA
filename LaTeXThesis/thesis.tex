@@ -30,17 +30,19 @@
 
 \begin{abstract}
 Interaktive Programmieraufgaben eignen sich besonders gut zum Programmieren lernen für angehende Programmiererinnen oder Programmierer.
-Auf Mikrocontroller-Schaltungen basierende Projekte bieten durch angeschlossene Sensoren eine ideale Interaktivität, benötigen allerdings auch zusätzliches Fachwissen und müssen zusätzlich beschafft werden.
-Gegenüber ihnen bietet der Einsatz von Smartphones für interaktive Aufgaben Vorteile im Vergleich zu Mikrocontroller-Schaltungen.
+Auf Mikrocontroller-Schaltungen basierende Projekte bieten durch angeschlossene Sensoren eine hohe Interaktivität, benötigen allerdings auch zusätzliches Fachwissen und müssen zusätzlich beschafft werden.
+Für interaktive Aufgaben bietet der Einsatz von Smartphones Vorteile gegenüber Mikrocontroller-Schaltungen.
 Die Geräte bieten einen vergleichbaren Sensorumfang und können Ausgaben virtuell darstellen.
-Ihre Anbindung in Programmierumgebungen ist im Vergleich zu Mikrocontrollern jedoch nicht äquivalent unterstützt.
+Ihre Anbindung in Programmierumgebungen ist im Vergleich zu Mikrocontroller-Schaltungen jedoch nicht äquivalent unterstützt.
 
-Diese Arbeit behandelt die Entwicklung einer Softwarelösung namens Smartbit, welche Sensoren von Smartphones über eine Programmierumgebung ausliest und Ausgaben auf dem Smartphone ausführt.
-Anforderungen an Smartbit werden anhand von Beispielaufgabenstellungen spezifiziert und für die Implementierung berücksichtigt.
+Diese Arbeit behandelt die Entwicklung einer Softwarelösung namens Smartbit, die eine Einbindung des Smartphones in Programmcode erlaubt.
+Sie bietet die Möglichkeit Sensormesswerte vom Smartphone auszulesen und Ausgaben auf diesem auszuführen.
+Anforderungen an Smartbit werden anhand von Beispiel-Programmieraufgaben spezifiziert und für die Implementierung berücksichtigt.
 Die Evaluation erfolgt durch eine Demonstration einer Beispielaufgabe und einer Messung für drei unterschiedliche Nutzungsszenarien.
 
-Smartbit kann für den beschriebenen Einsatz verwendet werden. Die Einbindung in bestehende Programmierumgebungen ist möglich. 
-Bei Aufrufen auftretende Latenzen zwischen Smartphone und Programm beeinträchtigen nicht die Nutzung.
+Die Einbindung des Smartphones in bestehenden Programmcode ist möglich.
+Auftretende Latenzen zwischen Smartphone und Programm beeinträchtigen nicht die Nutzung.
+Smartbit bietet eine interaktive Lernerfahrung und bietet angehenden Programmiererinnen und Programmierern einen spielerischen Einstieg in die Programmierung.
 \end{abstract}
 
 \tableofcontents
@@ -265,7 +267,7 @@ In Abbildung \ref{fig:arch_flow} ist eine schematische Darstellung der Funktions
 Dies könnte beispielsweise eine Funktion sein, die einen Text auf dem Textfeld der Smartphone-App anzeigen soll.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{images/arch_call_flow.pdf}
+  \includegraphics[width=0.8\textwidth]{images/arch_call_flow.pdf}
   \caption{Nachrichtenablauf einer Ausgabe}
   \label{fig:arch_flow}
 \end{figure}
@@ -419,9 +421,9 @@ Für die Verwendung unter C- und Java-Programmen muss zusätzlich ein JSON-Parse
 Unter C wird die unter OpenSource-Lizenz stehende Bibliothek \textit{cJSON} von Dave Gamble \cite{cjson} verwendet.
 Diese kann manuell kompiliert und gelinkt werden.
 Unter Debian steht mit \textit{libcjson1} \cite{cjson-package} allerdings auch ein installierbares Paket zur Installation bereit.
-Um ein Programm erfolgreich zu kompilieren, muss gcc mit der\texttt{-I}-Option der Pfad zum cJSON-Header angegeben werden.
+Um ein Programm erfolgreich zu kompilieren, muss gcc mit der Option \texttt{-I} der Pfad zum cJSON-Header angegeben werden.
 Dieser ist bei der Installation des Paketes unter \textit{/usr/lib/cjson} zu finden.
-Um die Dateien zu linken, muss gcc mit der \texttt{-l}-Option der Name der Library (\textit{cjson}) mitgeteilt werden.
+Um die Dateien zu linken, muss gcc mit der Option \texttt{-l} der Name der Library (\textit{cjson}) mitgeteilt werden.
 Da Java ebenfalls keinen integrierten JSON-Parser besitzt, wird wird daher \textit{JSON in Java} \cite{json_java} von Sean Leary verwendet.
 Dieser kann als JAR-Datei heruntergeladen und Projekten im Classpath angegeben werden.
 Eine Integration über Gradle oder Maven ist jedoch auch möglich \cite{json_java_maven}.
@@ -564,7 +566,7 @@ Beschleunigungs- bzw. Lagesensoren messen die Beschleunigung in $m/s^2$ für die
 Zur Übersicht sind diese in Abbildung \ref{fig:and_axes} dargestellt.
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=.7\textwidth]{images/android_axes.png}
+  \includegraphics[width=.5\textwidth]{images/android_axes.pdf}
   \caption{Android-Koordinatensystem}
   \label{fig:and_axes}
 \end{figure}
@@ -573,8 +575,7 @@ Diese muss für die bereinigten, realen Werte von den aufgenommenen Werten subtr
 Messeinheiten unterscheiden sich je nach Sensor.
 Das Gyroskop misst beispielsweise keine Beschleunigung, sondern die aktuelle Geschwindigkeit in $rad/s$ der gleichen Achsen.
 
-Die Frequenz, mit der Messwerte erfasst werden, kann manuell angegeben werden.
-Hierfür stehen vier Stufen zur Auswahl, welche in Tabelle \ref{tab:sensor_speeds} dargestellt sind.
+Für  die Angabe der Sensormessfrequzenz stehen vier Stufen zur Auswahl, welche in Tabelle \ref{tab:sensor_speeds} dargestellt sind.
 \begin{table}[htbp]
   \centering
   \begin{tabular}{|c|p{4cm}|}
@@ -595,7 +596,6 @@ Hierfür stehen vier Stufen zur Auswahl, welche in Tabelle \ref{tab:sensor_speed
 \end{table}
 In der Android-App erfolgen alle Messungen unter der Verzögerungsstufe SENSOR\_DELAY\_NORMAL.
 Die Stufe gilt für Android jedoch nicht als festes Limit, sondern wird eher als Richt-Frequenz behandelt.
-Android kann die reale Frequenz auch erhöhen.
 
 \chapter{Evaluation der Smartbit-Lösung}\label{chap:eval}
 Die Umsetzung der gestellten Anforderungen an die implementierte Anwendung wird in diesem Kapitel überprüft.
@@ -780,7 +780,8 @@ Die Nachrichtengröße würde ebenfalls verringert werden.
 Energieeffizienz der Android-App wurde zum Vorteil der Latenzreduzierung während der Implementierung nicht wesentlich berücksichtigt.
 Zum Start der Anwendung werden die Sensormessprozesse unmittelbar gestartet und Sensorwerte an die Kontrollanwendung gesendet, was einen erhöhten Energieverbrauch bedeutet.
 Sollten sich die Startzeiten der Sensormessprozesse nicht wesentlich auf die Latenzen auswirken, wäre eine auf Anfragen basierende Sensormessdatenübertragung erwägenswert, um den Energieverbrauch zu reduzieren.
-%todo: 4-5 Sätze damit 1,5 Seiten voll sind
+Weiterhin könnten neue Ausgabemöglichkeiten hinzugefügt werden.
+Um den Platz auf dem Bildschirm optimal auszunutzen wäre ein Baukastensystem denkbar, in dem Ausgabemöglichkeiten frei platzierbar und dimensionierbar wären.
 
 % Listen wenn überhaupt ans Ende und nicht an den Anfang.
 % Meist ist das aber unnötig.
