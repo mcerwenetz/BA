@@ -25,9 +25,3 @@ Ebenfalls im Ordner liegen die beiden Config-Files *config.json* und *protocol.j
 Auch Latenzmessungen sind darin enthalten.
 Die JSON-Parser-Lib für Java liegt im Ordner *jsonlib_java*. Für C liegt Sie unter *c_tryout* und dann cJSON.h
 
-# Zugangsdaten MQTT
-
-thesis01
-
-Mosquitto-Account
-22thesis01:n4xdnp36
