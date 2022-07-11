@@ -224,10 +224,10 @@ public class MQTTService extends Service {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                this.rootActivity.button_a.setOnClickListener((View v) -> {
-                });
-                this.rootActivity.button_b.setOnClickListener((View v) -> {
-                });
+//                this.rootActivity.button_a.setOnClickListener((View v) -> {
+//                });
+//                this.rootActivity.button_b.setOnClickListener((View v) -> {
+//                });
 
             }
         }

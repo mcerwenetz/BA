@@ -8,7 +8,7 @@ p = Phone()
 plt.axis([0, 50, -10, 10])
 
 for i in range(50):
-    y = p.get_x_accello()
+    y = p.get_x_accelo()
     print(y)
     y = np.double(y)
     plt.scatter(i, y)

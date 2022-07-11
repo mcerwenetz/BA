@@ -117,7 +117,7 @@ class Phone():
     def __init__(self) -> None:
         self.sock = socket.socket(socket.AF_INET, # Internet
                                 socket.SOCK_DGRAM) # UDP
-        self.sock.settimeout(30)
+        # self.sock.settimeout(30)
         self.udp_ip="127.0.0.1"
         self.udp_sender_port = 5006
         self.udp_listener_port = 5005
