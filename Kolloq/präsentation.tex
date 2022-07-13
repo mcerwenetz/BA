@@ -10,6 +10,7 @@
 \usepackage{emptypage} % Wirklich leer bei leeren Seiten
 \usepackage{listings}
 \usepackage{xcolor}
+\usetheme[]{antibes}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -36,7 +37,16 @@
 }
 \lstset{style=mystyle}
 
-
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
 
 \usepackage[yyyymmdd]{datetime}
 \renewcommand{\dateseparator}{--}
@@ -47,8 +57,6 @@
 \date{\today}
 
 \beamertemplatenavigationsymbolsempty
-
-
 
 \begin{document}
 
@@ -67,6 +75,7 @@
 \end{frame}
 
 \section{Einführung}
+
 \begin{frame}
     \frametitle{Schwierigkeiten beim Programmierenlernen}
     \begin{itemize}
@@ -100,19 +109,30 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Smartbit}
+    \frametitle{Problemstellung}
     \begin{alertblock}{Probleme}
         \begin{itemize}
             \item Anbindung in Programmierumgebungen
             \item Smartphone-App
         \end{itemize}
     \end{alertblock}
-    \begin{block}{Lösung}
-        Lösung zur Kommunikation mit dem Smartphone
+    \begin{block}{Lösungsansatz}
+        Software-Lösung zur Kommunikation mit dem Smartphone
     \end{block}
 \end{frame}
 
 \section{Anforderungen}
+
+\begin{frame}
+    \frametitle{Beispielaufgaben}
+    \begin{itemize}
+        \item Disco
+        \item Würfeln
+        \item Diebstahl-Alarm
+        \item Dreh-Zähler
+    \end{itemize}
+\end{frame}
+
 \begin{frame}
     \frametitle{Anforderungen}
     \begin{itemize}
@@ -122,7 +142,6 @@
         \item Sicherheit
     \end{itemize}
 \end{frame}
-\note{Everything you want}
 
 \section{Smartbit}
 \begin{frame}
@@ -166,7 +185,6 @@ accel = p.get_x_accelo()
 p.write_text("hallo")
             \end{lstlisting}
         \end{column}
-
     \end{columns}
     
    
@@ -186,23 +204,180 @@ p.write_text("hallo")
 \end{frame}
 
 \section{Architektur}
-\begin{frame}
-\end{frame}
 \subsection*{Übersicht der Gesamtarchitektur}
-\subsection*{Nachrichtenformate}
+\begin{frame}
+    \frametitle[]{Architektur}
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/framework.pdf}
+\end{frame}
+
+\subsection*{Nachrichten}
+\begin{frame}
+    \frametitle[]{Nachrichtenaustausch}
+    \begin{columns}
+        \begin{column}{0.3\textwidth}
+        Zwecke:
+            \begin{itemize}
+                \item Neuer Sensorwert
+                \item Sensorwert-Anfrage
+                \item Sensorwert-Antwort
+                \item RPC-Anfrage
+                \item RPC-Antwort
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{images/parts.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle[]{Konfigurationsdateien}
+\begin{itemize}
+    \item protocol.json
+    \item config.json
+    \item Dezentral auf alle drei Komponenten verteilt
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Beispielnachricht - Neuer Sensorwert}
+    \begin{lstlisting}[language=python]
+{
+    "type": "update_request",
+    "sensor_type": "",
+    "sensor_value": ""
+}
+\end{lstlisting}
+\end{frame}
+
 \subsection*{Funktionsweise der Bibliotheken}
-\subsection*{Funktionsweise der Middleware}
+\begin{frame}
+    \frametitle[]{Funktionsweise Bibliotheken}
+    \begin{itemize}
+        \item Stub-Funktionen
+        \item Socket
+        \item Local-Loopback
+        \item UDP, Port 5006
+        \item CJSON und JSON for Java
+    \end{itemize}
+\end{frame}
+
 \subsection*{Funktionsweise der Smartphone-App}
+\begin{frame}
+    \frametitle[]{Funktionsweise der Smartphone-App}
+    SensorEventListener
+    \begin{itemize}
+        \item Neue Sensormessdaten
+        \item Übermittlung an Kontrollanwendung
+    \end{itemize}
+    \vspace{1cm}
+    MessageListener
+    \begin{itemize}
+        \item Warten auf Nachrichten
+        \item Reaktion Ausgabe
+        \item Ggf. RPC-Antwort
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle[]{Sensoren}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Beschleunigungssensor
+                \item Gyroskop
+                \item Annäherungssensor
+            \end{itemize}
+        \end{column}
+        \begin{column}[]{0.5\textwidth}
+            \includegraphics[width=\textwidth]{images/android_axes.pdf}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+
+\subsection*{Funktionsweise der Middleware}
+
+\begin{frame}
+\frametitle[]{Allgemein}
+\begin{itemize}
+    \item Mehrere Threads
+    \item Kommunikation per MQTT und UDP
+    \item Thread-Kommunikation durch Python-Queues
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle[]{Funktionsweise der Middleware}
+    Aufgaben:
+    \begin{itemize}
+        \item Sensormesswerte annehmen und speichern
+        \item Sensor-Anfragen beantworten
+        \item RPC-Anfragen weiterleiten
+        \item RPC-Antworten weiterleiten
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle[]{Aufbau der Kontrollanwendung}
+\includegraphics[width=\textwidth]{images/ServerUml.pdf}
+\end{frame}
+
 
 \section{Evaluation}
 \begin{frame}
+    \frametitle[]{Latenzen}
+    \includegraphics[width=\textwidth]{images/latencies.pdf}
+\end{frame}
+\begin{frame}
+    \frametitle[]{Sonstiges}
+    \begin{itemize}
+        \item Portabilität
+        \item Latenzverschleierung durch Caching
+        \item TLS-Verschlüsselung MQTT
+        \item Transparenter ablauf durch Logging
+    \end{itemize}
 \end{frame}
 \section{Fazit und Ausblick}
 \begin{frame}
+    \frametitle[]{Fazit}
+    \begin{itemize}
+        \item Alle Anforderungen implementiert
+        \item JSON-Parser
+        \item Latenzzeiten tolerabel
+        \item Objekt-Orientierung
+        \item Verfügbarkeit
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle[]{Ausblick}
+    \begin{itemize}
+        \item QR-Code für Konfigurationen
+        \item Mehrere Sensorwerte zwischenspeichern
+        \item Burst-Mode / Selektive Sensormessung
+        \item Group-Sessions
+    \end{itemize}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Zusammenfassung}
+    \vfill
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/framework.pdf}
+\end{frame}
 
-
-
+\begin{frame}
+    \vfill
+    \centering
+    \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+      \usebeamerfont{title}Demo
+    \end{beamercolorbox}
+    \vfill
+    \end{frame}
 
 \end{document}
