@@ -62,7 +62,8 @@
 \renewcommand{\dateseparator}{--}
 %Information to be included in the title page:
 \title{Smartbit}
-\author{Marius Cerwenetz}
+\author{Marius Cerwenetz\\ \vspace{1cm}
+\scriptsize Betreuung:  Prof. Dr. Peter Barth, Prof. Dr. Jens-Matthias Bohli}
 \institute{Institut für Softwaretechnik und Datenkommunikation}
 \date{\today}
 \logo{\includegraphics[width=0.1\textwidth]{images/hsma_logo.pdf}}
@@ -240,25 +241,27 @@ p.write_text("hallo")
 
 \subsection*{Nachrichten}
 \begin{frame}
-    \frametitle[]{Nachrichtenaustausch}
-    Nachrichtenformate:
+    \frametitle[]{Nachrichtenformate}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+        Requests
+            \begin{itemize}
+                \item update\_request
+                \item sensor\_request
+                \item rpc\_request
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.5\textwidth}
+        Responses
         \begin{itemize}
-            \item update\_request
-            \item sensor\_reqeust
             \item sensor\_response
-            \item rpc\_request
             \item rpc\_response
         \end{itemize}
-        
-\end{frame}
+        \end{column}
+    \end{columns}
 
-\begin{frame}
-\frametitle[]{Konfigurationsdateien}
-\begin{itemize}
-    \item protocol.json
-    \item config.json
-    \item Dezentral auf alle drei Komponenten verteilt
-\end{itemize}
+        
 \end{frame}
 
 \begin{frame}[fragile]
@@ -270,6 +273,15 @@ p.write_text("hallo")
     "sensor_value": ""
 }
 \end{lstlisting}
+\end{frame}
+
+\begin{frame}
+    \frametitle[]{Konfigurationsdateien}
+    \begin{itemize}
+        \item protocol.json
+        \item config.json
+        \item Dezentral auf alle drei Komponenten verteilt
+    \end{itemize}
 \end{frame}
 
 \subsection{Bibliothek}
@@ -366,6 +378,7 @@ threading.Thread(target=_vibrate, args=(self, )).start()
 \begin{itemize}
     \item Mehrere Threads
     \item Kommunikation per MQTT und UDP
+    \item UDP Port 5005
     \item Thread-Kommunikation durch Python-Queues
 \end{itemize}
 \end{frame}
@@ -377,17 +390,43 @@ threading.Thread(target=_vibrate, args=(self, )).start()
 
 
 \section{Evaluation}
+\subsection{Latenzen}
+
+\begin{frame}
+    \frametitle{Kontext}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            Szenarios
+            \begin{enumerate}
+                \item SWT-Labor
+                \item Zuhause
+                \item Per VM
+            \end{enumerate}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            Nebenbedingungen
+            \begin{itemize}
+                \item Umlaufzeit
+                \item Unter Last
+                \item Python
+            \end{itemize}
+        
+        \end{column}
+    \end{columns}
+\end{frame}
 \begin{frame}
     \frametitle[]{Latenzen}
     \includegraphics[width=\textwidth]{images/latencies.pdf}
 \end{frame}
+
+
 \begin{frame}
     \frametitle[]{Sonstiges}
     \begin{itemize}
         \item Portabilität
         \item Latenzverschleierung durch Caching
-        \item TLS-Verschlüsselung MQTT
-        \item Transparenter ablauf durch Logging
+        \item Transparenter Ablauf durch Logging
     \end{itemize}
 \end{frame}
 \section{Fazit und Ausblick}
@@ -412,7 +451,7 @@ threading.Thread(target=_vibrate, args=(self, )).start()
 \end{frame}
 
 \begin{frame}
-    \frametitle{Zusammenfassung}
+    \frametitle{Ende}
     \vfill
     \centering
     \includegraphics[width=0.9\textwidth]{images/framework.pdf}
