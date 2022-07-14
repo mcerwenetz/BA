@@ -154,11 +154,9 @@ class Phone():
 
     def vibrate(self, time : int):
         "vibrates phone for time miliseconds"
-
         def _vibrate(self):
             rpc_message = JsonMessagesWrapper.get_rpc_request(command="vibrate", value=str(time))
             self._sendMessage(rpc_message)
-
         threading.Thread(target=_vibrate, args=(self, )).start()
 
 
